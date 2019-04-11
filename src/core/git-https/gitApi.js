@@ -4,8 +4,14 @@ import { get } from './gitFile';
 
 const apiPath = 'api/v1';
 
+export const getTree = async ({url}) => {
+  const response = await get({uri: url});
+  const listing = response.tree;
+  return listing;
+};
+
 // http://bg.door43.org/api/v1/repos/unfoldingword/en_ugl/git/trees/master
-export async function fetchTree({username, repository, sha='master'}) {
+export const fetchTree = async ({username, repository, sha='master'}) => {
   try {
     const uri = Path.join(apiPath, 'repos', username, repository, 'git/trees', sha);
     const data = await get({uri});
@@ -16,14 +22,14 @@ export async function fetchTree({username, repository, sha='master'}) {
   }
 };
 
-export async function getUID({username}) {
+export const getUID = async ({username}) => {
   const uri = Path.join(apiPath, 'users', username);
   const user = await get({uri});
   const {id: uid} = user;
   return uid;
-}
+};
 
-export async function repositoryExists({username, repository}) {
+export const repositoryExists = async ({username, repository}) => {
   const uid = await getUID({username});
   const params = { q: repository, uid };
   const uri = Path.join(apiPath, 'repos', `search`);
@@ -32,7 +38,7 @@ export async function repositoryExists({username, repository}) {
   return !!repo;
 };
 
-export async function recursiveTree({username, repository, path, sha}) {
+export const recursiveTree = async ({username, repository, path, sha}) => {
   let tree = {};
   const pathArray = path.split();
   const results = fetchTree({username, repository, sha});
@@ -48,8 +54,8 @@ export async function recursiveTree({username, repository, path, sha}) {
   }
 };
 
-export async function fileExists({username, repository, path, branch}) {
+export const fileExists = async ({username, repository, path, branch}) => {
   // get root listing
   recursiveTree()
   // get recursive path listing
-}
+};

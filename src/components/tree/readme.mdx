@@ -1,0 +1,68 @@
+---
+name: Tree
+route: /tree
+---
+
+import { Playground, Props } from 'docz';
+import { Tree } from './';
+
+# Tree Component
+
+## Examples
+
+### Example 1
+
+A manually provided tree listing.
+
+<Playground>
+  <Tree
+    selected
+    tree={[
+      {
+        "path": ".github",
+        "type": "tree",
+        "tree": [
+          {
+            "path": "config",
+            "type": "blob",
+          },
+        ]
+      },
+      {
+        "path": "LICENSE.md",
+        "type": "blob",
+      }
+    ]}
+  />
+</Playground>
+
+### Example 2
+
+An automated tree listing from a Git Tree API url. Click on the tree objects to see them populate!
+
+<Playground>
+  <Tree
+    selected
+    url="http://bg.door43.org/api/v1/repos/unfoldingWord/en_ta/git/trees/master"
+  />
+</Playground>
+
+## Properties
+<Props of={Tree} />
+
+
+## Sample Data
+```json
+[
+  {
+    "path": ".github",
+    "type": "tree",
+    ...
+  },
+  {
+    "path": "LICENSE.md",
+    "type": "blob",
+    ...
+  }
+]
+```

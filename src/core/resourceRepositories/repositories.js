@@ -6,7 +6,7 @@ import {
   getFile,
   getUID,
   fetchRepositoryZipFile,
-} from '../gitea-https';
+} from '../git-https';
 import { getLanguage } from '../languages';
 
 export const resourceRepositories = ({languageId}) => {

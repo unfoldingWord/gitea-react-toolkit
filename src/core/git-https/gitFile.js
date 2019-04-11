@@ -2,13 +2,13 @@ import Path from 'path';
 import localforage from 'localforage';
 import { setup } from 'axios-cache-adapter';
 
-import { repositoryExists } from './giteaApi';
+import { repositoryExists } from './gitApi';
 
 import {
   getFileFromZip,
 } from './gitZip';
 
-const baseURL = 'https://git.door43.org/';
+const baseURL = 'http://bg.door43.org/';
 
 const cacheStore = localforage.createInstance({
   driver: [localforage.INDEXEDDB],
@@ -31,7 +31,7 @@ const api = setup({
 });
 
 // https://git.door43.org/unfoldingword/en_ult/raw/branch/master/manifest.yaml
-export async function fetchFileFromServer({username, repository, path, branch='master'}) {
+export const fetchFileFromServer = async ({username, repository, path, branch='master'}) => {
   const repoExists = await repositoryExists({username, repository});
   if (repoExists) {
     const uri = Path.join(username, repository, 'raw/branch', branch, path);
@@ -47,7 +47,7 @@ export async function fetchFileFromServer({username, repository, path, branch='m
   }
 };
 
-export async function getFile({username, repository, path, branch}) {
+export const getFile = async ({username, repository, path, branch}) => {
   let file;
   file = await getFileFromZip({username, repository, path, branch});
   if (!file) {
@@ -56,7 +56,8 @@ export async function getFile({username, repository, path, branch}) {
   return file;
 }
 
-async function get({uri, params}) {
-  const {data} = await api.get(uri, { params });
+export const get = async ({uri, params}) => {
+  const _uri = uri.replace(baseURL, '');
+  const {data} = await api.get(_uri, { params });
   return data;
 };

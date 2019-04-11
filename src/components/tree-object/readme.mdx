@@ -1,0 +1,50 @@
+---
+name: TreeObject
+route: /tree-object
+---
+
+import { Playground, Props } from 'docz';
+import { TreeObject } from './TreeObject';
+
+# TreeObject Component
+
+## Example
+
+<Playground>
+  <TreeObject
+    path=""
+    type="tree"
+    selected
+    pathSelected="LICENSE.md"
+    tree={[
+      {
+        "path": ".github",
+        "type": "tree"
+      },
+      {
+        "path": "content",
+        "type": "tree"
+      },
+      {
+        "path": "LICENSE.md",
+        "type": "blob"
+      },
+      {
+        "path": "README.md",
+        "type": "tree"
+      },
+    ]}
+  />
+</Playground>
+
+## Properties
+<Props of={TreeObject} />
+
+## Sample Data
+```json
+{
+  "path": ".github",
+  "type": "tree",
+  ...
+}
+```

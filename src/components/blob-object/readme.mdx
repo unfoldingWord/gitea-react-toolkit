@@ -1,0 +1,33 @@
+---
+name: BlobObject
+route: /blob-object
+---
+
+import { Playground, Props } from 'docz';
+import { BlobObject } from './BlobObject';
+
+# BlobObject Component
+
+## Example
+Here are a few variations of the File component being rendered.
+Even though it appears to be a nested tree, it is simulated.
+You would typically use another component to render more than one.
+
+<Playground>
+  <BlobObject path="LICENSE.md" depth={1} />
+  <BlobObject path="readme.md" depth={2} />
+  <BlobObject path="01.md" depth={3} />
+  <BlobObject path="title.md" depth={3} selected />
+</Playground>
+
+## Properties
+<Props of={BlobObject} />
+
+## Sample Data
+```json
+{
+  "path": "LICENSE.md",
+  "type": "blob",
+  ...
+}
+```

@@ -4,7 +4,7 @@ import localforage from 'localforage';
 
 import {
   repositoryExists,
-} from './repositories';
+} from './gitApi';
 
 const zipStore = localforage.createInstance({
   driver: [localforage.INDEXEDDB],
@@ -13,7 +13,7 @@ const zipStore = localforage.createInstance({
 
 
 // https://git.door43.org/unfoldingWord/en_ult/archive/master.zip
-export async function fetchRepositoryZipFile({username, repository, branch}) {
+export const fetchRepositoryZipFile = async ({username, repository, branch}) => {
   const repoExists = await repositoryExists({username, repository});
   if (!repoExists) {
     return null;
@@ -29,7 +29,7 @@ export async function fetchRepositoryZipFile({username, repository, branch}) {
   }
 };
 
-export async function getFileFromZip({username, repository, path, branch}) {
+export const getFileFromZip = async ({username, repository, path, branch}) => {
   let file;
   const uri = zipUri({username, repository, branch});
   const zipBlob = await zipStore.getItem(uri);
@@ -45,7 +45,7 @@ export async function getFileFromZip({username, repository, path, branch}) {
   return file;
 };
 
-function zipUri({username, repository, branch='master'}) {
+const zipUri = ({username, repository, branch='master'}) => {
   const zipPath = Path.join(username, repository, 'archive', `${branch}.zip`);
   const zipUri = baseURL + zipPath;
   return zipUri;
