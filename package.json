@@ -19,6 +19,7 @@
   "scripts": {
     "start": "docz dev",
     "docz:build": "docz build",
+    "deploy": "npx gh-pages -d .docz/dist",
     "predeploy": "yarn docz:build",
     "prepublishOnly": "rm -fr ./dist & babel ./src --out-dir ./dist -s inline"
   },
