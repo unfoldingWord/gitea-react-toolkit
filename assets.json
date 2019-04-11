@@ -1,15 +1,15 @@
 {
-  "vendors.js": "/static/js/vendors.ad14150b.js",
-  "vendors.js.map": "/static/js/vendors.cc4e0b54f707ead4d099.js.map",
-  "app.js": "/static/js/app.cc4e0b54f707ead4d099.js",
-  "app.js.map": "/static/js/app.cc4e0b54f707ead4d099.js.map",
-  "license.js": "/static/js/license.149b466c.js",
-  "license.js.map": "/static/js/license.cc4e0b54f707ead4d099.js.map",
-  "src-components-file-readme.js": "/static/js/src-components-file-readme.da2a5d93.js",
-  "src-components-file-readme.js.map": "/static/js/src-components-file-readme.cc4e0b54f707ead4d099.js.map",
-  "src-components-folder-readme.js": "/static/js/src-components-folder-readme.b6f83120.js",
-  "src-components-folder-readme.js.map": "/static/js/src-components-folder-readme.cc4e0b54f707ead4d099.js.map",
-  "src-readme.js": "/static/js/src-readme.917a6880.js",
-  "src-readme.js.map": "/static/js/src-readme.cc4e0b54f707ead4d099.js.map",
-  "index.html": "/index.html"
+  "vendors.js": "static/js/vendors.ad14150b.js",
+  "vendors.js.map": "static/js/vendors.cc4e0b54f707ead4d099.js.map",
+  "app.js": "static/js/app.cc4e0b54f707ead4d099.js",
+  "app.js.map": "static/js/app.cc4e0b54f707ead4d099.js.map",
+  "license.js": "static/js/license.149b466c.js",
+  "license.js.map": "static/js/license.cc4e0b54f707ead4d099.js.map",
+  "src-components-file-readme.js": "static/js/src-components-file-readme.da2a5d93.js",
+  "src-components-file-readme.js.map": "static/js/src-components-file-readme.cc4e0b54f707ead4d099.js.map",
+  "src-components-folder-readme.js": "static/js/src-components-folder-readme.b6f83120.js",
+  "src-components-folder-readme.js.map": "static/js/src-components-folder-readme.cc4e0b54f707ead4d099.js.map",
+  "src-readme.js": "static/js/src-readme.917a6880.js",
+  "src-readme.js.map": "static/js/src-readme.cc4e0b54f707ead4d099.js.map",
+  "index.html": "index.html"
 }
