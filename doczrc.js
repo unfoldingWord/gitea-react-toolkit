@@ -1,5 +1,8 @@
 export default {
-  ignore: [
-    'README.md'
+  menu: [
+    'Getting Started',
+    'Tree',
+    'TreeObject',
+    'BlobObject'
   ]
 }
