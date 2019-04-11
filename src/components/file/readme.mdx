@@ -1,0 +1,37 @@
+---
+name: File
+route: /file
+---
+
+import { Playground, Props } from 'docz';
+import { File } from './File';
+
+# File Component
+
+## Properties
+<Props of={File} />
+
+## Example
+<Playground>
+  <File path="" type="tree" selected />
+  <File path=".github" type="tree" depth={2} />
+  <File path="LICENSE.md" depth={2} />
+  <File path="readme.md" depth={2} />
+  <File path="content" type="tree" depth={2} selected />
+  <File path="01.md" depth={3} />
+  <File path="title.md" depth={3} selected />
+</Playground>
+
+## Sample Data
+```json
+{
+  "path": ".github",
+  "type": "tree",
+  ...
+},
+{
+  "path": "LICENSE.md",
+  "type": "blob",
+  ...
+}
+```

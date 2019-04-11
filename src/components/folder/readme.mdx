@@ -1,0 +1,45 @@
+---
+name: Folder
+route: /folder
+---
+
+import { Playground, Props } from 'docz';
+import Folder from './Folder';
+
+# Folder Component
+
+## Examples
+<Playground>
+  <Folder
+    paths={[
+      {
+        "path": ".github",
+        "type": "tree"
+      },
+      {
+        "path": "LICENSE.md",
+        "type": "blob"
+      }
+    ]}
+  />
+</Playground>
+
+## Properties
+<Props of={Folder} />
+
+
+## Sample Data
+```json
+[
+  {
+    "path": ".github",
+    "type": "tree",
+    ...
+  },
+  {
+    "path": "LICENSE.md",
+    "type": "blob",
+    ...
+  }
+]
+```
