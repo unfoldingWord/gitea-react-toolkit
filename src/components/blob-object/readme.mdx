@@ -4,6 +4,7 @@ route: /blob-object
 ---
 
 import { Playground, Props } from 'docz';
+import { Paper } from '@material-ui/core';
 import { BlobObject } from './BlobObject';
 
 # BlobObject Component
@@ -14,10 +15,18 @@ Even though it appears to be a nested tree, it is simulated.
 You would typically use another component to render more than one.
 
 <Playground>
+<Paper style={{margin: '1em 0'}}>
   <BlobObject path="LICENSE.md" depth={1} />
+</Paper>
+<Paper style={{margin: '1em 0'}}>
   <BlobObject path="readme.md" depth={2} />
+</Paper>
+<Paper style={{margin: '1em 0'}}>
   <BlobObject path="01.md" depth={3} />
+</Paper>
+<Paper style={{margin: '1em 0'}}>
   <BlobObject path="title.md" depth={3} selected />
+</Paper>
 </Playground>
 
 ## Properties
