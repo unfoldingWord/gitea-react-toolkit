@@ -22,7 +22,8 @@
   },
   "scripts": {
     "start": "docz dev",
-    "docz:build": "docz build && npx ./scripts/docz-netlify.js",
+    "docz:build": "docz build && yarn docz:netlify",
+    "docz:netlify": "npx ./scripts/docz-netlify.js",
     "predeploy": "yarn docz:build",
     "prepublishOnly": "rm -fr ./dist & babel ./src --out-dir ./dist -s inline"
   },
