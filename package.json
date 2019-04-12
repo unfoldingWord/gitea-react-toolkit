@@ -2,7 +2,7 @@
   "name": "git-file-explorer",
   "version": "0.1.0",
   "license": "MIT",
-  "description": "A Gitea File Explorer React Component Library",
+  "description": "A Git File Tree Explorer React Component Library",
   "homepage": "https://unfoldingword-box3.github.io/git-file-explorer/",
   "repository": {
     "type": "git",
@@ -10,13 +10,7 @@
   },
   "private": false,
   "dependencies": {
-    "@material-ui/core": "^3.9.3",
-    "@material-ui/icons": "^3.0.2",
     "axios-cache-adapter": "^2.3.0",
-    "docz": "1.0.0-rc.8",
-    "docz-theme-default": "1.0.0-rc.8",
-    "js-yaml-parser": "^1.0.0",
-    "jszip": "^3.2.1",
     "localforage": "^1.7.3",
     "prop-types": "^15.7.2"
   },
@@ -34,10 +28,16 @@
     "not op_mini all"
   ],
   "peerDependencies": {
+    "@material-ui/core": "^3.9.3",
+    "@material-ui/icons": "^3.0.2",
     "react": "^16.8.0"
   },
   "devDependencies": {
+    "@material-ui/core": "^3.9.3",
+    "@material-ui/icons": "^3.0.2",
     "babel-eslint": "^10.0.1",
+    "docz": "1.0.0-rc.8",
+    "docz-theme-default": "1.0.0-rc.8",
     "eslint": "^5.3.0",
     "eslint-plugin-react": "^7.12.4",
     "react": "^16.8.0",

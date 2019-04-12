@@ -9,7 +9,7 @@ import {
 import { BlobObject } from '../blob-object';
 import { TreeObject } from '../tree-object';
 
-import { getTree } from '../../core/git-https';
+import { fetchTree } from './helpers';
 
 /**
  * A Listing Component to render an array of Git Tree objects.
@@ -25,11 +25,12 @@ function TreeComponent ({
   const [selectedIndex, setSelectedIndex] = useState();
 
   const updateTree = async () => {
-    const __tree = await getTree({url});
+    const __tree = await fetchTree({url});
     setTree(__tree);
   };
 
-  if (selected && _tree.length === 0) {
+  const emptyTree = (!_tree || _tree.length === 0)
+  if (selected && emptyTree) {
     updateTree();
   }
 
@@ -37,32 +38,37 @@ function TreeComponent ({
     setSelectedIndex(index);
   }
 
-  const components = _tree.map((object, index) => {
-    const component =
-    (object.type === 'tree') ?
-    (
-      <TreeObject
-        {...object}
-        selected={index === selectedIndex}
-        depth={depth}
-      />
-    ) :
-    (
-      <BlobObject
-        {...object}
-        selected={index === selectedIndex}
-        depth={depth}
-      />
-    );
-    return (
-      <div
-        key={index}
-        onClick={()=> updateSelectedIndex(index)}
-      >
-        {component}
-      </div>
-    );
-  });
+  let components = [];
+  if (_tree) {
+    components = _tree.map((object, index) => {
+      let component;
+      if (object.type === 'tree') {
+        component = (
+          <TreeObject
+            {...object}
+            selected={index === selectedIndex}
+            depth={depth}
+          />
+        );
+      } else if (object.type === 'blob') {
+        component = (
+          <BlobObject
+            {...object}
+            selected={index === selectedIndex}
+            depth={depth}
+          />
+        );
+      }
+      return (
+        <div
+          key={index}
+          onClick={()=> updateSelectedIndex(index)}
+        >
+          {component}
+        </div>
+      );
+    });
+  }
 
   return (
     <Collapse in={selected} timeout="auto" unmountOnExit>
@@ -70,7 +76,7 @@ function TreeComponent ({
         {components}
       </List>
     </Collapse>
-  )
+  );
 }
 
 TreeComponent.propTypes = {
