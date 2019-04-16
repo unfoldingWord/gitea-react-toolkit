@@ -1,3 +1,3 @@
-export { Authenticate } from './Authenticate';
+export { Authentication } from './Authentication';
 export { LoginForm } from './LoginForm';
 export { FormInput } from './FormInput';

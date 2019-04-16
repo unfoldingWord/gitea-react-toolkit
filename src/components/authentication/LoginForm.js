@@ -42,7 +42,7 @@ function LoginFormComponent({
         {errorText}
       </Typography>
       <form className={classes.form}>
-        <FormInput id="username" type="text" label="User Name" onBlur={updateFormData} />
+        <FormInput id="username" type="text" label="Username" onBlur={updateFormData} />
         <FormInput id="password" type="password" label="Password" onBlur={updateFormData} />
         <FormControlLabel
           label="Remember me"

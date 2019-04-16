@@ -1,19 +1,19 @@
 ---
-name: Authenticate
-route: /authenticate
+name: Authentication
+route: /authentication
 ---
 
 import { Playground, Props } from 'docz';
 import { Paper } from '@material-ui/core';
-import { Authenticate, LoginForm, FormInput } from './';
+import { Authentication, LoginForm, FormInput } from './';
 
-# Authenticate Component
+# Authentication Component
 
-## Authenticate
+## Authentication
 
 <Playground>
 <Paper>
-  <Authenticate
+  <Authentication
     actionText="Authenticate"
     tokenid="PlaygroundTesting"
     onAuthentication={(data) => {
@@ -23,7 +23,7 @@ import { Authenticate, LoginForm, FormInput } from './';
 </Paper>
 </Playground>
 
-<Props of={Authenticate} />
+<Props of={Authentication} />
 
 ## LoginForm
 

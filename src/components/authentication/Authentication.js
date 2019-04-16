@@ -5,35 +5,36 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import { LoginForm } from './LoginForm';
 import { authenticate } from '../../core/git-https';
 
-function AuthenticateComponent({
+function AuthenticationComponent({
   classes,
   actionText,
+  errorText,
   tokenid,
   onAuthentication,
   server,
 }) {
-  const [errorText, setErrorText] = useState();
+  const [error, setError] = useState();
 
   const onSubmit = async ({username, password, remember}) => {
     try {
       const token = await authenticate({username, password, tokenid, server});
       onAuthentication({token, remember});
-      setErrorText();
-    } catch(error) {
-      setErrorText("Invalid Username or Password");
+      setError();
+    } catch {
+      setError(errorText);
     }
   }
 
   return (
     <LoginForm
       actionText={actionText}
-      errorText={errorText}
+      errorText={error}
       onSubmit={onSubmit}
     />
   )
 }
 
-AuthenticateComponent.propTypes = {
+AuthenticationComponent.propTypes = {
   classes: PropTypes.object.isRequired,
   /** The id of the token to create/retrieve that is used for the app. */
   tokenid: PropTypes.string.isRequired,
@@ -41,16 +42,18 @@ AuthenticateComponent.propTypes = {
   onAuthentication: PropTypes.func.isRequired,
   /** The text to describe the action of logging in. */
   actionText: PropTypes.string,
+  /** The text to describe authentication errors. */
+  errorText: PropTypes.string,
   /** The server to use when authenticating. */
   server: PropTypes.string,
 };
 
-AuthenticateComponent.defaultProps = {
-
+AuthenticationComponent.defaultProps = {
+  errorText: "Invalid Username or Password",
 };
 
 const styles = (theme) => ({
   root: {},
 });
 
-export const Authenticate = withStyles(styles)(AuthenticateComponent);
+export const Authentication = withStyles(styles)(AuthenticationComponent);
