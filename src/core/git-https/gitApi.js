@@ -4,7 +4,13 @@ import axios from 'axios';
 
 import { get } from './gitFile';
 
+
 const SERVER = 'https://bg.door43.org';
+
+const api = axios.create({
+  baseURL: SERVER,
+});
+
 const apiPath = 'api/v1';
 
 export const authenticate = async ({tokenid, username='', password='', server}) => {
@@ -17,15 +23,16 @@ export const authenticate = async ({tokenid, username='', password='', server}) 
 };
 
 export const listTokens = async ({username, password, server=SERVER}) => {
-  let uri = Path.join(server, apiPath, 'users', username, 'tokens');
+  let uri = Path.join(apiPath, 'users', username, 'tokens');
   const authentication = encodeAuthentication({username, password, server});
   let options = {
+    baseURL: server,
     headers: {
         'Content-Type': 'application/json',
         'Authorization': authentication,
     }
   };
-  let {data: tokens} = await axios.get(uri, options);
+  let {data: tokens} = await api.get(uri, options);
   return tokens;
 };
 
@@ -33,13 +40,14 @@ export const createToken = async ({tokenid, username, password, server=SERVER}) 
   let uri = Path.join(server, apiPath, 'users', username, 'tokens');
   const authentication = encodeAuthentication({username, password});
   let options = {
+    baseURL: server,
     headers: {
       'Content-Type': 'application/json',
       'Authorization': authentication,
     },
   };
   const payload = {"name": tokenid};
-  let {data: token} = await axios.post(uri, payload, options);
+  let {data: token} = await api.post(uri, payload, options);
   return token;
 };
 

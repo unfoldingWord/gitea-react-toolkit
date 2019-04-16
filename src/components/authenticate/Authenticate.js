@@ -10,12 +10,13 @@ function AuthenticateComponent({
   actionText,
   tokenid,
   onAuthentication,
+  server,
 }) {
   const [errorText, setErrorText] = useState();
 
   const onSubmit = async ({username, password, remember}) => {
     try {
-      const token = await authenticate({username, password, tokenid});
+      const token = await authenticate({username, password, tokenid, server});
       onAuthentication({token, remember});
       setErrorText();
     } catch(error) {
@@ -40,6 +41,8 @@ AuthenticateComponent.propTypes = {
   onAuthentication: PropTypes.func.isRequired,
   /** The text to describe the action of logging in. */
   actionText: PropTypes.string,
+  /** The server to use when authenticating. */
+  server: PropTypes.string,
 };
 
 AuthenticateComponent.defaultProps = {
