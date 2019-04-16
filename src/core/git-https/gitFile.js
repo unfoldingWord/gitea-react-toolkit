@@ -8,7 +8,7 @@ import {
   getFileFromZip,
 } from './gitZip';
 
-const baseURL = 'http://bg.door43.org/';
+const baseURL = 'https://bg.door43.org/';
 
 const cacheStore = localforage.createInstance({
   driver: [localforage.INDEXEDDB],
@@ -17,6 +17,7 @@ const cacheStore = localforage.createInstance({
 
 const api = setup({
   baseURL: baseURL,
+  crossDomain: true,
   cache: {
     store: cacheStore,
     maxAge: 1 * 24 * 60 * 60 * 1000,
@@ -31,7 +32,7 @@ const api = setup({
 });
 
 // https://git.door43.org/unfoldingword/en_ult/raw/branch/master/manifest.yaml
-export const fetchFileFromServer = async ({username, repository, path, branch='master'}) => {
+export const fetchFileFromServer = async ({username, repository, path, branch='master', options}) => {
   const repoExists = await repositoryExists({username, repository});
   if (repoExists) {
     const uri = Path.join(username, repository, 'raw/branch', branch, path);
@@ -47,17 +48,21 @@ export const fetchFileFromServer = async ({username, repository, path, branch='m
   }
 };
 
-export const getFile = async ({username, repository, path, branch}) => {
+export const getFile = async ({username, repository, path, branch, options}) => {
   let file;
-  file = await getFileFromZip({username, repository, path, branch});
+  file = await getFileFromZip({username, repository, path, branch, options});
   if (!file) {
-    file = await fetchFileFromServer({username, repository, path, branch});
+    file = await fetchFileFromServer({username, repository, path, branch, options});
   }
   return file;
 }
 
-export const get = async ({uri, params}) => {
-  const _uri = uri.replace(baseURL, '');
-  const {data} = await api.get(_uri, { params });
+export const get = async ({uri, params, options}) => {
+  const {data} = await api.get(uri, { ...options, params });
+  return data;
+};
+
+export const post = async ({uri, payload, options}) => {
+  const {data} = await api.post(uri, payload, options );
   return data;
 };

@@ -11,6 +11,8 @@
   "private": false,
   "dependencies": {
     "axios-cache-adapter": "^2.3.0",
+    "base-64": "^0.1.0",
+    "jszip": "^3.2.1",
     "localforage": "^1.7.3",
     "prop-types": "^15.7.2"
   },

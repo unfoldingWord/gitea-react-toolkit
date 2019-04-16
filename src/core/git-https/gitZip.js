@@ -13,7 +13,7 @@ const zipStore = localforage.createInstance({
 
 
 // https://git.door43.org/unfoldingWord/en_ult/archive/master.zip
-export const fetchRepositoryZipFile = async ({username, repository, branch}) => {
+export const fetchRepositoryZipFile = async ({username, repository, branch, options}) => {
   const repoExists = await repositoryExists({username, repository});
   if (!repoExists) {
     return null;

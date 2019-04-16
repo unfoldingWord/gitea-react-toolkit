@@ -1,8 +1,58 @@
 import Path from 'path';
+import base64 from 'base-64';
+import axios from 'axios';
 
 import { get } from './gitFile';
 
+const SERVER = 'https://bg.door43.org';
 const apiPath = 'api/v1';
+
+export const authenticate = async ({tokenid, username='', password='', server}) => {
+  let token;
+  const tokens = await listTokens({username, password, server}) || [];
+  const tokenMatches = tokens.filter(_token => _token.name === tokenid);
+  if (tokenMatches.length > 0) token = tokenMatches[0];
+  else token = await createToken({tokenid, username, password, server});
+  return token;
+};
+
+export const listTokens = async ({username, password, server=SERVER}) => {
+  let uri = Path.join(server, apiPath, 'users', username, 'tokens');
+  const authentication = encodeAuthentication({username, password, server});
+  let options = {
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': authentication,
+    }
+  };
+  let {data: tokens} = await axios.get(uri, options);
+  return tokens;
+};
+
+export const createToken = async ({tokenid, username, password, server=SERVER}) => {
+  let uri = Path.join(server, apiPath, 'users', username, 'tokens');
+  const authentication = encodeAuthentication({username, password});
+  let options = {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': authentication,
+    },
+  };
+  const payload = {"name": tokenid};
+  let {data: token} = await axios.post(uri, payload, options);
+  return token;
+};
+
+export const encodeAuthentication = ({username, password, token}) => {
+  let authentication;
+  if (token) {
+    let sha1 = typeof token === 'object' ? token.sha1 : token;
+    authentication = `token ${sha1}`;
+  } else if (username && password) {
+    authentication = 'Basic ' + base64.encode(`${username}:${password}`);
+  }
+  return authentication;
+};
 
 export const getTree = async ({url}) => {
   const response = await get({uri: url});
@@ -36,26 +86,4 @@ export const repositoryExists = async ({username, repository}) => {
   const {data: repos} = await get({uri, params});
   const repo = repos.filter(repo => repo.name === repository)[0];
   return !!repo;
-};
-
-export const recursiveTree = async ({username, repository, path, sha}) => {
-  let tree = {};
-  const pathArray = path.split();
-  const results = fetchTree({username, repository, sha});
-  const result = results.tree.filter(item => item.path === pathArray[0])[0];
-  if (result) {
-    if (result.type === 'tree') {
-      const childPath = pathArray.slice(1).join('/');
-      const children = recursiveTree({username, repository, path: childPath, sha: result.sha});
-      tree[result.path] = children;
-    } else if (result.type === 'blob') {
-      tree[result.path] = true;
-    }
-  }
-};
-
-export const fileExists = async ({username, repository, path, branch}) => {
-  // get root listing
-  recursiveTree()
-  // get recursive path listing
 };

@@ -1,0 +1,73 @@
+---
+name: Authenticate
+route: /authenticate
+---
+
+import { Playground, Props } from 'docz';
+import { Paper } from '@material-ui/core';
+import { Authenticate, LoginForm, FormInput } from './';
+
+# Authenticate Component
+
+## Authenticate
+
+<Playground>
+<Paper>
+  <Authenticate
+    actionText="Authenticate"
+    tokenid="PlaygroundTesting"
+    onAuthentication={(data) => {
+      alert(JSON.stringify(data, null, 2));
+    }}
+  />
+</Paper>
+</Playground>
+
+<Props of={Authenticate} />
+
+## LoginForm
+
+<Playground>
+<Paper>
+  <LoginForm
+    actionText="Sign in"
+    onSubmit={(formData) => {
+      alert(JSON.stringify(formData, null, 2));
+    }}
+  />
+</Paper>
+</Playground>
+
+<Props of={LoginForm} />
+
+## FormInput
+
+<Playground>
+<Paper style={{margin: '1em'}}>
+  <FormInput
+    id="email"
+    type="email"
+    label="Email Address"
+    onBlur={(event) => {
+      alert(event.target.value);
+    }}
+  />
+</Paper>
+<Paper style={{margin: '1em'}}>
+  <FormInput
+    id="password"
+    type="password"
+    label="Password"
+    onBlur={(event) => {
+      alert(event.target.value);
+    }}
+  />
+</Paper>
+</Playground>
+
+<Props of={FormInput} />
+
+
+## Sample Data
+```json
+```

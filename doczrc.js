@@ -4,6 +4,7 @@ export default {
     'Getting Started',
     'Tree',
     'TreeObject',
-    'BlobObject'
+    'BlobObject',
+    'Login Form',
   ]
 }

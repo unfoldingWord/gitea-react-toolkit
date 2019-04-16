@@ -6,8 +6,8 @@ import {
   Collapse,
 } from '@material-ui/core';
 
-import { BlobObject } from '../blob-object';
-import { TreeObject } from '../tree-object';
+import { BlobObject } from './BlobObject';
+import { TreeObject } from './TreeObject';
 
 import { fetchTree } from './helpers';
 
