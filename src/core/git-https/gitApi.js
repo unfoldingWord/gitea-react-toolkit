@@ -37,7 +37,7 @@ export const listTokens = async ({username, password, server=SERVER}) => {
 };
 
 export const createToken = async ({tokenid, username, password, server=SERVER}) => {
-  let uri = Path.join(server, apiPath, 'users', username, 'tokens');
+  let uri = Path.join(apiPath, 'users', username, 'tokens');
   const authentication = encodeAuthentication({username, password});
   let options = {
     baseURL: server,
