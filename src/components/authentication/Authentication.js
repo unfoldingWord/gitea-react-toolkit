@@ -44,7 +44,7 @@ AuthenticationComponent.propTypes = {
   actionText: PropTypes.string,
   /** The text to describe authentication errors. */
   errorText: PropTypes.string,
-  /** The server to use when authenticating. */
+  /** The Gitea server to use when authenticating. */
   server: PropTypes.string,
 };
 

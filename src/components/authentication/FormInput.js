@@ -16,9 +16,12 @@ function FormInputComponent ({
 }) {
   return (
     <FormControl margin="normal" required fullWidth>
-      <InputLabel htmlFor={id}>{label}</InputLabel>
+      <InputLabel htmlFor={id}>
+        {label}
+      </InputLabel>
       <Input
-        id={id} name={id} autoComplete={id} autoFocus={autoFocus} type={type}
+        id={id} name={id} autoComplete={id} autoFocus={autoFocus}
+        type={type}
         onBlur={onBlur}
       />
     </FormControl>
@@ -27,7 +30,9 @@ function FormInputComponent ({
 
 FormInputComponent.propTypes = {
   classes: PropTypes.object.isRequired,
+  /** The name/id of the field, must be unique. */
   id: PropTypes.string.isRequired,
+  /** The type of the field. */
   type: PropTypes.oneOf([
     'email',
     'password',
@@ -37,8 +42,11 @@ FormInputComponent.propTypes = {
     'text',
     'url',
   ]).isRequired,
+  /** The label of the field. */
   label: PropTypes.string.isRequired,
+  /** The callback to propogate changes. */
   onBlur: PropTypes.func.isRequired,
+  /** Set if this field should be selected on load. */
   autoFocus: PropTypes.bool,
 };
 

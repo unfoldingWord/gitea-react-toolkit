@@ -11,11 +11,15 @@ import { Authentication, LoginForm, FormInput } from './';
 
 ## Authentication
 
+This is a functional Authentication component that logs into a Gitea server.
+The Authentication component wraps the LoginForm component.
+
 <Playground>
 <Paper>
   <Authentication
     actionText="Authenticate"
     tokenid="PlaygroundTesting"
+    server="https://bg.door43.org"
     onAuthentication={(data) => {
       alert(JSON.stringify(data, null, 2));
     }}
@@ -25,7 +29,11 @@ import { Authentication, LoginForm, FormInput } from './';
 
 <Props of={Authentication} />
 
+---
+
 ## LoginForm
+
+The LoginForm component returns the form fields upon submission to the callback.
 
 <Playground>
 <Paper>
@@ -40,7 +48,11 @@ import { Authentication, LoginForm, FormInput } from './';
 
 <Props of={LoginForm} />
 
+---
+
 ## FormInput
+
+FormInput component enforces consistency for text input, and change propogation.
 
 <Playground>
 <Paper style={{margin: '1em'}}>
@@ -66,8 +78,3 @@ import { Authentication, LoginForm, FormInput } from './';
 </Playground>
 
 <Props of={FormInput} />
-
-
-## Sample Data
-```json
-```

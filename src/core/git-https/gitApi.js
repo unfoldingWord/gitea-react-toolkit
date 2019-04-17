@@ -5,7 +5,7 @@ import axios from 'axios';
 import { get } from './gitFile';
 
 
-const SERVER = 'https://bg.door43.org';
+const SERVER = 'https://try.gitea.io';
 
 const api = axios.create({
   baseURL: SERVER,
