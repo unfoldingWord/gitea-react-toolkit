@@ -1,32 +1,13 @@
-import localforage from 'localforage';
-import { setup } from 'axios-cache-adapter';
-
-const cacheStore = localforage.createInstance({
-  driver: [localforage.INDEXEDDB],
-  name: 'git-tree-cache',
-});
-
-const api = setup({
-  cache: {
-    store: cacheStore,
-    maxAge: 1 * 1 * 1 * 60 * 1000, // d*h*m*s*ms
-    exclude: { query: false },
-    key: req => {
-      // if (req.params) debugger
-      let serialized = req.params instanceof URLSearchParams ?
-      req.params.toString() : JSON.stringify(req.params) || '';
-      return req.url + serialized;
-    },
-  },
-});
-
-export const get = async ({url, params}) => {
-  const {data} = await api.get(url, { params });
-  return data;
-};
+import { get } from '../../core/git-https/gitFile';
 
 export const fetchTree = async ({url}) => {
-  const response = await get({url});
+  const options = {
+    cache: {
+      maxAge: 2 * 60 * 1000 // 2 min cache override
+    },
+    baseURL: '', // override baseURL for absolute resolution
+  };
+  const response = await get({uri: url, options});
   const {tree} = response;
   return tree;
 };
