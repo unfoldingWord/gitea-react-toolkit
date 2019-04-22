@@ -57,8 +57,16 @@ export const getFile = async ({username, repository, path, branch, options}) => 
   return file;
 }
 
-export const get = async ({uri, params, options}) => {
-  const {data} = await api.get(uri, { ...options, params });
+export const get = async ({url, path, params, options}) => {
+  let _url = path;
+  options = options || {};
+  let _options = {...options, params};
+  if (url) {
+    options.baseURL = '';
+    _url = url;
+  }
+  if (path) _url = path;
+  const {data} = await api.get(_url, { options: _options });
   return data;
 };
 

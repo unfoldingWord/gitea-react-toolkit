@@ -1,0 +1,76 @@
+---
+name: Repositories
+route: /repositories
+---
+
+import { Playground, Props } from 'docz';
+import { Paper } from '@material-ui/core';
+import { Repositories, Repository } from './';
+
+import repositoryData from './repositoryData.json';
+
+# Repository Components
+
+## Repositories
+
+The Repositories Component renders a list of Repository Components.
+
+### Example
+
+<Playground>
+<Paper>
+  <Repositories
+    urls={
+      [
+        "https://git.door43.org/api/v1/repos/unfoldingWord/en_ta",
+        "https://git.door43.org/api/v1/repos/unfoldingWord/en_tw",
+        "https://git.door43.org/api/v1/repos/unfoldingWord/en_tn",
+        "https://git.door43.org/api/v1/repos/unfoldingWord/en_obs",
+        "https://git.door43.org/api/v1/repos/door43-catalog/en_ta",
+        "https://git.door43.org/api/v1/repos/door43-catalog/en_tw",
+        "https://git.door43.org/api/v1/repos/door43-catalog/en_tn",
+        "https://git.door43.org/api/v1/repos/door43-catalog/en_obs",
+      ]
+    }
+    onSelect={(data) => {
+      alert(JSON.stringify(data, null, 2));
+    }}
+  />
+</Paper>
+</Playground>
+
+<Props of={Repositories} />
+
+## Repository
+
+The Repository Component renders the attributes of a repository as a list item.
+
+### Example
+
+Providing data directly as props.
+
+<Playground>
+<Paper>
+  <Repository
+    repository={repositoryData}
+    onSelect={(data) => {
+      alert(JSON.stringify(data, null, 2));
+    }}
+  />
+</Paper>
+</Playground>
+
+Providing url to fetch repository data.
+
+<Playground>
+<Paper>
+  <Repository
+    url="https://git.door43.org/api/v1/repos/door43-catalog/en_ta"
+    onSelect={(data) => {
+      alert(JSON.stringify(data, null, 2));
+    }}
+  />
+</Paper>
+</Playground>
+
+<Props of={Repository} />

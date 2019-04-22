@@ -5,9 +5,8 @@ export const fetchTree = async ({url}) => {
     cache: {
       maxAge: 2 * 60 * 1000 // 2 min cache override
     },
-    baseURL: '', // override baseURL for absolute resolution
   };
-  const response = await get({uri: url, options});
+  const response = await get({url, options});
   const {tree} = response;
   return tree;
 };
