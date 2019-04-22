@@ -5,17 +5,20 @@ route: /tree
 
 import { Playground, Props } from 'docz';
 import { Paper } from '@material-ui/core';
+import { Tree, TreeObject, BlobObject } from './';
 
 # Tree Components
 
+There are three components that work together to render a Git Tree.
+
+1. The [Tree Component](/tree#tree-component) is the higher order component that brings it all together, and renders a Tree Object Component.
+2. The [TreeObject Component](/tree#treeobject-component) is a recursive component that renders a tree object and renders a Blob Object Component for each child Blob.
+3. The [BlobObject Component](/tree#blobobject-component) is a component that renders a blob object.
+
 ## Tree Component
-import { Tree } from './';
 
 The Tree component accepts a tree (an array of tree objects),
 or a url to fetch a tree from.
-
-It is a recursive component that renders more trees when it encouters
-an object in the tree of type tree.
 
 ### Example 1
 
@@ -79,7 +82,9 @@ An automated tree listing from a Git Tree API url. Click on the tree objects to 
 
 
 ## TreeObject Component
-import { TreeObject } from './TreeObject';
+
+The TreeObject Component is a recursive component that renders more trees
+when it encouters an object in the tree of type tree.
 
 ### Example
 
@@ -130,8 +135,6 @@ import { TreeObject } from './TreeObject';
 Here are a few variations of the File component being rendered.
 Even though it appears to be a nested tree, it is simulated.
 You would typically use another component to render more than one.
-
-import { BlobObject } from './BlobObject';
 
 <Playground>
   <Paper style={{margin: '1em 0'}}>
