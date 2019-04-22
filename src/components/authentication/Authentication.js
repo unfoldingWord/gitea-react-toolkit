@@ -35,6 +35,7 @@ function AuthenticationComponent({
 }
 
 AuthenticationComponent.propTypes = {
+  /** @ignore */
   classes: PropTypes.object.isRequired,
   /** The id of the token to create/retrieve that is used for the app. */
   tokenid: PropTypes.string.isRequired,
