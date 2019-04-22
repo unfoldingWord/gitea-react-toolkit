@@ -1,0 +1,160 @@
+---
+name: Tree
+route: /tree
+---
+
+import { Playground, Props } from 'docz';
+import { Paper } from '@material-ui/core';
+
+# Tree Components
+
+## Tree Component
+import { Tree } from './';
+
+The Tree component accepts a tree (an array of tree objects),
+or a url to fetch a tree from.
+
+It is a recursive component that renders more trees when it encouters
+an object in the tree of type tree.
+
+### Example 1
+
+A manually provided tree listing.
+
+<Playground>
+<Paper>
+  <Tree
+    selected
+    tree={[
+      {
+        "path": ".github",
+        "type": "tree",
+        "tree": [
+          {
+            "path": "config",
+            "type": "blob",
+          },
+        ]
+      },
+      {
+        "path": "LICENSE.md",
+        "type": "blob",
+      }
+    ]}
+  />
+</Paper>
+</Playground>
+
+### Example 2
+
+An automated tree listing from a Git Tree API url. Click on the tree objects to see them populate!
+
+<Playground>
+<Paper>
+  <Tree
+    selected
+    url="https://api.github.com/repos/unfoldingword-box3/git-file-explorer/git/trees/748bc59ef4d5ac9bbacbe6f3d3f3604775540fee"
+  />
+</Paper>
+</Playground>
+
+<Props of={Tree} />
+
+
+### Sample Data
+```json
+[
+  {
+    "path": ".github",
+    "type": "tree",
+    ...
+  },
+  {
+    "path": "LICENSE.md",
+    "type": "blob",
+    ...
+  }
+]
+```
+
+
+## TreeObject Component
+import { TreeObject } from './TreeObject';
+
+### Example
+
+<Playground>
+<Paper>
+  <TreeObject
+    path=""
+    type="tree"
+    selected
+    pathSelected="LICENSE.md"
+    tree={[
+      {
+        "path": ".github",
+        "type": "tree"
+      },
+      {
+        "path": "content",
+        "type": "tree"
+      },
+      {
+        "path": "LICENSE.md",
+        "type": "blob"
+      },
+      {
+        "path": "README.md",
+        "type": "tree"
+      },
+    ]}
+  />
+</Paper>
+</Playground>
+
+<Props of={TreeObject} />
+
+### Sample Data
+```json
+{
+  "path": ".github",
+  "type": "tree",
+  ...
+}
+```
+
+
+## BlobObject Component
+
+### Example
+Here are a few variations of the File component being rendered.
+Even though it appears to be a nested tree, it is simulated.
+You would typically use another component to render more than one.
+
+import { BlobObject } from './BlobObject';
+
+<Playground>
+  <Paper style={{margin: '1em 0'}}>
+    <BlobObject path="LICENSE.md" depth={1} />
+  </Paper>
+  <Paper style={{margin: '1em 0'}}>
+    <BlobObject path="readme.md" depth={2} />
+  </Paper>
+  <Paper style={{margin: '1em 0'}}>
+    <BlobObject path="01.md" depth={3} />
+  </Paper>
+  <Paper style={{margin: '1em 0'}}>
+    <BlobObject path="title.md" depth={3} selected />
+  </Paper>
+</Playground>
+
+<Props of={BlobObject} />
+
+### Sample Data
+```json
+{
+  "path": "LICENSE.md",
+  "type": "blob",
+  ...
+}
+```
