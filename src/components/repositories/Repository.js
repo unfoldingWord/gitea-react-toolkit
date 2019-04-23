@@ -10,7 +10,6 @@ import {
   IconButton,
 } from '@material-ui/core';
 import {
-  OpenInNew,
   Code,
 } from '@material-ui/icons';
 
@@ -81,7 +80,7 @@ RepositoryComponent.propTypes = {
     id: PropTypes.number,
     owner: PropTypes.object.isRequired,
     name: PropTypes.string.isRequired,
-    fullname: PropTypes.string.isRequired,
+    full_name: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
     html_url: PropTypes.string.isRequired,
     website: PropTypes.string.isRequired,

@@ -41,7 +41,7 @@ function RepositoriesComponent({
 RepositoriesComponent.propTypes = {
   classes: PropTypes.object.isRequired,
   onSelect: PropTypes.func.isRequired,
-  urls: PropTypes.string,
+  urls: PropTypes.array,
   repositories: PropTypes.array,
 };
 

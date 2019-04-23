@@ -11,6 +11,12 @@ const api = axios.create({
   baseURL: SERVER,
 });
 
+const OPTIONS = {
+  cache: {
+    maxAge: 1 * 1 * 1 * 60 * 1000,
+  },
+}
+
 const apiPath = 'api/v1';
 
 export const authenticate = async ({tokenid, username='', password='', server}) => {
@@ -23,7 +29,7 @@ export const authenticate = async ({tokenid, username='', password='', server}) 
 };
 
 export const listTokens = async ({username, password, server=SERVER}) => {
-  let uri = Path.join(apiPath, 'users', username, 'tokens');
+  let path = Path.join(apiPath, 'users', username, 'tokens');
   const authentication = encodeAuthentication({username, password, server});
   let options = {
     baseURL: server,
@@ -32,12 +38,12 @@ export const listTokens = async ({username, password, server=SERVER}) => {
         'Authorization': authentication,
     }
   };
-  let {data: tokens} = await api.get(uri, options);
+  let {data: tokens} = await api.get(path, options);
   return tokens;
 };
 
 export const createToken = async ({tokenid, username, password, server=SERVER}) => {
-  let uri = Path.join(apiPath, 'users', username, 'tokens');
+  let path = Path.join(apiPath, 'users', username, 'tokens');
   const authentication = encodeAuthentication({username, password});
   let options = {
     baseURL: server,
@@ -47,7 +53,7 @@ export const createToken = async ({tokenid, username, password, server=SERVER}) 
     },
   };
   const payload = {"name": tokenid};
-  let {data: token} = await api.post(uri, payload, options);
+  let {data: token} = await api.post(path, payload, options);
   return token;
 };
 
@@ -63,16 +69,16 @@ export const encodeAuthentication = ({username, password, token}) => {
 };
 
 export const getTree = async ({url}) => {
-  const response = await get({uri: url});
+  const response = await get({url});
   const listing = response.tree;
   return listing;
 };
 
 // http://bg.door43.org/api/v1/repos/unfoldingword/en_ugl/git/trees/master
-export const fetchTree = async ({username, repository, sha='master'}) => {
+export const fetchTree = async ({owner, repository, sha='master'}) => {
   try {
-    const uri = Path.join(apiPath, 'repos', username, repository, 'git/trees', sha);
-    const data = await get({uri});
+    const path = Path.join(apiPath, 'repos', owner, repository, 'git/trees', sha);
+    const data = await get({path});
     const tree = JSON.parse(data);
     return tree;
   } catch(error) {
@@ -80,18 +86,36 @@ export const fetchTree = async ({username, repository, sha='master'}) => {
   }
 };
 
-export const getUID = async ({username}) => {
-  const uri = Path.join(apiPath, 'users', username);
-  const user = await get({uri});
+export const getUID = async ({owner}) => {
+  const path = Path.join(apiPath, 'users', owner);
+  const user = await get({path});
   const {id: uid} = user;
   return uid;
 };
 
-export const repositoryExists = async ({username, repository}) => {
-  const uid = await getUID({username});
+export const repositoryExists = async ({owner, repository}) => {
+  const uid = await getUID({owner});
   const params = { q: repository, uid };
-  const uri = Path.join(apiPath, 'repos', `search`);
-  const {data: repos} = await get({uri, params});
+  const path = Path.join(apiPath, 'repos', 'search');
+  const {data: repos} = await get({path, params});
   const repo = repos.filter(repo => repo.name === repository)[0];
   return !!repo;
+};
+
+// /repos/search?q=ulb&uid=4598&limit=50&exclusive=true
+export const repositorySearch = async ({owner, query, options=OPTIONS}) => {
+  let repositories = [];
+  let params = {q: query, limit: 50};
+  if (owner) {
+    params.uid = await getUID({owner});
+    params.exclusive = true;
+  }
+  const path = Path.join(apiPath, 'repos', 'search');
+  try {
+    const {data} = await get({path, params, options});
+    repositories = data;
+  } catch {
+    repositories = [];
+  }
+  return repositories;
 };

@@ -5,17 +5,47 @@ route: /repositories
 
 import { Playground, Props } from 'docz';
 import { Paper } from '@material-ui/core';
-import { Repositories, Repository } from './';
+import { Repositories, Repository, SearchForm, Search } from './';
 
 import repositoryData from './repositoryData.json';
 
 # Repository Components
 
+## Search
+
+<Playground>
+<Paper>
+  <Search
+    defaultOwner="unfoldingword"
+    defaultQuery="en_ta"
+    onSelect={(data) => {
+      alert(JSON.stringify(data, null, 2));
+    }}
+  />
+</Paper>
+</Playground>
+
+<Props of={Search} />
+
+## SearchForm
+
+<Playground>
+<Paper>
+  <SearchForm
+    defaultOwner="unfoldingword"
+    defaultQuery="en_ta"
+    onRepositories={(data) => {
+      alert('results: ' + data.length);
+    }}
+  />
+</Paper>
+</Playground>
+
+<Props of={SearchForm} />
+
 ## Repositories
 
 The Repositories Component renders a list of Repository Components.
-
-### Example
 
 <Playground>
 <Paper>
@@ -44,8 +74,6 @@ The Repositories Component renders a list of Repository Components.
 ## Repository
 
 The Repository Component renders the attributes of a repository as a list item.
-
-### Example
 
 Providing data directly as props.
 

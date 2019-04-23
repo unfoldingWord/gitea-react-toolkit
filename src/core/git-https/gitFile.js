@@ -20,7 +20,7 @@ const api = setup({
   crossDomain: true,
   cache: {
     store: cacheStore,
-    maxAge: 1 * 24 * 60 * 60 * 1000,
+    maxAge: 1 * 1 * 60 * 60 * 1000,
     exclude: { query: false },
     key: req => {
       // if (req.params) debugger
@@ -66,7 +66,7 @@ export const get = async ({url, path, params, options}) => {
     _url = url;
   }
   if (path) _url = path;
-  const {data} = await api.get(_url, { options: _options });
+  const {data} = await api.get(_url, _options);
   return data;
 };
 
