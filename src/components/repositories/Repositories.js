@@ -15,9 +15,9 @@ function RepositoriesComponent({
 }) {
   let components = [];
   if (repositories) {
-    components = repositories.map((repository, index) =>
+    components = repositories.map((repository) =>
       <Repository
-        key={index}
+        key={JSON.stringify(repository)}
         repository={repository}
         onSelect={(data) => onSelect(data)}
       />
