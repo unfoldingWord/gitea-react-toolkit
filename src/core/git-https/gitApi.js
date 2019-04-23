@@ -103,16 +103,17 @@ export const repositoryExists = async ({owner, repository}) => {
 };
 
 // /repos/search?q=ulb&uid=4598&limit=50&exclusive=true
-export const repositorySearch = async ({owner, query, options=OPTIONS}) => {
+export const repositorySearch = async ({owner, query, options}) => {
   let repositories = [];
   let params = {q: query, limit: 50};
   if (owner) {
     params.uid = await getUID({owner});
     params.exclusive = true;
   }
+  const _options = {...OPTIONS, ...options};
   const path = Path.join(apiPath, 'repos', 'search');
   try {
-    const {data} = await get({path, params, options});
+    const {data} = await get({path, params, options: _options});
     repositories = data;
   } catch {
     repositories = [];
