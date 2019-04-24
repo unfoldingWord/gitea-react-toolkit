@@ -15,6 +15,10 @@ There are three components that work together to render a Git Tree.
 2. The [TreeObject Component](/tree#treeobject-component) is a recursive component that renders a tree object and renders a Blob Object Component for each child Blob.
 3. The [BlobObject Component](/tree#blobobject-component) is a component that renders a blob object.
 
+These are based off of the documentation for the following Git Tree implementations:
+- <a href='https://try.gitea.io/api/swagger#/repository/GetTree' target='_blank'>Gitea's Git Tree Rest API v1</a>
+- <a href='https://developer.github.com/v3/git/trees/' target='_blank'>Github's Git Tree Rest API v3</a>
+
 ## Tree Component
 
 The Tree component accepts a tree (an array of tree objects),

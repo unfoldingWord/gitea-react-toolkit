@@ -20,11 +20,12 @@ function RepositoryComponent({
   onSelect,
   url,
   repository,
+  config,
 }) {
   const [data, setData] = useState(repository || {owner: {}});
 
   const getData = async () => {
-    const _data = await get({url});
+    const _data = await get({url, config});
     setData(_data);
   }
 
@@ -85,6 +86,9 @@ RepositoryComponent.propTypes = {
     html_url: PropTypes.string.isRequired,
     website: PropTypes.string.isRequired,
   }),
+  config: PropTypes.shape({
+    server: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 const styles = {

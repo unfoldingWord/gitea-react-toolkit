@@ -21,6 +21,7 @@ import repositoryData from './repositoryData.json';
     onSelect={(data) => {
       alert(JSON.stringify(data, null, 2));
     }}
+    config={{server: "https://git.door43.org"}}
   />
 </Paper>
 </Playground>
@@ -37,6 +38,7 @@ import repositoryData from './repositoryData.json';
     onRepositories={(data) => {
       alert('results: ' + data.length);
     }}
+    config={{server: "https://git.door43.org"}}
   />
 </Paper>
 </Playground>

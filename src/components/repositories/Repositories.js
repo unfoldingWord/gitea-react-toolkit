@@ -12,6 +12,7 @@ function RepositoriesComponent({
   onSelect,
   urls,
   repositories,
+  config,
 }) {
   let components = [];
   if (repositories) {
@@ -20,6 +21,7 @@ function RepositoriesComponent({
         key={JSON.stringify(repository)}
         repository={repository}
         onSelect={(data) => onSelect(data)}
+        config={config}
       />
     );
   } else if (urls) {
@@ -28,6 +30,7 @@ function RepositoriesComponent({
         key={index}
         url={url}
         onSelect={(data) => onSelect(data)}
+        config={config}
       />
     );
   }
@@ -43,6 +46,9 @@ RepositoriesComponent.propTypes = {
   onSelect: PropTypes.func.isRequired,
   urls: PropTypes.array,
   repositories: PropTypes.array,
+  config: PropTypes.shape({
+    server: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 const styles = {

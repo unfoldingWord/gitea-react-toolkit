@@ -11,13 +11,13 @@ function AuthenticationComponent({
   errorText,
   tokenid,
   onAuthentication,
-  server,
+  config,
 }) {
   const [error, setError] = useState();
 
   const onSubmit = async ({username, password, remember}) => {
     try {
-      const token = await authenticate({username, password, tokenid, server});
+      const token = await authenticate({username, password, tokenid, config});
       onAuthentication({token, remember});
       setError();
     } catch {
@@ -46,7 +46,9 @@ AuthenticationComponent.propTypes = {
   /** The text to describe authentication errors. */
   errorText: PropTypes.string,
   /** The Gitea server to use when authenticating. */
-  server: PropTypes.string,
+  config: PropTypes.shape({
+    server: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 AuthenticationComponent.defaultProps = {

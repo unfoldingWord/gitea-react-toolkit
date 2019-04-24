@@ -18,12 +18,13 @@ function SearchFormComponent({
   defaultOwner,
   defaultQuery,
   onRepositories,
+  config,
 }) {
   const [owner, setOwner] = useState(defaultOwner);
   const [query, setQuery] = useState(defaultQuery);
 
   const updateRepositories = async (owner, query) => {
-    const repositories = await repositorySearch({owner, query});
+    const repositories = await repositorySearch({owner, query, config});
     onRepositories(repositories);
   }
 
@@ -76,6 +77,9 @@ SearchFormComponent.propTypes = {
   defaultOwner: PropTypes.string,
   defaultQuery: PropTypes.string,
   onRepositories: PropTypes.func.isRequired,
+  config: PropTypes.shape({
+    server: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 const styles = (theme) => ({

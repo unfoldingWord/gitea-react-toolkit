@@ -8,15 +8,12 @@ import {
   getFileFromZip,
 } from './gitZip';
 
-const baseURL = 'https://bg.door43.org/';
-
 const cacheStore = localforage.createInstance({
   driver: [localforage.INDEXEDDB],
   name: 'web-cache',
 });
 
 const api = setup({
-  baseURL: baseURL,
   crossDomain: true,
   cache: {
     store: cacheStore,
@@ -32,12 +29,12 @@ const api = setup({
 });
 
 // https://git.door43.org/unfoldingword/en_ult/raw/branch/master/manifest.yaml
-export const fetchFileFromServer = async ({username, repository, path, branch='master', options}) => {
+export const fetchFileFromServer = async ({username, repository, path, branch='master', config}) => {
   const repoExists = await repositoryExists({username, repository});
   if (repoExists) {
-    const uri = Path.join(username, repository, 'raw/branch', branch, path);
+    const url = Path.join(username, repository, 'raw/branch', branch, path);
     try {
-      const data = await get({uri});
+      const data = await get({url, config});
       return data;
     }
     catch(error) {
@@ -48,29 +45,23 @@ export const fetchFileFromServer = async ({username, repository, path, branch='m
   }
 };
 
-export const getFile = async ({username, repository, path, branch, options}) => {
+export const getFile = async ({username, repository, path, branch, config}) => {
   let file;
-  file = await getFileFromZip({username, repository, path, branch, options});
+  file = await getFileFromZip({username, repository, path, branch, config});
   if (!file) {
-    file = await fetchFileFromServer({username, repository, path, branch, options});
+    file = await fetchFileFromServer({username, repository, path, branch, config});
   }
   return file;
 }
 
-export const get = async ({url, path, params, options}) => {
-  let _url = path;
-  options = options || {};
-  let _options = {...options, params};
-  if (url) {
-    options.baseURL = '';
-    _url = url;
-  }
-  if (path) _url = path;
-  const {data} = await api.get(_url, _options);
+export const get = async ({url, params, config={}}) => {
+  if (config.server) config.baseURL = config.server;
+  const {data} = await api.get(url, {...config, params});
   return data;
 };
 
-export const post = async ({uri, payload, options}) => {
-  const {data} = await api.post(uri, payload, options );
+export const post = async ({url, payload, config}) => {
+  if (config.server) config.baseURL = config.server;
+  const {data} = await api.post(url, payload, config );
   return data;
 };

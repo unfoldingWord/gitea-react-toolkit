@@ -14,6 +14,7 @@ function SearchComponent({
   defaultOwner,
   defaultQuery,
   onSelect,
+  config,
 }) {
   const [repositories, setRepositories] = useState([]);
 
@@ -23,10 +24,12 @@ function SearchComponent({
         defaultOwner={defaultOwner}
         defaultQuery={defaultQuery}
         onRepositories={setRepositories}
+        config={config}
       />
       <Repositories
         repositories={repositories}
         onSelect={onSelect}
+        config={config}
       />
     </div>
   );
@@ -37,6 +40,9 @@ SearchComponent.propTypes = {
   defaultOwner: PropTypes.string,
   defaultQuery: PropTypes.string,
   onSelect: PropTypes.func.isRequired,
+  config: PropTypes.shape({
+    server: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 const styles = (theme) => ({

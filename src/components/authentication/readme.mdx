@@ -19,7 +19,7 @@ The Authentication component wraps the LoginForm component.
   <Authentication
     actionText="Authenticate"
     tokenid="PlaygroundTesting"
-    server="https://bg.door43.org"
+    config={{server: "https://bg.door43.org"}}
     onAuthentication={(data) => {
       alert(JSON.stringify(data, null, 2));
     }}
