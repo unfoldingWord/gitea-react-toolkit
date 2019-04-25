@@ -4,7 +4,7 @@ route: /authentication
 ---
 
 import { Playground, Props } from 'docz';
-import { Paper } from '@material-ui/core';
+import { Paper, Card, CardContent, CardHeader } from '@material-ui/core';
 import { withAuthentication, Authentication, LoginForm, FormInput } from './';
 
 # Authentication Components
@@ -26,10 +26,12 @@ If not already authenticated, it will render the Authenticaiton component.
     },
   }) {
     return (
-      <div>
-        <h2>Top Secret Access</h2>
-        <div>{user.full_name}: {message}</div>
-      </div>
+      <Card>
+        <CardHeader title="Top Secret Access" />
+        <CardContent>
+          <div>{user.full_name}: {message}</div>
+        </CardContent>
+      </Card>
     )
   }
   /** Usually you would wrap it during export at the bottom of your component's file.
