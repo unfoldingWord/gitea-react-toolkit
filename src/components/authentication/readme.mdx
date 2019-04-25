@@ -42,16 +42,29 @@ If not already authenticated, it will render the Authenticaiton component.
   return (
     <Paper>
       <AuthenticatedComponent
+        //** Pass any props as you normally would. */
+        message="Authenticated!"
         authenticationConfig={{
           tokenid: "PlaygroundTesting",
           server: "https://bg.door43.org",
+          /** Optionally override messages.
+            messages: {...},
+            */
         }}
-        message="Authenticated!"
+        /** Pass a previously returned authentication object to skip authentication form.
+          authentication={{
+            user: {...},
+            token: {...},
+            remember: false,
+          }}
+          */
       />
     </Paper>
   );
 }}
 </Playground>
+
+<Props of={withAuthentication} />
 
 ## Authentication
 

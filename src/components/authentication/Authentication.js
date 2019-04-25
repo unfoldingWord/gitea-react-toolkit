@@ -49,8 +49,7 @@ function AuthenticationComponent({
 AuthenticationComponent.propTypes = {
   /** @ignore */
   classes: PropTypes.object.isRequired,
-
-  /** Callback function to propogate the token used for API Authentication. */
+  /** Callback function to propogate the user/token used for API Authentication. */
   onAuthentication: PropTypes.func.isRequired,
   /** Override the default text and errors. Must override all or none. */
   messages: PropTypes.shape({
