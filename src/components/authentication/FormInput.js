@@ -11,7 +11,7 @@ function FormInputComponent ({
   id,
   label,
   autoFocus,
-  onBlur,
+  onChange,
   type,
 }) {
   return (
@@ -22,7 +22,7 @@ function FormInputComponent ({
       <Input
         id={id} name={id} autoComplete={id} autoFocus={autoFocus}
         type={type}
-        onBlur={onBlur}
+        onChange={onChange}
       />
     </FormControl>
   );
@@ -44,8 +44,8 @@ FormInputComponent.propTypes = {
   ]).isRequired,
   /** The label of the field. */
   label: PropTypes.string.isRequired,
-  /** The callback to propogate changes. */
-  onBlur: PropTypes.func.isRequired,
+  /** The function to propogate changes. */
+  onChange: PropTypes.func.isRequired,
   /** Set if this field should be selected on load. */
   autoFocus: PropTypes.bool,
 };

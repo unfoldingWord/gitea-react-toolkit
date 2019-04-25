@@ -43,12 +43,16 @@ function RepositoriesComponent({
 
 RepositoriesComponent.propTypes = {
   classes: PropTypes.object.isRequired,
+  /** Function to call when repository is selected. */
   onSelect: PropTypes.func.isRequired,
+  /** Urls array to get repository data, if repository data is not provided. */
   urls: PropTypes.array,
+  /** Repositories data array to render, if urls not provided. */
   repositories: PropTypes.array,
+  /** Configuration required if paths are provided as URL. */
   config: PropTypes.shape({
     server: PropTypes.string.isRequired,
-  }).isRequired,
+  }),
 };
 
 const styles = {

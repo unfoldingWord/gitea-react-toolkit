@@ -43,7 +43,7 @@ function SearchFormComponent({
       ContainerComponent="div"
       className={classes.search}
     >
-      <ListItemIcon>
+      <ListItemIcon style={{marginRight: '8px'}}>
         <IconButton
           onClick={() => updateRepositories(owner, query)}
         >
@@ -74,9 +74,13 @@ function SearchFormComponent({
 
 SearchFormComponent.propTypes = {
   classes: PropTypes.object.isRequired,
+  /** Prefill the owner search field. */
   defaultOwner: PropTypes.string,
+  /** Prefill the query search field. */
   defaultQuery: PropTypes.string,
+  /** Function to propogate the returned repositories data array. */
   onRepositories: PropTypes.func.isRequired,
+  /** Configuration required if paths are provided as URL. */
   config: PropTypes.shape({
     server: PropTypes.string.isRequired,
   }).isRequired,

@@ -19,7 +19,7 @@ The Search component brings together the SearchForm and Repositories components.
 <Paper>
   <Search
     defaultOwner="unfoldingword"
-    defaultQuery="en_ta"
+    defaultQuery="en\\_ta"
     onSelect={(data) => {
       alert(JSON.stringify(data, null, 2));
     }}
@@ -38,7 +38,7 @@ The SearchForm component will make a search api call and return the resulting re
 <Paper>
   <SearchForm
     defaultOwner="unfoldingword"
-    defaultQuery="en_ta"
+    defaultQuery="en\\_ta"
     onRepositories={(data) => {
       alert('results: ' + data.length);
     }}

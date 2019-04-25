@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import {
+  Divider,
 } from '@material-ui/core';
 import {
 } from '@material-ui/icons';
@@ -26,6 +27,7 @@ function SearchComponent({
         onRepositories={setRepositories}
         config={config}
       />
+      <Divider />
       <Repositories
         repositories={repositories}
         onSelect={onSelect}
@@ -37,9 +39,13 @@ function SearchComponent({
 
 SearchComponent.propTypes = {
   classes: PropTypes.object.isRequired,
+  /** Prefill the owner search field. */
   defaultOwner: PropTypes.string,
+  /** Prefill the query search field. */
   defaultQuery: PropTypes.string,
+  /** Function to call when repository is selected. */
   onSelect: PropTypes.func.isRequired,
+  /** Configuration required if paths are provided as URL. */
   config: PropTypes.shape({
     server: PropTypes.string.isRequired,
   }).isRequired,

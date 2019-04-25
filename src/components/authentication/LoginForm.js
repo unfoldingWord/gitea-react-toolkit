@@ -42,8 +42,12 @@ function LoginFormComponent({
         {errorText}
       </Typography>
       <form className={classes.form}>
-        <FormInput id="username" type="text" label="Username" onBlur={updateFormData} />
-        <FormInput id="password" type="password" label="Password" onBlur={updateFormData} />
+        <FormInput id="username" type="text" label="Username"
+          onChange={updateFormData}
+        />
+        <FormInput id="password" type="password" label="Password"
+          onChange={updateFormData}
+        />
         <FormControlLabel
           label="Remember me"
           control={
@@ -53,7 +57,9 @@ function LoginFormComponent({
         />
         <Button type="button" fullWidth variant="contained" color="primary"
           className={classes.submit}
-          onClick={() => onSubmit(formData)}
+          onClick={() => {
+            onSubmit(formData);
+          }}
         >
           {actionText}
         </Button>

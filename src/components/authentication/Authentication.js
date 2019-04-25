@@ -7,9 +7,12 @@ import { authenticate } from '../../core/git-https';
 
 function AuthenticationComponent({
   classes,
-  actionText,
-  errorText,
-  tokenid,
+  messages: {
+    actionText,
+    genericError,
+    usernameError,
+    passwordError,
+  },
   onAuthentication,
   config,
 }) {
@@ -17,11 +20,20 @@ function AuthenticationComponent({
 
   const onSubmit = async ({username, password, remember}) => {
     try {
-      const token = await authenticate({username, password, tokenid, config});
-      onAuthentication({token, remember});
-      setError();
+      const authentication = await authenticate({username, password, config});
+      authentication.remember = remember;
+      if (authentication) {
+        const {user, token} = authentication;
+        if (user && token) {
+          setError();
+          onAuthentication(authentication);
+        } else {
+          if (!user) setError(usernameError);
+          else if (!token) setError(passwordError);
+        }
+      }
     } catch {
-      setError(errorText);
+      setError(genericError);
     }
   }
 
@@ -37,22 +49,32 @@ function AuthenticationComponent({
 AuthenticationComponent.propTypes = {
   /** @ignore */
   classes: PropTypes.object.isRequired,
-  /** The id of the token to create/retrieve that is used for the app. */
-  tokenid: PropTypes.string.isRequired,
+
   /** Callback function to propogate the token used for API Authentication. */
   onAuthentication: PropTypes.func.isRequired,
-  /** The text to describe the action of logging in. */
-  actionText: PropTypes.string,
-  /** The text to describe authentication errors. */
-  errorText: PropTypes.string,
-  /** The Gitea server to use when authenticating. */
+  /** Override the default text and errors. Must override all or none. */
+  messages: PropTypes.shape({
+    actionText: PropTypes.string.isRequired,
+    genericError: PropTypes.string.isRequired,
+    usernameError: PropTypes.string.isRequired,
+    passwordError: PropTypes.string.isRequired,
+  }),
+  /** Configuration for authentication to work, server and tokenid are required. */
   config: PropTypes.shape({
+    /** The Gitea server to use when authenticating. */
     server: PropTypes.string.isRequired,
+    /** The id of the token to create/retrieve that is used for the app. */
+    tokenid: PropTypes.string.isRequired,
   }).isRequired,
 };
 
 AuthenticationComponent.defaultProps = {
-  errorText: "Invalid Username or Password",
+  messages: {
+    actionText: "Login",
+    genericError: "Something went wrong, please try again.",
+    usernameError: "Username does not exist.",
+    passwordError: "Password is invalid.",
+  }
 };
 
 const styles = (theme) => ({

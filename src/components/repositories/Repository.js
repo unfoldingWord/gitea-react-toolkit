@@ -75,8 +75,11 @@ function RepositoryComponent({
 
 RepositoryComponent.propTypes = {
   classes: PropTypes.object.isRequired,
+  /** Function to call when repository is selected. */
   onSelect: PropTypes.func.isRequired,
+  /** Url to get repository data, if repository data is not provided. */
   url: PropTypes.string,
+  /** Repository data to render, if urls not provided. */
   repository: PropTypes.shape({
     id: PropTypes.number,
     owner: PropTypes.object.isRequired,
@@ -86,9 +89,10 @@ RepositoryComponent.propTypes = {
     html_url: PropTypes.string.isRequired,
     website: PropTypes.string.isRequired,
   }),
+  /** Configuration required if paths are provided as URL. */
   config: PropTypes.shape({
     server: PropTypes.string.isRequired,
-  }).isRequired,
+  }),
 };
 
 const styles = {

@@ -5,9 +5,51 @@ route: /authentication
 
 import { Playground, Props } from 'docz';
 import { Paper } from '@material-ui/core';
-import { Authentication, LoginForm, FormInput } from './';
+import { withAuthentication, Authentication, LoginForm, FormInput } from './';
 
-# Authentication Component
+# Authentication Components
+
+## withAuthentication
+
+You can wrap any component with `withAuthentication` so that you can require authentication for the component.
+It will also give access to the authentication object through the props of the children.
+If not already authenticated, it will render the Authenticaiton component.
+
+<Playground>
+{() => {
+  // Define your React component and optionally access authentication in props.
+  function Component({
+    message,
+    authentication: {
+      user,
+      token,
+    },
+  }) {
+    return (
+      <div>
+        <h2>Top Secret Access</h2>
+        <div>{user.full_name}: {message}</div>
+      </div>
+    )
+  }
+  /** Usually you would wrap it during export at the bottom of your component's file.
+   *  export default withAuthentication(Component);
+   */
+  const AuthenticatedComponent = withAuthentication(Component);
+  // Then you can use your authentication wrapped component.
+  return (
+    <Paper>
+      <AuthenticatedComponent
+        authenticationConfig={{
+          tokenid: "PlaygroundTesting",
+          server: "https://bg.door43.org",
+        }}
+        message="Authenticated!"
+      />
+    </Paper>
+  );
+}}
+</Playground>
 
 ## Authentication
 
@@ -17,9 +59,16 @@ The Authentication component wraps the LoginForm component.
 <Playground>
 <Paper>
   <Authentication
-    actionText="Authenticate"
-    tokenid="PlaygroundTesting"
-    config={{server: "https://bg.door43.org"}}
+    messages={{
+      actionText:"Authenticate",
+      genericError: "Something happened!",
+      usernameError: "No user found?",
+      passwordError: "Did you fat finger your password?",
+    }}
+    config={{
+      server: "https://bg.door43.org",
+      tokenid:"PlaygroundTesting",
+    }}
     onAuthentication={(data) => {
       alert(JSON.stringify(data, null, 2));
     }}
@@ -60,7 +109,7 @@ FormInput component enforces consistency for text input, and change propogation.
     id="email"
     type="email"
     label="Email Address"
-    onBlur={(event) => {
+    onChange={(event) => {
       alert(event.target.value);
     }}
   />
@@ -70,8 +119,8 @@ FormInput component enforces consistency for text input, and change propogation.
     id="password"
     type="password"
     label="Password"
-    onBlur={(event) => {
-      alert(event.target.value);
+    onChange={(event) => {
+      // alert("Commented out to not trigger on autofill.");
     }}
   />
 </Paper>

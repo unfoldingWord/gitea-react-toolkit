@@ -5,35 +5,63 @@ import { get, post } from './gitFile';
 
 const apiPath = 'api/v1';
 
-export const authenticate = async ({tokenid, username='', password='', config}) => {
-  let token;
-  const tokens = await listTokens({username, password, config}) || [];
-  const tokenMatches = tokens.filter(_token => _token.name === tokenid);
-  if (tokenMatches.length > 0) token = tokenMatches[0];
-  else token = await createToken({tokenid, username, password, config});
-  return token;
+export const authenticate = async ({username='', password='', config}) => {
+  let authentication = {};
+  if (username) authentication.user = await getUser({username, config});
+  if (password) {
+    const tokens = await getTokens({username, password, config}) || [];
+    const tokenMatches = tokens.filter(_token => _token.name === config.tokenid);
+    if (tokenMatches.length > 0) authentication.token = tokenMatches[0];
+    else authentication.token = await createToken({username, password, config});
+  }
+  return authentication;
 };
 
-export const listTokens = async ({username, password, config}) => {
-  let url = Path.join(apiPath, 'users', username, 'tokens');
+
+export const getUser = async ({username, config}) => {
+  let user;
+  const url = Path.join(apiPath, 'users', username);
+  try {
+    user = await get({url, config});
+  } catch { user = null; }
+  return user;
+};
+
+export const getUID = async ({username, config}) => {
+  let uid;
+  try {
+    const user = await getUser({username, config});
+    uid = user.id;
+  } catch { uid = null; }
+  return uid;
+};
+
+export const getTokens = async ({username, password, config}) => {
+  let tokens;
+  const url = Path.join(apiPath, 'users', username, 'tokens');
   const authentication = encodeAuthentication({username, password});
   config.headers = {
       'Content-Type': 'application/json',
       'Authorization': authentication,
   };
-  let tokens = await get({url, config});
+  try {
+    tokens = await get({url, config});
+  } catch { tokens = []; }
   return tokens;
 };
 
-export const createToken = async ({tokenid, username, password, config={}}) => {
-  let url = Path.join(apiPath, 'users', username, 'tokens');
+export const createToken = async ({username, password, config={}}) => {
+  let token;
+  const url = Path.join(apiPath, 'users', username, 'tokens');
   const authentication = encodeAuthentication({username, password});
   config.headers = {
     'Content-Type': 'application/json',
     'Authorization': authentication,
   };
-  const payload = {"name": tokenid};
-  let token = await post({url, payload, config});
+  const payload = {"name": config.tokenid};
+  try {
+    token = await post({url, payload, config});
+  } catch { token = []; }
   return token;
 };
 
@@ -66,15 +94,8 @@ export const fetchTree = async ({owner, repository, sha='master', config}) => {
   }
 };
 
-export const getUID = async ({owner, config}) => {
-  const url = Path.join(apiPath, 'users', owner);
-  const user = await get({url, config});
-  const {id: uid} = user;
-  return uid;
-};
-
 export const repositoryExists = async ({owner, repository, config}) => {
-  const uid = await getUID({owner, config});
+  const uid = await getUID({username: owner, config});
   const params = { q: repository, uid };
   const url = Path.join(apiPath, 'repos', 'search');
   const {data: repos} = await get({url, params, config});
@@ -87,7 +108,7 @@ export const repositorySearch = async ({owner, query, config}) => {
   let repositories = [];
   let params = {q: query, limit: 50};
   if (owner) {
-    params.uid = await getUID({owner, config});
+    params.uid = await getUID({username: owner, config});
     params.exclusive = true;
   }
   const url = Path.join(apiPath, 'repos', 'search');
