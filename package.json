@@ -14,6 +14,8 @@
     "base-64": "^0.1.0",
     "jszip": "^3.2.1",
     "localforage": "^1.7.3",
+    "lorem-ipsum": "^2.0.1",
+    "moment": "^2.24.0",
     "prop-types": "^15.7.2"
   },
   "scripts": {

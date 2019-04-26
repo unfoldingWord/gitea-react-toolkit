@@ -4,8 +4,11 @@ route: /authentication
 ---
 
 import { Playground, Props } from 'docz';
-import { Paper, Card, CardContent, CardHeader } from '@material-ui/core';
+import { Paper, Card, CardContent, CardHeader, Avatar, CardActions, IconButton } from '@material-ui/core';
+import { Favorite, Share } from '@material-ui/icons';
 import { withAuthentication, Authentication, LoginForm, FormInput } from './';
+import { loremIpsum } from 'lorem-ipsum';
+import moment from 'moment';
 
 # Authentication Components
 
@@ -27,10 +30,15 @@ If not already authenticated, it will render the Authenticaiton component.
   }) {
     return (
       <Card>
-        <CardHeader title="Top Secret Access" />
+        <CardHeader title={<strong>Clearance Granted</strong>} subheader={moment().format('MMMM Do YYYY, h:mm:ss a')} avatar={<Avatar src={user.avatar_url} />} />
         <CardContent>
-          <div>{user.full_name}: {message}</div>
+          <p>Your mission, should you choose to accept...</p>
+          <p><strong><em>{message}</em></strong></p>
         </CardContent>
+        <CardActions>
+          <IconButton onClick={()=> alert(`Now get out your decoder ring, ${user.full_name}, and get to work!`)}><Favorite /></IconButton>
+          <IconButton onClick={()=> alert("Alright Elon, let's not tweet about our missions.")}><Share /></IconButton>
+        </CardActions>
       </Card>
     )
   }
@@ -43,13 +51,17 @@ If not already authenticated, it will render the Authenticaiton component.
     <Paper>
       <AuthenticatedComponent
         //** Pass any props as you normally would. */
-        message="Authenticated!"
+        message={loremIpsum()}
         authenticationConfig={{
           tokenid: "PlaygroundTesting",
           server: "https://bg.door43.org",
-          /** Optionally override messages.
-            messages: {...},
-            */
+          /** Optionally override messages. */
+          messages: {
+            actionText:"Verify Your Identity to See Your Mission",
+            genericError: "Nothing to see here, carry on.",
+            usernameError: "Your no agent, did you forget your name?",
+            passwordError: "Are you sure you are who you think you are?",
+          },
         }}
         /** Pass a previously returned authentication object to skip authentication form.
           authentication={{
