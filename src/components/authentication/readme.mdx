@@ -54,7 +54,7 @@ If not already authenticated, it will render the Authenticaiton component.
         message={loremIpsum()}
         authenticationConfig={{
           tokenid: "PlaygroundTesting",
-          server: "https://bg.door43.org",
+          server: "https://git.door43.org",
           /** Optionally override messages. */
           messages: {
             actionText:"Verify Your Identity to See Your Mission",
@@ -93,7 +93,7 @@ The Authentication component wraps the LoginForm component.
       passwordError: "Did you fat finger your password?",
     }}
     config={{
-      server: "https://bg.door43.org",
+      server: "https://git.door43.org",
       tokenid:"PlaygroundTesting",
     }}
     onAuthentication={(data) => {
