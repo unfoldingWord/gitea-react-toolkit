@@ -22,10 +22,16 @@ function SearchFormComponent({
 }) {
   const [owner, setOwner] = useState(defaultOwner);
   const [query, setQuery] = useState(defaultQuery);
+  const [initialSearch, setInitialSearch] = useState(false);
 
   const updateRepositories = async (owner, query) => {
     const repositories = await repositorySearch({owner, query, config});
     onRepositories(repositories);
+  }
+
+  if (!initialSearch) {
+    updateRepositories(owner, query)
+    .then(()=> setInitialSearch(true) );
   }
 
   const onOwner = (_owner) => {

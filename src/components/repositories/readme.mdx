@@ -2,7 +2,7 @@
 name: Repositories
 route: /repositories
 ---
-
+import { useState } from 'react';
 import { Playground, Props } from 'docz';
 import { Paper, Card, CardContent, CardHeader, Avatar } from '@material-ui/core';
 import { Repositories, Repository, SearchForm, Search, withRepository } from './';
@@ -82,16 +82,42 @@ The Search component brings together the SearchForm and Repositories components.
 The SearchForm component will make a search api call and return the resulting repositories array.
 
 <Playground>
-<Paper>
-  <SearchForm
-    defaultOwner="unfoldingword"
-    defaultQuery="en\\_ta"
-    onRepositories={(data) => {
-      alert('results: ' + data.length);
-    }}
-    config={{server: "https://git.door43.org"}}
-  />
-</Paper>
+{() => {
+  function Repos() {
+    const [repos, setRepos] = useState([]);
+
+    const searchFormComponent = (
+      <SearchForm
+        defaultOwner="unfoldingword"
+        defaultQuery="en\\_ta"
+        onRepositories={setRepos}
+        config={{server: "https://git.door43.org"}}
+      />
+    );
+
+    const repositoriesComponent = (
+      <pre>{JSON.stringify(repos, null, 2)}</pre>
+    );
+
+    return (
+      <div>
+        <h3>SearchForm:</h3>
+        <Paper>
+          {searchFormComponent}
+        </Paper>
+        <h3>Search Results:</h3>
+        <Paper>
+          {repositoriesComponent}
+        </Paper>
+      </div>
+    )
+  }
+
+  return (
+    <Repos />
+  );
+}}
+
 </Playground>
 
 <Props of={SearchForm} />
