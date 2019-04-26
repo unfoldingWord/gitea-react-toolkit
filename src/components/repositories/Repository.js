@@ -17,19 +17,19 @@ import { get } from '../../core/git-https/gitFile';
 
 function RepositoryComponent({
   classes,
-  onSelect,
   url,
   repository,
+  onRepository,
   config,
 }) {
-  const [data, setData] = useState(repository || {owner: {}});
+  const [repo, setRepo] = useState(repository || {owner: {}});
 
   const getData = async () => {
     const _data = await get({url, config});
-    setData(_data);
+    setRepo(_data);
   }
 
-  if (Object.keys(data.owner).length === 0) {
+  if (Object.keys(repo.owner).length === 0) {
     getData();
   }
 
@@ -39,14 +39,14 @@ function RepositoryComponent({
     full_name,
     description,
     html_url,
-  } = data;
+  } = repo;
 
   return (
     <ListItem
       alignItems="flex-start"
       button
       ContainerComponent="div"
-      onClick={() => onSelect(data)}
+      onClick={() => onRepository(repo)}
     >
       <ListItemAvatar>
         <Avatar
@@ -76,7 +76,7 @@ function RepositoryComponent({
 RepositoryComponent.propTypes = {
   classes: PropTypes.object.isRequired,
   /** Function to call when repository is selected. */
-  onSelect: PropTypes.func.isRequired,
+  onRepository: PropTypes.func.isRequired,
   /** Url to get repository data, if repository data is not provided. */
   url: PropTypes.string,
   /** Repository data to render, if urls not provided. */

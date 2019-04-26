@@ -41,7 +41,7 @@ function withAuthenticationComponent(Component) {
 }
 
 withAuthenticationComponent.propTypes = {
-  /** You can pass a previously returned authentication object to bypass login. */
+  /** Pass a previously returned authentication object to bypass login. */
   authentication: PropTypes.shape({
     user: PropTypes.object.isRequired,
     token: PropTypes.object.isRequired,

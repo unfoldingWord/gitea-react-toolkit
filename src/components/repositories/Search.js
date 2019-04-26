@@ -14,7 +14,7 @@ function SearchComponent({
   classes,
   defaultOwner,
   defaultQuery,
-  onSelect,
+  onRepository,
   config,
 }) {
   const [repositories, setRepositories] = useState([]);
@@ -30,7 +30,7 @@ function SearchComponent({
       <Divider />
       <Repositories
         repositories={repositories}
-        onSelect={onSelect}
+        onRepository={onRepository}
         config={config}
       />
     </div>
@@ -44,7 +44,7 @@ SearchComponent.propTypes = {
   /** Prefill the query search field. */
   defaultQuery: PropTypes.string,
   /** Function to call when repository is selected. */
-  onSelect: PropTypes.func.isRequired,
+  onRepository: PropTypes.func.isRequired,
   /** Configuration required if paths are provided as URL. */
   config: PropTypes.shape({
     server: PropTypes.string.isRequired,

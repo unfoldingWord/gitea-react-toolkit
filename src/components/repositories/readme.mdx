@@ -4,12 +4,59 @@ route: /repositories
 ---
 
 import { Playground, Props } from 'docz';
-import { Paper } from '@material-ui/core';
-import { Repositories, Repository, SearchForm, Search } from './';
+import { Paper, Card, CardContent, CardHeader, Avatar } from '@material-ui/core';
+import { Repositories, Repository, SearchForm, Search, withRepository } from './';
+import moment from 'moment';
 
 import repositoryData from './repositoryData.json';
 
 # Repository Components
+
+## withRepository
+
+You can wrap any component with `withRepository` so that you can require a repository object for the component.
+It will also give access to the selected repository object through the props of the children.
+If a repository is not already selected, it will render the Search or Repositories component depending on the repositoryConfig.
+
+<Playground>
+{() => {
+  // Define your React component and optionally access repository in props.
+  function Component({
+    repository,
+  }) {
+    return (
+      <Card>
+        <CardHeader title={<strong>{repository.full_name}</strong>} subheader={moment(repository.created_at).format('MMMM Do YYYY, h:mm:ss a')} avatar={<Avatar src={repository.owner.avatar_url} />} />
+        <CardContent>
+          <pre>{JSON.stringify(repository, null, 2)}</pre>
+        </CardContent>
+      </Card>
+    )
+  }
+  /** Usually you would wrap it during export at the bottom of your component's file.
+   *  export default withRepository(Component);
+   */
+  const RepositoryComponent = withRepository(Component);
+  // Then you can use your authentication wrapped component.
+  return (
+    <Paper>
+      <RepositoryComponent
+        //** Pass any props as you normally would. */
+        repositoryConfig={{
+          defaultOwner:"unfoldingWord",
+          defaultQuery:"en\\_ta",
+          server: "https://git.door43.org",
+        }}
+        /** Pass a previously returned repository object to skip authentication form.
+          repository={repository}
+          */
+      />
+    </Paper>
+  );
+}}
+</Playground>
+
+<Props of={withRepository} />
 
 ## Search Component
 
