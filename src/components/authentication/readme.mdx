@@ -21,7 +21,7 @@ If not already authenticated, it will render the Authenticaiton component.
 <Playground>
 {() => {
   // Define your React component and optionally access authentication in props.
-  function Component({
+  function Mission({
     message,
     authentication: {
       user,
@@ -45,11 +45,11 @@ If not already authenticated, it will render the Authenticaiton component.
   /** Usually you would wrap it during export at the bottom of your component's file.
    *  export default withAuthentication(Component);
    */
-  const AuthenticatedComponent = withAuthentication(Component);
+  const AuthenticatedMission = withAuthentication(Mission);
   // Then you can use your authentication wrapped component.
   return (
     <Paper>
-      <AuthenticatedComponent
+      <AuthenticatedMission
         //** Pass any props as you normally would. */
         message={loremIpsum()}
         authenticationConfig={{
