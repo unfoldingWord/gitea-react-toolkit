@@ -67,7 +67,7 @@ The Search component brings together the SearchForm and Repositories components.
   <Search
     defaultOwner="unfoldingword"
     defaultQuery="en\\_ta"
-    onSelect={(data) => {
+    onRepository={(data) => {
       alert(JSON.stringify(data, null, 2));
     }}
     config={{server: "https://git.door43.org"}}
@@ -141,7 +141,7 @@ The Repositories component renders a list of Repository components.
         "https://git.door43.org/api/v1/repos/door43-catalog/en_obs",
       ]
     }
-    onSelect={(data) => {
+    onRepository={(data) => {
       alert(JSON.stringify(data, null, 2));
     }}
   />
@@ -160,7 +160,7 @@ Providing data directly as props.
 <Paper>
   <Repository
     repository={repositoryData}
-    onSelect={(data) => {
+    onRepository={(data) => {
       alert(JSON.stringify(data, null, 2));
     }}
   />
@@ -173,7 +173,7 @@ Providing url to fetch repository data.
 <Paper>
   <Repository
     url="https://git.door43.org/api/v1/repos/door43-catalog/en_ta"
-    onSelect={(data) => {
+    onRepository={(data) => {
       alert(JSON.stringify(data, null, 2));
     }}
   />
