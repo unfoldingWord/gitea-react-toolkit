@@ -23,12 +23,13 @@ function TreeObjectComponent ({
   url,
   selected,
   pathSelected,
+  onBlob,
   depth,
 }) {
 
   const icon = selected ?
-    <Folder fontSize="small" /> :
-    <FolderOpen fontSize="small" />;
+    <Folder /> :
+    <FolderOpen />;
 
   return (
     <div>
@@ -51,6 +52,7 @@ function TreeObjectComponent ({
         tree={tree}
         url={url}
         selected={selected}
+        onBlob={onBlob}
         depth={depth + 1}
       />
     </div>
@@ -73,6 +75,8 @@ TreeObjectComponent.propTypes = {
   selected: PropTypes.bool,
   /** Set which of the File object is currently selected. */
   pathSelected: PropTypes.string,
+  /** Function to propogate when the Blob is selected. */
+  onBlob: PropTypes.func,
   /** The depth of the path in the tree sets the inset of the component. */
   depth: PropTypes.number,
 };

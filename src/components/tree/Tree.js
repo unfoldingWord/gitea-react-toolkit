@@ -19,6 +19,7 @@ function TreeComponent ({
   tree,
   url,
   selected,
+  onBlob,
   depth,
 }) {
   const [_tree, setTree] = useState(tree || []);
@@ -48,12 +49,14 @@ function TreeComponent ({
             {...object}
             selected={index === selectedIndex}
             depth={depth}
+            onBlob={onBlob}
           />
         );
       } else if (object.type === 'blob') {
         component = (
           <BlobObject
-            {...object}
+            blob={object}
+            onBlob={onBlob}
             selected={index === selectedIndex}
             depth={depth}
           />
@@ -91,6 +94,8 @@ TreeComponent.propTypes = {
   url: PropTypes.string,
   /** Set if the Listing is currently selected, which will expand the collapsed view. */
   selected: PropTypes.bool,
+  /** Function to propogate when the Blob is selected. */
+  onBlob: PropTypes.func,
   /** The depth of the path in the tree sets the inset of the component. */
   depth: PropTypes.number,
 }

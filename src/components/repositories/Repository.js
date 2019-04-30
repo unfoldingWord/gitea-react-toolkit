@@ -79,7 +79,7 @@ RepositoryComponent.propTypes = {
   onRepository: PropTypes.func.isRequired,
   /** Url to get repository data, if repository data is not provided. */
   url: PropTypes.string,
-  /** Repository data to render, if urls not provided. */
+  /** Repository data to render, if url not provided. */
   repository: PropTypes.shape({
     id: PropTypes.number,
     owner: PropTypes.object.isRequired,
