@@ -1,13 +1,14 @@
 import { get } from '../../core/git-https/gitFile';
 import base64 from 'base-64';
 
-export const fetchTree = async ({url}) => {
-  const options = {
+export const fetchTree = async ({url, config}) => {
+  const _config = {
     cache: {
       maxAge: 2 * 60 * 1000 // 2 min cache override
     },
+    ...config
   };
-  const response = await get({url, options});
+  const response = await get({url, config: _config});
   const {tree} = response;
   return tree;
 };

@@ -56,7 +56,7 @@ If a blob is not already selected, it will render the Tree component for selecti
         blobConfig={{
           url:"https://bg.door43.org/api/v1/repos/unfoldingWord/en_ta/git/trees/master",
         }}
-        /** Pass a previously returned repository object to skip authentication form.
+        /** Pass a previously returned repository object to skip blob/tree selection.
           blob={blob}
           onBlob={(_blob) => {
             setBlob(_blob);

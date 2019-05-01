@@ -37,7 +37,7 @@ If a repository is not already selected, it will render the Search or Repositori
    *  export default withRepository(Component);
    */
   const RepositoryComponent = withRepository(Component);
-  // Then you can use your authentication wrapped component.
+  // Then you can use your repository wrapped component.
   return (
     <Paper>
       <RepositoryComponent
@@ -47,7 +47,7 @@ If a repository is not already selected, it will render the Search or Repositori
           defaultQuery:"en\\_ta",
           server: "https://git.door43.org",
         }}
-        /** Pass a previously returned repository object to skip authentication form.
+        /** Pass a previously returned repository object to skip repository selection.
           repository={repository}
           */
       />

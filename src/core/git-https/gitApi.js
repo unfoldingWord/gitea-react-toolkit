@@ -6,7 +6,7 @@ import { get, post } from './gitFile';
 const apiPath = 'api/v1';
 
 export const authenticate = async ({username='', password='', config}) => {
-  let authentication = {};
+  let authentication = {config};
   if (username) authentication.user = await getUser({username, config});
   if (password) {
     const tokens = await getTokens({username, password, config}) || [];
@@ -16,7 +16,6 @@ export const authenticate = async ({username='', password='', config}) => {
   }
   return authentication;
 };
-
 
 export const getUser = async ({username, config}) => {
   let user;
@@ -120,3 +119,9 @@ export const repositorySearch = async ({owner, query, config}) => {
   }
   return repositories;
 };
+
+// https://bg.door43.org/api/v1/repos/unfoldingWord/en_ta/git/trees/master
+export const repoTreeUrl = ({full_name, branch, default_branch}) => {
+  const url = Path.join(apiPath, 'repos', full_name, 'git', 'trees', branch || default_branch);
+  return url;
+}

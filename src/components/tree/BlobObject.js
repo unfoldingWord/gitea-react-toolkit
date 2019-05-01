@@ -63,7 +63,7 @@ BlobObjectComponent.propTypes = {
     /** The url in the Git Tree Blob Object */
     url: PropTypes.string,
     /** The content size of the Git Tree Blob Object */
-    size: PropTypes.string,
+    size: PropTypes.number,
   }),
   /** Set whether or not the File object is currently selected. */
   selected: PropTypes.bool,

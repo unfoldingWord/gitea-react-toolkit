@@ -13,7 +13,7 @@ import {
   Code,
 } from '@material-ui/icons';
 
-import { get } from '../../core/git-https/gitFile';
+import { get, repoTreeUrl } from '../../core/git-https';
 
 function RepositoryComponent({
   classes,
@@ -25,13 +25,19 @@ function RepositoryComponent({
   const [repo, setRepo] = useState(repository || {owner: {}});
 
   const getData = async () => {
-    const _data = await get({url, config});
-    setRepo(_data);
-  }
+    const data = await get({url, config});
+    setRepo(data);
+  };
 
   if (Object.keys(repo.owner).length === 0) {
     getData();
   }
+
+  const _onRepository = () => {
+    const tree_url = repoTreeUrl(repo);
+    const _repo = {tree_url, ...repo};
+    onRepository(_repo);
+  };
 
   const {
     owner,
@@ -46,7 +52,7 @@ function RepositoryComponent({
       alignItems="flex-start"
       button
       ContainerComponent="div"
-      onClick={() => onRepository(repo)}
+      onClick={_onRepository}
     >
       <ListItemAvatar>
         <Avatar
@@ -88,6 +94,7 @@ RepositoryComponent.propTypes = {
     description: PropTypes.string.isRequired,
     html_url: PropTypes.string.isRequired,
     website: PropTypes.string.isRequired,
+    tree_url: PropTypes.string,
   }),
   /** Configuration required if paths are provided as URL. */
   config: PropTypes.shape({

@@ -6,18 +6,26 @@ import { Repositories } from './Repositories';
 
 function withRepositoryComponent(Component) {
   return function RepositoryComponent ({
-    repositoryConfig: {
-      repositories,
-      urls,
-      defaultOwner,
-      defaultQuery,
-      ...config
-    },
     repository,
     onRepository,
     ...props
   }) {
     const [repo, setRepo] = useState(repository);
+
+    let repositoryConfig;
+    if (props.repositoryConfig) {
+      const {repositories, urls, defaultOwner, defaultQuery, ...config} = props.repositoryConfig;
+      repositoryConfig = {repositories, urls, defaultOwner, defaultQuery, config};
+    } else if (props.authentication && props.authentication.config) {
+      repositoryConfig = {config: props.authentication.config};
+    }
+    const {
+      repositories,
+      urls,
+      defaultOwner,
+      defaultQuery,
+      config
+    } = repositoryConfig;
 
     const hasRepository = () => (repo && repo.name && repo.owner && repo.permissions );
 

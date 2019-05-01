@@ -1,0 +1,75 @@
+---
+name: Higher Order Components
+route: /hoc
+---
+
+import { useState } from 'react';
+import { Playground, Props } from 'docz';
+import { Paper, Card, CardContent, CardHeader, Avatar } from '@material-ui/core';
+import { withAuthentication, withRepository, withBlob } from './';
+
+# Higher Order Components
+
+Wrapping your components with `withAuthentication`, `withRepository`, and/or `withBlob`
+will give you access to `authentication`, `repository`, and/or `blob` respectively in the props.
+
+Nesting them in the proper order, allows the inner higher order components to use the returned objects.
+- `withBlob` can use the `repository` object to populate it's Tree for blob selection.
+- `withRepository` can use the `authentication` object to populate the Search for repo selection.
+
+So `withAuthentication(withRepository(withBlob(Component)))` will automagically render the `Authentication` form,
+when it has a valid login, it will pass the `authentication` object to the `RepositorySearch` selection,
+when it has a repository selected, it will pass the `repository` object to the `Tree` selection,
+once it has a blob selected, it will pass the `blob`, `repository`, and `authentication` objects to the `Component` as props.
+
+<Playground>
+{() => {
+  // Define your React component and optionally access blob in props.
+  function Component({
+    authentication,
+    repository,
+    blob,
+  }) {
+    return (
+      <Card>
+        <CardHeader
+          avatar={<Avatar src={authentication.user.avatar_url} />}
+          title={<strong>{repository.full_name}</strong>}
+          subheader={blob.path}
+        />
+        <CardContent>
+          <h3>Authentication:</h3>
+          <pre>{JSON.stringify(authentication, null, 2)}</pre>
+          <h3>Repository:</h3>
+          <pre>{JSON.stringify(repository, null, 2)}</pre>
+          <h3>Blob:</h3>
+          <pre>{JSON.stringify(blob, null, 2)}</pre>
+        </CardContent>
+      </Card>
+    )
+  }
+  /** Usually you would wrap it during export at the bottom of your component's file.
+   *  export default withRepository(Component);
+   */
+  const WrappedComponent = withAuthentication(withRepository(withBlob(Component)));
+  // Then you can use your blob wrapped component.
+  // const [blob, setBlob] = useState();
+  return (
+    <Paper>
+      <WrappedComponent
+        //** Pass any props as you normally would. */
+        authenticationConfig={{
+          server: "https://bg.door43.org/",
+          tokenid: "PlaygroundTesting",
+        }}
+        /** Pass a previously returned repository object to skip blob/tree selection.
+          blob={blob}
+          onBlob={(_blob) => {
+            setBlob(_blob);
+          }}
+          */
+      />
+    </Paper>
+  );
+}}
+</Playground>

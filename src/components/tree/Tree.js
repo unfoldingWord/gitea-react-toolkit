@@ -18,6 +18,7 @@ function TreeComponent ({
   classes,
   tree,
   url,
+  config,
   selected,
   onBlob,
   depth,
@@ -26,7 +27,7 @@ function TreeComponent ({
   const [selectedIndex, setSelectedIndex] = useState();
 
   const updateTree = async () => {
-    const __tree = await fetchTree({url});
+    const __tree = await fetchTree({url, config});
     setTree(__tree);
   };
 
@@ -92,6 +93,10 @@ TreeComponent.propTypes = {
   })),
   /** The Url to fetch the listing if listing is not provided. */
   url: PropTypes.string,
+  /** If url is relative, pass the server in the config object. */
+  config: PropTypes.shape({
+    server: PropTypes.string.isRequired,
+  }),
   /** Set if the Listing is currently selected, which will expand the collapsed view. */
   selected: PropTypes.bool,
   /** Function to propogate when the Blob is selected. */

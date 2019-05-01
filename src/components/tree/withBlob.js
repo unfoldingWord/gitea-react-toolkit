@@ -6,11 +6,6 @@ import { fetchContent } from './helpers';
 
 function withBlobComponent(Component) {
   return function BlobComponent ({
-    blobConfig: {
-      tree,
-      url,
-      ...config
-    },
     blob,
     onBlob,
     ...props
@@ -28,13 +23,30 @@ function withBlobComponent(Component) {
 
     let component = <Component {...props} blob={_blob} />;
 
+    let blobConfig = {};
+    if (props.blobConfig) {
+      let {url, tree, ...config} = props.blobConfig;
+      blobConfig = {url, tree, config};
+    } else if (props.repository) {
+      blobConfig.url = props.repository.tree_url;
+    }
+    if (props.authentication) {
+      blobConfig.config = props.authentication.config;
+    }
+    const {
+      url,
+      tree,
+      config,
+    } = blobConfig;
+
     const treeComponent = (
       <Tree
         tree={tree}
         url={url}
+        config={config}
         selected={true}
         onBlob={updateBlob}
-        {...config}
+        {...blobConfig}
       />
     );
 
@@ -52,7 +64,7 @@ withBlobComponent.propTypes = {
     /** The url in the Git Tree Blob Object */
     url: PropTypes.string,
     /** The content size of the Git Tree Blob Object */
-    size: PropTypes.string,
+    size: PropTypes.number,
   }),
   /** Function to propogate when the Blob is selected. */
   onBlob: PropTypes.func,
@@ -68,6 +80,10 @@ withBlobComponent.propTypes = {
     /** The depth of the path in the tree sets the inset of the component. */
     depth: PropTypes.number,
   }).isRequired,
+  /** Repository tree_url can be used in place of blobConfig */
+  repository: PropTypes.shape({
+    tree_url: PropTypes.string.isRequired,
+  }),
 };
 
 export const withBlob = withBlobComponent;
