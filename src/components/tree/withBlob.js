@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import PropTypes from 'prop-types';
 
 import { Tree } from './Tree';
+import { fetchContent } from './helpers';
 
 function withBlobComponent(Component) {
   return function BlobComponent ({
@@ -18,9 +19,11 @@ function withBlobComponent(Component) {
 
     const hasBlob = () => (!!_blob);
 
-    const updateBlob  = (__blob) => {
-      setBlob(__blob);
+    const updateBlob  = async (__blob) => {
+      const content = await fetchContent({url: __blob.url});
+      __blob.content = content;
       if (onBlob) onBlob(__blob);
+      setBlob(__blob);
     }
 
     let component = <Component {...props} blob={_blob} />;
