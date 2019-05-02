@@ -1,51 +1,26 @@
-import axios from 'axios';
-import base64 from 'base-64';
+import localforage from 'localforage';
 
-function encodeUserAuth({username, password, token}) {
+const authenticationStore = localforage.createInstance({
+  driver: [localforage.INDEXEDDB],
+  name: 'git-authentication-store',
+});
+
+export const getAuth = async () => {
   let authentication;
-  if (token) {
-    let sha1 = typeof token === 'object' ? token.sha1 : token;
-    authentication = `token ${sha1}`;
-  } else if (username && password) {
-    authentication = 'Basic ' + base64.encode(`${username}:${password}`)
+  try {
+    authentication = await localforage.getItem('authentication');
+  } catch {
+    authentication = null;
   }
   return authentication;
-}
+};
 
-function Requester (apiUrl) {
-  /**
-   * Performs a request against the api
-   * @param partialUrl the api command
-   * @param user {object|null} the user authenticating this request. Requires token or username and password
-   * @param postData {object|null} if not null the request will POST the data otherwise it will be a GET request
-   * @param requestMethod {string|null} if null the requests will default to POST or GET
-   * @return {Promise<string>}
-   */
-  return function request (partialUrl, user, postData, requestMethod) {
-    var auth = encodeUserAuth(user);
-    var method = postData ? 'POST' : 'GET';
-    method = requestMethod ? requestMethod.toUpperCase() : method;
+export const setAuth = async (authentication) => {
+  let response = await localforage.setItem('authentication', authentication);
+  return response;
+};
 
-    var options = {
-      url: apiUrl.replace(/\/$/, '') + '/' + partialUrl.replace(/^\//, ''),
-      method: method,
-      data: postData,
-      headers: {'Content-Type': 'application/json'}
-    };
-
-    if (auth) {
-      options.headers['Authorization'] = auth;
-    }
-
-    return new Promise(function (resolve, reject) {
-      axios(options).then(function (response) {
-        resolve({
-          status: response.status,
-          data: response.data
-        });
-      }).catch(function (error) {
-        reject(error.response)
-      })
-    });
-  };
-}
+export const logout = async () => {
+  await setAuth();
+  return true;
+};
