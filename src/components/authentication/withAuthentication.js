@@ -6,8 +6,8 @@ import { Authentication } from './Authentication';
 function withAuthenticationComponent(Component) {
   return function AuthenticatedComponent ({
     authentication,
+    onAuthentication,
     authenticationConfig: {
-      onAuthentication,
       messages,
       ...config
     },
@@ -17,21 +17,20 @@ function withAuthenticationComponent(Component) {
 
     const isAuthenticated = () => (auth && auth.token && auth.user);
 
-    let component = <Component {...props} authentication={auth} />;
+    const updateAuthentication = (_auth) => {
+      if (onAuthentication) onAuthentication(_auth);
+      else setAuth(_auth);
+    }
 
     const authenticationError = (
       <Authentication
         messages={messages}
         config={config}
-        onAuthentication={(_auth) => {
-          setAuth(_auth);
-          if (onAuthentication) {
-            onAuthentication(_auth);
-          }
-        }}
+        onAuthentication={updateAuthentication}
       />
     );
 
+    let component = <Component {...props} authentication={auth} />;
     if (!isAuthenticated()) {
       component = authenticationError;
     }

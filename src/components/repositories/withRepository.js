@@ -30,11 +30,9 @@ function withRepositoryComponent(Component) {
     const hasRepository = () => (repo && repo.name && repo.owner && repo.permissions );
 
     const updateRepository  = (_repo) => {
-      setRepo(_repo);
       if (onRepository) onRepository(_repo);
+      else setRepo(_repo);
     }
-
-    let component = <Component {...props} repository={repo} />;
 
     const searchComponent = (
       <Search
@@ -54,6 +52,7 @@ function withRepositoryComponent(Component) {
       />
     );
 
+    let component = <Component {...props} repository={repo} />;
     if (!hasRepository()) {
       if (urls || repositories) component = repositoriesComponent;
       else if (config) component = searchComponent;

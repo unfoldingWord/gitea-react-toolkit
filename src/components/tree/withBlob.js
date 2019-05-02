@@ -18,10 +18,8 @@ function withBlobComponent(Component) {
       const content = await fetchContent({url: __blob.url});
       __blob.content = content;
       if (onBlob) onBlob(__blob);
-      setBlob(__blob);
+      else setBlob(__blob);
     }
-
-    let component = <Component {...props} blob={_blob} />;
 
     let blobConfig = {};
     if (props.blobConfig) {
@@ -50,6 +48,7 @@ function withBlobComponent(Component) {
       />
     );
 
+    let component = <Component {...props} blob={_blob} />;
     if (!hasBlob()) component = treeComponent;
 
     return component;
