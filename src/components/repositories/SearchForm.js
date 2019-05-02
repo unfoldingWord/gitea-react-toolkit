@@ -10,8 +10,11 @@ import {
 import {
   Search,
 } from '@material-ui/icons';
+import AwesomeDebouncePromise from 'awesome-debounce-promise';
 
 import { repositorySearch } from '../../core/git-https';
+
+const repositorySearchDebounced = AwesomeDebouncePromise(repositorySearch, 500);
 
 function SearchFormComponent({
   classes,
@@ -25,7 +28,7 @@ function SearchFormComponent({
   const [initialSearch, setInitialSearch] = useState(false);
 
   const updateRepositories = async (owner, query) => {
-    const repositories = await repositorySearch({owner, query, config});
+    const repositories = await repositorySearchDebounced({owner, query, config});
     onRepositories(repositories);
   }
 
