@@ -22,6 +22,7 @@ function TreeComponent ({
   selected,
   onBlob,
   depth,
+  filepath,
 }) {
   const [_tree, setTree] = useState(tree || []);
   const [selectedIndex, setSelectedIndex] = useState();
@@ -51,6 +52,7 @@ function TreeComponent ({
             selected={index === selectedIndex}
             depth={depth}
             onBlob={onBlob}
+            filepath={filepath}
           />
         );
       } else if (object.type === 'blob') {
@@ -60,6 +62,7 @@ function TreeComponent ({
             onBlob={onBlob}
             selected={index === selectedIndex}
             depth={depth}
+            filepath={filepath}
           />
         );
       }
@@ -103,6 +106,8 @@ TreeComponent.propTypes = {
   onBlob: PropTypes.func,
   /** The depth of the path in the tree sets the inset of the component. */
   depth: PropTypes.number,
+  /** The nested filepath that will concatenate. */
+  filepath: PropTypes.string,
 }
 
 TreeComponent.defaultProps = {

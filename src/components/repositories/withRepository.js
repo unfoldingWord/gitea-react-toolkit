@@ -36,7 +36,7 @@ function withRepositoryComponent(Component) {
 
     const searchComponent = (
       <Search
-        defaultOwner={defaultOwner}
+        defaultOwner={defaultOwner || props.authentication.user.username}
         defaultQuery={defaultQuery}
         onRepository={updateRepository}
         config={config}

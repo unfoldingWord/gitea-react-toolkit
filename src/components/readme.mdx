@@ -6,7 +6,8 @@ route: /hoc
 import { useState } from 'react';
 import { Playground, Props } from 'docz';
 import { Paper, Card, CardContent, CardHeader, Avatar } from '@material-ui/core';
-import { withAuthentication, withRepository, withBlob } from './';
+import { withAuthentication, withRepository, withBlob, withFile } from './';
+import { BlockEditable } from "markdown-translatable";
 
 # Higher Order Components
 
@@ -131,6 +132,60 @@ This example shows how the state can be managed external to the HOCs.
         onRepository={setRepository}
         blob={blob}
         onBlob={setBlob}
+      />
+    </Paper>
+  );
+}}
+</Playground>
+
+## Updating Files
+In order to update a file the authenticated user has to have write access to the repo.
+
+### Example
+This example shows how to modify a file.
+
+<Playground>
+{() => {
+  // Define your React component and optionally access blob in props.
+  function Component({
+    repository,
+    file,
+  }) {
+    const [raw, setRaw] = useState();
+    return (
+      <Card>
+        <CardHeader
+          avatar={<Avatar src={repository.owner.avatar_url} />}
+          title={<strong>{repository.full_name}</strong>}
+          subheader={file.path}
+        />
+        <CardContent>
+          <h3>File Content:</h3>
+          <button onClick={() => setRaw(!raw)}>
+            {raw ? 'Markdown' : 'HTML'}
+          </button>
+          <BlockEditable
+            raw={raw}
+            markdown={file.content}
+            onEdit={file.saveContent}
+          />
+        </CardContent>
+      </Card>
+    )
+  }
+  /** Usually you would wrap it during export at the bottom of your component's file.
+   *  export default withAuthentication(withRepository(withBlob(Component)));
+   */
+  const WrappedComponent = withAuthentication(withRepository(withBlob(withFile(Component))));
+  // Then you can use your blob wrapped component.
+  return (
+    <Paper>
+      <WrappedComponent
+        //** Pass any props as you normally would. */
+        authenticationConfig={{
+          server: "https://bg.door43.org/",
+          tokenid: "PlaygroundTesting",
+        }}
       />
     </Paper>
   );

@@ -1,5 +1,4 @@
-import { get } from '../../core/git-https/gitFile';
-import base64 from 'base-64';
+import { get } from '../../core/git-https';
 
 export const fetchTree = async ({url, config}) => {
   const _config = {
@@ -11,13 +10,6 @@ export const fetchTree = async ({url, config}) => {
   const response = await get({url, config: _config});
   const {tree} = response;
   return tree;
-};
-
-export const fetchContent = async ({url}) => {
-  const response = await get({url});
-  const {content} = response;
-  const decoded = base64.decode(content);
-  return decoded;
 };
 
 export const humanFileSize = (size=0) => {

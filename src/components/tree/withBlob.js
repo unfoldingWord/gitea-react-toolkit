@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import PropTypes from 'prop-types';
 
 import { Tree } from './Tree';
-import { fetchContent } from './helpers';
 
 function withBlobComponent(Component) {
   return function BlobComponent ({
@@ -14,12 +13,10 @@ function withBlobComponent(Component) {
 
     const hasBlob = () => (!!_blob);
 
-    const updateBlob  = async (__blob) => {
-      const content = await fetchContent({url: __blob.url});
-      __blob.content = content;
+    const updateBlob = async (__blob) => {
       if (onBlob) onBlob(__blob);
       else setBlob(__blob);
-    }
+    };
 
     let blobConfig = {};
     if (props.blobConfig) {
@@ -56,7 +53,7 @@ function withBlobComponent(Component) {
 }
 
 withBlobComponent.propTypes = {
-  /** Pass a previously returned repository object to bypass the selection. */
+  /** Pass a previously returned blob object to bypass the selection. */
   blob: PropTypes.shape({
     /** The filepath in the Git Tree Blob Object */
     path: PropTypes.string.isRequired,

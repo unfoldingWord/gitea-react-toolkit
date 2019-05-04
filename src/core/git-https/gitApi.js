@@ -1,7 +1,7 @@
 import Path from 'path';
 import base64 from 'base-64';
 
-import { get, post } from './gitFile';
+import { get, post, put } from './gitFile';
 
 const apiPath = 'api/v1';
 
@@ -120,8 +120,32 @@ export const repositorySearch = async ({owner, query, config}) => {
   return repositories;
 };
 
-// https://bg.door43.org/api/v1/repos/unfoldingWord/en_ta/git/trees/master
+// /api/v1/repos/unfoldingWord/en_ta/git/trees/master
 export const repoTreeUrl = ({full_name, branch, default_branch}) => {
   const url = Path.join(apiPath, 'repos', full_name, 'git', 'trees', branch || default_branch);
   return url;
+};
+
+// GET /api/v1/repos/{owner}/{repo}/contents/{filepath}?ref={branch}
+export const getFile = async ({owner, repo, filepath, config}) => {
+  const url = Path.join(apiPath, 'repos', owner, repo, 'contents', filepath);
+  const response = await get({url, config, noCache: true});
+  return response;
+}
+
+// PUT /api/v1/repos/{owner}/{repo}/contents/{filepath}
+export const updateFile = async ({owner, repo, filepath, payload, config}) => {
+  const url = Path.join(apiPath, 'repos', owner, repo, 'contents', filepath);
+  let response;
+  try {
+    response = await put({url, payload, config});
+  } catch(error) { response = error }
+  return response;
+}
+
+// POST /api/v1/repos/{owner}/{repo}/contents/{filepath}
+export const createFile = async ({owner, repo, filepath, payload, config}) => {
+  const url = Path.join(apiPath, 'repos', owner, repo, 'contents', filepath);
+  const response = await post({url, payload, config});
+  return response;
 }

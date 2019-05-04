@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Path from 'path';
 import { withStyles } from '@material-ui/core/styles';
 import {
   ListItem,
@@ -27,7 +28,10 @@ function BlobObjectComponent ({
   },
   onBlob,
   depth,
+  filepath,
 }) {
+  const _filepath = Path.join(filepath || '', path);
+  const _blob = {...blob, filepath: _filepath};
 
   const icon = selected ?
     <Note /> :
@@ -39,7 +43,7 @@ function BlobObjectComponent ({
       selected={selected}
       className={classes.root}
       style={{paddingLeft: depth + 'em'}}
-      onClick={() => {if (onBlob) onBlob(blob)}}
+      onClick={() => {if (onBlob) onBlob(_blob)}}
     >
       <ListItemIcon style={{ marginRight: 0 }}>
         {icon}
@@ -71,6 +75,8 @@ BlobObjectComponent.propTypes = {
   onBlob: PropTypes.func,
   /** The depth of the path in the tree sets the inset of the component. */
   depth: PropTypes.number,
+  /** The nested filepath that will concatenate. */
+  filepath: PropTypes.string,
 };
 
 BlobObjectComponent.defaultProps = {
