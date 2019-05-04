@@ -6,7 +6,7 @@ route: /hoc
 import { useState } from 'react';
 import { Playground, Props } from 'docz';
 import { Paper, Card, CardContent, CardHeader, CardActions, Avatar, IconButton } from '@material-ui/core';
-import { Code, Save, } from '@material-ui/icons';
+import { Code, Save, SaveOutlined } from '@material-ui/icons';
 import { withAuthentication, withRepository, withBlob, withFile } from './';
 import { BlockEditable } from "markdown-translatable";
 
@@ -160,6 +160,7 @@ This example expects a markdown file to be selected and uses MarkdownTranslatabl
   }) {
     const [raw, setRaw] = useState();
     const [markdown, setMarkdown] = useState(file.content);
+    const changed = (markdown !== file.content);
     return (
       <Card>
         <CardHeader
@@ -168,7 +169,6 @@ This example expects a markdown file to be selected and uses MarkdownTranslatabl
           subheader={file.path}
         />
         <CardContent>
-          <h3>File Content:</h3>
           <Paper>
             <BlockEditable
               raw={raw}
@@ -179,7 +179,9 @@ This example expects a markdown file to be selected and uses MarkdownTranslatabl
         </CardContent>
         <CardActions>
           <IconButton onClick={()=> setRaw(!raw)}><Code /></IconButton>
-          <IconButton onClick={()=> file.saveContent(markdown)}><Save /></IconButton>
+          <IconButton onClick={()=> { if (changed) file.saveContent(markdown); }}>
+            { changed ? <Save /> : <SaveOutlined /> }
+          </IconButton>
         </CardActions>
       </Card>
     )
