@@ -5,7 +5,8 @@ route: /hoc
 
 import { useState } from 'react';
 import { Playground, Props } from 'docz';
-import { Paper, Card, CardContent, CardHeader, Avatar } from '@material-ui/core';
+import { Paper, Card, CardContent, CardHeader, CardActions, Avatar, IconButton } from '@material-ui/core';
+import { Code, Save, } from '@material-ui/icons';
 import { withAuthentication, withRepository, withBlob, withFile } from './';
 import { BlockEditable } from "markdown-translatable";
 
@@ -141,8 +142,14 @@ This example shows how the state can be managed external to the HOCs.
 ## Updating Files
 In order to update a file the authenticated user has to have write access to the repo.
 
+The `withFile` HOC adds the ability to read a file contents and save changes to the file contents.
+
+```withAuthentication(withRepository(withBlob(withFile(Component))))```
+
+Requires `authentication`, `repository`, and `blob` props provided by wrapping it with the respective HOCs.
+
 ### Example
-This example shows how to modify a file.
+This example expects a markdown file to be selected and uses MarkdownTranslatable's BlockEditable component.
 
 <Playground>
 {() => {
@@ -152,6 +159,7 @@ This example shows how to modify a file.
     file,
   }) {
     const [raw, setRaw] = useState();
+    const [markdown, setMarkdown] = useState(file.content);
     return (
       <Card>
         <CardHeader
@@ -161,15 +169,18 @@ This example shows how to modify a file.
         />
         <CardContent>
           <h3>File Content:</h3>
-          <button onClick={() => setRaw(!raw)}>
-            {raw ? 'Markdown' : 'HTML'}
-          </button>
-          <BlockEditable
-            raw={raw}
-            markdown={file.content}
-            onEdit={file.saveContent}
-          />
+          <Paper>
+            <BlockEditable
+              raw={raw}
+              markdown={markdown}
+              onEdit={setMarkdown}
+            />
+          </Paper>
         </CardContent>
+        <CardActions>
+          <IconButton onClick={()=> setRaw(!raw)}><Code /></IconButton>
+          <IconButton onClick={()=> file.saveContent(markdown)}><Save /></IconButton>
+        </CardActions>
       </Card>
     )
   }
