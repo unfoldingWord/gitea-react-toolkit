@@ -6,8 +6,8 @@ export const getContent = async ({file}) => {
   return content;
 };
 
-export const saveContent = async ({content, authentication, repository, file, branch}) => {
-  const { config, user } = authentication;
+export const saveContent = async ({content, message, authentication, repository, file, branch}) => {
+  const { config, user, token } = authentication;
   const { owner: {username}, name } = repository;
   const { path, sha } = file;
   const payload = {
@@ -16,7 +16,7 @@ export const saveContent = async ({content, authentication, repository, file, br
       name: user.username,
     },
     content: base64.encode(content),
-    message: `Edit ${path}`,
+    message: message || `Edit '${path}' using ${token.name}`,
     sha,
   };
   if (branch) payload.new_branch = branch;

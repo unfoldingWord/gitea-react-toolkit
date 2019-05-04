@@ -24,11 +24,11 @@ function withFileComponent(Component) {
         filepath: filepath || blob.filepath,
         config: authentication.config,
       });
-      const content = await getContent({file: __file});
-      __file.content = content;
-      __file.saveContent = async (_content) => {
+      const _content = await getContent({file: __file});
+      __file.content = _content;
+      __file.saveContent = async (content) => {
         await saveContent({
-          content: _content,
+          content,
           authentication,
           repository,
           file: __file
