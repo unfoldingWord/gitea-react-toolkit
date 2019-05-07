@@ -1,31 +1,47 @@
 import base64 from 'base-64';
-import { get, updateFile } from '../../core/git-https';
+import { get, updateFile, getCreateFile } from '../../core/git-https';
+
+export const ensureFile = async (
+  { filepath, defaultContent, message, authentication, repository, branch }
+) => {
+  const { config } = authentication;
+  const { owner: {username}, name } = repository;
+  const _message = message || `Created '${filepath}' using '${authentication.token.name}'`;
+  const _payload = payload(
+    { content: defaultContent, message: _message, authentication, repository, branch }
+  );
+  const file = await getCreateFile(
+    { owner: username, repo: name, filepath, payload: _payload, config }
+  );
+  return file;
+};
 
 export const getContent = async ({file}) => {
   const content = await get({url: file.download_url, noCache: true});
   return content;
 };
 
+export const payload = ({content='', message, authentication, repository, file, branch}) => ({
+  author: {
+    email: authentication.user.email,
+    name: authentication.user.username,
+  },
+  content: base64.encode(content),
+  message: message || `Edit '${file.path}' using '${authentication.token.name}'`,
+  sha: (file) ? file.sha : null,
+  new_branch: branch || repository.default_branch,
+});
+
 export const saveContent = async ({content, message, authentication, repository, file, branch}) => {
-  const { config, user, token } = authentication;
+  const { config } = authentication;
   const { owner: {username}, name } = repository;
-  const { path, sha } = file;
-  const payload = {
-    author: {
-      email: user.email,
-      name: user.username,
-    },
-    content: base64.encode(content),
-    message: message || `Edit '${path}' using ${token.name}`,
-    sha,
-  };
-  if (branch) payload.new_branch = branch;
+  const { path } = file;
   const response = await updateFile({
     owner: username,
     repo: name,
     filepath: path,
-    payload,
-    config
+    payload: payload({content, message, authentication, repository, file, branch}),
+    config,
   });
   return response;
-}
+};

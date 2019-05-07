@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from 'prop-types';
 
-import { getContent, saveContent } from './helpers';
-import { getFile } from '../../core/git-https';
+import { getContent, saveContent, ensureFile } from './helpers';
 
 function withFileComponent(Component) {
   function FileComponent (props) {
@@ -10,20 +9,20 @@ function withFileComponent(Component) {
       authentication,
       repository,
       blob,
-      filepath,
       file,
       onFile,
+      fileConfig,
     } = props;
 
     const [_file, setFile] = useState(file);
 
+    const {filepath} = fileConfig || blob;
+    const defaultContent = (fileConfig) ? fileConfig.defaultContent : null;
+
     const updateFile = async () => {
-      const __file = await getFile({
-        owner: repository.owner.username,
-        repo: repository.name,
-        filepath: filepath || blob.filepath,
-        config: authentication.config,
-      });
+      const __file = await ensureFile(
+        {filepath, defaultContent, authentication, repository}
+      );
       const _content = await getContent({file: __file});
       __file.content = _content;
       __file.saveContent = async (content) => {

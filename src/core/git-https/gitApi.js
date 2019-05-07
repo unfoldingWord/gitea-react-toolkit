@@ -127,11 +127,26 @@ export const repoTreeUrl = ({full_name, branch, default_branch}) => {
 };
 
 // GET /api/v1/repos/{owner}/{repo}/contents/{filepath}?ref={branch}
+export const getCreateFile = async ({owner, repo, filepath, payload, config}) => {
+  let file;
+  const existingFile = await getFile({owner, repo, filepath, config});
+  if (existingFile) file = existingFile;
+  else {
+    const {content} = await createFile({owner, repo, filepath, payload, config});
+    file = content;
+  }
+  return file;
+};
+
+// GET /api/v1/repos/{owner}/{repo}/contents/{filepath}?ref={branch}
 export const getFile = async ({owner, repo, filepath, config}) => {
   const url = Path.join(apiPath, 'repos', owner, repo, 'contents', filepath);
-  const response = await get({url, config, noCache: true});
+  let response;
+  try {
+    response = await get({url, config, noCache: true});
+  } catch (error) { response = null }
   return response;
-}
+};
 
 // PUT /api/v1/repos/{owner}/{repo}/contents/{filepath}
 export const updateFile = async ({owner, repo, filepath, payload, config}) => {
@@ -139,13 +154,13 @@ export const updateFile = async ({owner, repo, filepath, payload, config}) => {
   let response;
   try {
     response = await put({url, payload, config});
-  } catch(error) { response = error }
+  } catch(error) { response = null }
   return response;
-}
+};
 
 // POST /api/v1/repos/{owner}/{repo}/contents/{filepath}
 export const createFile = async ({owner, repo, filepath, payload, config}) => {
   const url = Path.join(apiPath, 'repos', owner, repo, 'contents', filepath);
   const response = await post({url, payload, config});
   return response;
-}
+};
