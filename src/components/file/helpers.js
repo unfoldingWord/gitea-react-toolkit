@@ -1,5 +1,6 @@
 import base64 from 'base-64';
-import { get, updateFile, getCreateFile } from '../../core/git-https';
+import utf8 from 'utf8';
+import { get, updateFile, getCreateFile, removeFile } from '../../core/git-https';
 
 export const ensureFile = async (
   { filepath, defaultContent, message, authentication, repository, branch }
@@ -16,17 +17,33 @@ export const ensureFile = async (
   return file;
 };
 
+export const deleteFile = async (
+  { file, message, authentication, repository, branch }
+) => {
+  const { config } = authentication;
+  const { owner: {username}, name } = repository;
+  const { filepath, sha } = file;
+  const _message = message || `Deleted '${filepath}' using '${authentication.token.name}'`;
+  const _payload = payload(
+    { message: _message, authentication, repository, branch, sha }
+  );
+  const deleted = await removeFile(
+    { owner: username, repo: name, filepath, payload: _payload, config }
+  );
+  return deleted;
+};
+
 export const getContent = async ({file}) => {
   const content = await get({url: file.download_url, noCache: true});
   return content;
 };
 
-export const payload = ({content='', message, authentication, repository, file, branch}) => ({
+export const payload = ({content, message, authentication, repository, file, branch}) => ({
   author: {
     email: authentication.user.email,
     name: authentication.user.username,
   },
-  content: base64.encode(content),
+  content: base64.encode(utf8.encode(content || '')),
   message: message || `Edit '${file.path}' using '${authentication.token.name}'`,
   sha: (file) ? file.sha : null,
   new_branch: branch || repository.default_branch,

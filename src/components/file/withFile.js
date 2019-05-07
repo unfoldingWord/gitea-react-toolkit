@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from 'prop-types';
 
-import { getContent, saveContent, ensureFile } from './helpers';
+import { getContent, saveContent, ensureFile, deleteFile } from './helpers';
 
 function withFileComponent(Component) {
   function FileComponent (props) {
@@ -16,7 +16,7 @@ function withFileComponent(Component) {
 
     const [_file, setFile] = useState(file);
 
-    const {filepath} = fileConfig || blob;
+    const {filepath} = fileConfig || blob || {};
     const defaultContent = (fileConfig) ? fileConfig.defaultContent : null;
 
     const updateFile = async () => {
@@ -26,22 +26,27 @@ function withFileComponent(Component) {
       const _content = await getContent({file: __file});
       __file.content = _content;
       __file.saveContent = async (content) => {
-        await saveContent({
-          content,
-          authentication,
-          repository,
-          file: __file
-        });
+        await saveContent(
+          {content, authentication, repository, file: __file}
+        );
         // setTimeout(updateFile, 1000);
         updateFile();
       };
+      __file.delete = async () => {
+        const deleted = await deleteFile({authentication, repository, file: __file});
+        if (deleted) {
+          if (onFile) onFile();
+          else setFile();
+        }
+        return deleted;
+      }
       if (onFile) onFile(__file);
       else setFile(__file);
     };
 
     let component = <div />;
     if (_file) component = <Component {...props} file={_file} />;
-    else updateFile();
+    else if (filepath) updateFile();
 
     return component;
   }

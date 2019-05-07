@@ -1,7 +1,8 @@
 import Path from 'path';
 import base64 from 'base-64';
+import utf8 from 'utf8';
 
-import { get, post, put } from './gitFile';
+import { get, post, put, remove } from './gitFile';
 
 const apiPath = 'api/v1';
 
@@ -70,7 +71,8 @@ export const encodeAuthentication = ({username, password, token}) => {
     let sha1 = typeof token === 'object' ? token.sha1 : token;
     authentication = `token ${sha1}`;
   } else if (username && password) {
-    authentication = 'Basic ' + base64.encode(`${username}:${password}`);
+    const encoded = base64.encode(utf8.encode(`${username}:${password}`));
+    authentication = 'Basic ' + encoded;
   }
   return authentication;
 };
@@ -126,7 +128,6 @@ export const repoTreeUrl = ({full_name, branch, default_branch}) => {
   return url;
 };
 
-// GET /api/v1/repos/{owner}/{repo}/contents/{filepath}?ref={branch}
 export const getCreateFile = async ({owner, repo, filepath, payload, config}) => {
   let file;
   const existingFile = await getFile({owner, repo, filepath, config});
@@ -162,5 +163,15 @@ export const updateFile = async ({owner, repo, filepath, payload, config}) => {
 export const createFile = async ({owner, repo, filepath, payload, config}) => {
   const url = Path.join(apiPath, 'repos', owner, repo, 'contents', filepath);
   const response = await post({url, payload, config});
+  return response;
+};
+
+// DELETE /api/v1/repos/{owner}/{repo}/contents/{filepath}?ref={branch}
+export const removeFile = async ({owner, repo, filepath, config}) => {
+  const url = Path.join(apiPath, 'repos', owner, repo, 'contents', filepath);
+  let response;
+  try {
+    response = await remove({url, config, noCache: true});
+  } catch (error) { response = null }
   return response;
 };
