@@ -220,6 +220,8 @@ Requires `authentication`, and `repository` props provided by wrapping it with t
 This example expects a filepath to be given, and creates it if it doesn't already exist.
 It will use BlockEditable component to populate the contents.
 
+This example manages application state to remove the need to login and select repo each time you change filepath.
+
 <Playground>
 {() => {
   // Define your React component and optionally access blob in props.
