@@ -83,7 +83,7 @@ export const getTree = async ({url, config}) => {
   return listing;
 };
 
-// http://bg.door43.org/api/v1/repos/unfoldingword/en_ugl/git/trees/master
+// http://git.door43.org/api/v1/repos/unfoldingword/en_ugl/git/trees/master
 export const fetchTree = async ({owner, repository, sha='master', config}) => {
   try {
     const url = Path.join(apiPath, 'repos', owner, repository, 'git/trees', sha);
