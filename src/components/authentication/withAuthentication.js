@@ -22,7 +22,7 @@ function withAuthenticationComponent(Component) {
       else setAuth(_auth);
     }
 
-    const authenticationError = (
+    const authComponent = (
       <Authentication
         messages={messages}
         config={config}
@@ -30,12 +30,9 @@ function withAuthenticationComponent(Component) {
       />
     );
 
-    let component = <Component {...props} authentication={auth} />;
-    if (!isAuthenticated()) {
-      component = authenticationError;
-    }
+    const component = <Component {...props} authentication={auth} />;
 
-    return component;
+    return isAuthenticated() ? component : authComponent;
   }
 }
 
