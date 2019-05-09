@@ -46,9 +46,8 @@ function withBlobComponent(Component) {
     );
 
     let component = <Component {...props} blob={_blob} />;
-    if (!hasBlob()) component = treeComponent;
 
-    return component;
+    return hasBlob() ? component : treeComponent;
   }
 }
 

@@ -16,6 +16,8 @@ function withFileComponent(Component) {
 
     const [_file, setFile] = useState(file);
 
+    const hasFile = () => !!_file;
+
     const {filepath} = fileConfig || blob || {};
     const defaultContent = (fileConfig) ? fileConfig.defaultContent : null;
 
@@ -44,11 +46,13 @@ function withFileComponent(Component) {
       else setFile(__file);
     };
 
-    let component = <div />;
-    if (_file) component = <Component {...props} file={_file} />;
-    else if (filepath) updateFile();
+    const fallbackComponent = <div />;
 
-    return component;
+    const component = <Component {...props} file={_file} />;
+
+    if (!hasFile() && filepath) updateFile();
+
+    return hasFile() ? component : fallbackComponent;
   }
 
   FileComponent.propTypes = {

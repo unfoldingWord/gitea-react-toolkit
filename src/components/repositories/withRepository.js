@@ -52,13 +52,13 @@ function withRepositoryComponent(Component) {
       />
     );
 
-    let component = <Component {...props} repository={repo} />;
-    if (!hasRepository()) {
-      if (urls || repositories) component = repositoriesComponent;
-      else if (config) component = searchComponent;
-    }
+    let fallbackComponent = <div />;
+    if (urls || repositories) fallbackComponent = repositoriesComponent;
+    else if (config) fallbackComponent = searchComponent;
 
-    return component;
+    const component = <Component {...props} repository={repo} />;
+
+    return hasRepository() ? component : fallbackComponent;
   }
 }
 
