@@ -34,31 +34,32 @@ function withRepositoryComponent(Component) {
       else setRepo(_repo);
     }
 
-    const searchComponent = (
-      <Search
-        defaultOwner={defaultOwner || props.authentication.user.username}
-        defaultQuery={defaultQuery}
-        onRepository={updateRepository}
-        config={config}
-      />
-    );
+    let component = <div />;
+    if (!hasRepository() && (urls || repositories)) {
+      component = (
+        <Repositories
+          urls={urls}
+          repositories={repositories}
+          onRepository={updateRepository}
+          config={config}
+        />
+      );
+    } else if (!hasRepository() && config) {
+      component = (
+        <Search
+          defaultOwner={defaultOwner || props.authentication.user.username}
+          defaultQuery={defaultQuery}
+          onRepository={updateRepository}
+          config={config}
+        />
+      );
+    }
 
-    const repositoriesComponent = (
-      <Repositories
-        urls={urls}
-        repositories={repositories}
-        onRepository={updateRepository}
-        config={config}
-      />
-    );
+    if (hasRepository()) {
+      component = <Component {...props} repository={repo} />;
+    }
 
-    let fallbackComponent = <div />;
-    if (urls || repositories) fallbackComponent = repositoriesComponent;
-    else if (config) fallbackComponent = searchComponent;
-
-    const component = <Component {...props} repository={repo} />;
-
-    return hasRepository() ? component : fallbackComponent;
+    return component;
   }
 }
 

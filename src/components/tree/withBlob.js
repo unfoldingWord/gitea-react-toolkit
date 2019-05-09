@@ -34,20 +34,25 @@ function withBlobComponent(Component) {
       config,
     } = blobConfig;
 
-    const treeComponent = (
-      <Tree
-        tree={tree}
-        url={url}
-        config={config}
-        selected={true}
-        onBlob={updateBlob}
-        {...blobConfig}
-      />
-    );
+    let component = <div />;
+    if (!hasBlob() && (tree || url)) {
+      component = (
+        <Tree
+          tree={tree}
+          url={url}
+          config={config}
+          selected={true}
+          onBlob={updateBlob}
+          {...blobConfig}
+        />
+      );
+    }
 
-    let component = <Component {...props} blob={_blob} />;
+    if (hasBlob()) {
+      component = <Component {...props} blob={_blob} />;
+    }
 
-    return hasBlob() ? component : treeComponent;
+    return component;
   }
 }
 

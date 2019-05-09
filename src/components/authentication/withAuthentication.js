@@ -22,17 +22,22 @@ function withAuthenticationComponent(Component) {
       else setAuth(_auth);
     }
 
-    const authComponent = (
-      <Authentication
-        messages={messages}
-        config={config}
-        onAuthentication={updateAuthentication}
-      />
-    );
+    let component = <div />;
+    if (!isAuthenticated() && config) {
+      component = (
+        <Authentication
+          messages={messages}
+          config={config}
+          onAuthentication={updateAuthentication}
+        />
+      );
+    }
 
-    const component = <Component {...props} authentication={auth} />;
+    if (isAuthenticated()) {
+      component = <Component {...props} authentication={auth} />;
+    }
 
-    return isAuthenticated() ? component : authComponent;
+    return  component;
   }
 }
 

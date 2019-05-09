@@ -46,13 +46,14 @@ function withFileComponent(Component) {
       else setFile(__file);
     };
 
-    const fallbackComponent = <div />;
-
-    const component = <Component {...props} file={_file} />;
-
     if (!hasFile() && filepath) updateFile();
 
-    return hasFile() ? component : fallbackComponent;
+    let component = <div />;
+    if (hasFile()) {
+      component = <Component {...props} file={_file} />;
+    }
+
+    return component;
   }
 
   FileComponent.propTypes = {
