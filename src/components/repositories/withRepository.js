@@ -45,9 +45,11 @@ function withRepositoryComponent(Component) {
         />
       );
     } else if (!hasRepository() && config) {
+      let username;
+      if (props.authentication) username = props.authentication.user.username;
       component = (
         <Search
-          defaultOwner={defaultOwner || props.authentication.user.username}
+          defaultOwner={defaultOwner || username}
           defaultQuery={defaultQuery}
           onRepository={updateRepository}
           config={config}
@@ -56,7 +58,7 @@ function withRepositoryComponent(Component) {
     }
 
     if (hasRepository()) {
-      component = <Component {...props} repository={repo} />;
+      component = <Component {...props} repository={repo} blobConfig={config} />;
     }
 
     return component;

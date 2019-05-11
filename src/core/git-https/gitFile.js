@@ -76,8 +76,9 @@ export const put = async ({url, payload, config}) => {
   return data;
 };
 
-export const remove = async ({url, config}) => {
+export const remove = async ({url, payload, config}) => {
   if (config.server) config.baseURL = config.server;
+  config.data = payload;
   const {data} = await axios.delete(url, config);
   return data;
 };

@@ -13,16 +13,12 @@ function withBlobComponent(Component) {
 
     const hasBlob = () => (!!_blob);
 
-    const updateBlob = async (__blob) => {
-      if (onBlob) onBlob(__blob);
-      else setBlob(__blob);
-    };
-
     let blobConfig = {};
     if (props.blobConfig) {
       let {url, tree, ...config} = props.blobConfig;
       blobConfig = {url, tree, config};
-    } else if (props.repository) {
+    }
+    if (props.repository && !blobConfig.url) {
       blobConfig.url = props.repository.tree_url;
     }
     if (props.authentication) {
@@ -33,6 +29,12 @@ function withBlobComponent(Component) {
       tree,
       config,
     } = blobConfig;
+
+    const updateBlob = async (__blob) => {
+      if (onBlob) onBlob(__blob);
+      else setBlob(__blob);
+    };
+    config.updateBlob = updateBlob;
 
     let component = <div />;
     if (!hasBlob() && (tree || url)) {
@@ -49,7 +51,7 @@ function withBlobComponent(Component) {
     }
 
     if (hasBlob()) {
-      component = <Component {...props} blob={_blob} />;
+      component = <Component {...props} blob={_blob} fileConfig={config} />;
     }
 
     return component;

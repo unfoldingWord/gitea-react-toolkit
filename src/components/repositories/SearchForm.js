@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import {
-  InputBase,
   IconButton,
   ListItem,
   ListItemIcon,
@@ -12,9 +11,11 @@ import {
 } from '@material-ui/icons';
 import AwesomeDebouncePromise from 'awesome-debounce-promise';
 
+import { FormInput } from '../authentication';
+
 import { repositorySearch } from '../../core/git-https';
 
-const repositorySearchDebounced = AwesomeDebouncePromise(repositorySearch, 500);
+const repositorySearchDebounced = AwesomeDebouncePromise(repositorySearch, 250);
 
 function SearchFormComponent({
   classes,
@@ -50,7 +51,7 @@ function SearchFormComponent({
   return (
     <ListItem
       ContainerComponent="div"
-      className={classes.search}
+      className={classes.root}
     >
       <ListItemIcon style={{marginRight: '8px'}}>
         <IconButton
@@ -59,24 +60,22 @@ function SearchFormComponent({
           <Search />
         </IconButton>
       </ListItemIcon>
-      <InputBase
-        placeholder="Owner…"
-        defaultValue={owner}
-        classes={{
-          root: classes.inputRoot,
-          input: classes.inputInput,
-        }}
-        onChange={(event) => {onOwner(event.target.value)}}
-      />
-      <InputBase
-        placeholder="Search…"
-        defaultValue={query}
-        classes={{
-          root: classes.inputRoot,
-          input: classes.inputInput,
-        }}
-        onChange={(event) => {onQuery(event.target.value)}}
-      />
+      <form className={classes.form}>
+        <div className={classes.input}>
+          <FormInput
+            id='owner' label='Owner' type='text'
+            defaultValue={owner}
+            onChange={(event) => {onOwner(event.target.value)}}
+          />
+        </div>
+        <div className={classes.input}>
+          <FormInput
+            id='search' label='Search' type='text'
+            defaultValue={query} autoFocus
+            onChange={(event) => {onQuery(event.target.value)}}
+          />
+        </div>
+      </form>
     </ListItem>
   );
 }
@@ -96,15 +95,19 @@ SearchFormComponent.propTypes = {
 };
 
 const styles = (theme) => ({
-  search: {
+  root: {
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
     marginLeft: 0,
     width: '100%',
   },
-  inputRoot: {
+  form: {
+    width: '100%',
   },
-  inputInput: {
+  input: {
+    width: '40%',
+    display: 'inline-block',
+    marginRight: '1em',
   }
 });
 

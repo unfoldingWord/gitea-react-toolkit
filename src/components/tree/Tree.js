@@ -32,7 +32,7 @@ function TreeComponent ({
     setTree(__tree);
   };
 
-  const emptyTree = (!_tree || _tree.length === 0)
+  const emptyTree = (!_tree || _tree.length === 0);
   if (selected && emptyTree) {
     updateTree();
   }

@@ -35,7 +35,7 @@ function TreeObjectComponent ({
     <FolderOpen />;
 
   return (
-    <div>
+    <>
       <ListItem
         button
         selected={selected}
@@ -59,7 +59,7 @@ function TreeObjectComponent ({
         depth={depth + 1}
         filepath={_filepath}
       />
-    </div>
+    </>
   );
 }
 

@@ -3,16 +3,20 @@ import utf8 from 'utf8';
 import { get, updateFile, getCreateFile, removeFile } from '../../core/git-https';
 
 export const ensureFile = async (
-  { filepath, defaultContent, message, authentication, repository, branch }
+  { filepath, defaultContent, message, authentication, repository, config, branch }
 ) => {
-  const { config } = authentication;
+  let _config = config;
+  if (authentication) _config = authentication.config;
   const { owner: {username}, name } = repository;
-  const _message = message || `Created '${filepath}' using '${authentication.token.name}'`;
-  const _payload = payload(
-    { content: defaultContent, message: _message, authentication, repository, branch }
-  );
+  let _payload;
+  if (authentication) {
+    const _message = message || `Created '${filepath}' using '${authentication.token.name}'`;
+    _payload = payload(
+      { content: defaultContent, message: _message, authentication, repository, branch }
+    );
+  }
   const file = await getCreateFile(
-    { owner: username, repo: name, filepath, payload: _payload, config }
+    { owner: username, repo: name, filepath, payload: _payload, config: _config }
   );
   return file;
 };
@@ -22,14 +26,16 @@ export const deleteFile = async (
 ) => {
   const { config } = authentication;
   const { owner: {username}, name } = repository;
-  const { filepath, sha } = file;
+  const { filepath } = file;
   const _message = message || `Deleted '${filepath}' using '${authentication.token.name}'`;
-  const _payload = payload(
-    { message: _message, authentication, repository, branch, sha }
-  );
-  const deleted = await removeFile(
-    { owner: username, repo: name, filepath, payload: _payload, config }
-  );
+  const _payload = payload({message: _message, authentication, repository, file, branch});
+  const deleted = await removeFile({
+    owner: username,
+    repo: name,
+    filepath,
+    payload: _payload,
+    config,
+  });
   return deleted;
 };
 

@@ -1,0 +1,309 @@
+---
+name: File
+route: /file
+---
+
+import { useState } from 'react';
+import { Playground, Props } from 'docz';
+import { Paper, Card, CardContent, CardHeader, CardActions, Avatar, IconButton, Button } from '@material-ui/core';
+import { Code, Save, SaveOutlined, DeleteForever } from '@material-ui/icons';
+import { withAuthentication, withRepository, withBlob, withFile } from '../';
+import { FormInput } from '../authentication';
+import { BlockEditable } from "markdown-translatable";
+
+# File HOC
+The `withFile` HOC adds the ability to read a file contents, create a new file and save changes to a file's content.
+
+```withAuthentication(withRepository(withBlob(withFile(Component))))```
+
+Requires `authentication`, `repository`, and `blob` (or `filepath`) props provided by wrapping it with the respective HOCs.
+
+- `withAuthentication` and 'authentication' are only required for creating and updating files.
+- `withBlob` and `blob` prop is optional, but then the `filepath` prop is required.
+
+See [Higher Order Components](/hoc) for more details on using HOCs.
+
+## Reading Files
+Reading files only requires a `repository` and either a `blob` or a `filepath`.
+
+```withRepository(withBlob(withFile(Component)))```
+
+### Example
+
+<Playground>
+{() => {
+  // Define your React component and optionally access blob in props.
+  function Component({
+    repository,
+    file,
+  }) {
+    return (
+      <Card>
+        <CardHeader
+          avatar={<Avatar src={repository.owner.avatar_url} />}
+          title={<strong>{file.path}</strong>}
+          subheader={repository.full_name}
+        />
+        <CardContent>
+          <Paper>
+            <pre>
+              {
+                typeof file.content === 'string' ?
+                file.content :
+                JSON.stringify(file.content, null, 2)
+              }
+            </pre>
+          </Paper>
+        </CardContent>
+      </Card>
+    )
+  }
+  /** Usually you would wrap it during export at the bottom of your component's file.
+   *  export default withAuthentication(withRepository(withBlob(Component)));
+   */
+  const WrappedComponent = withRepository(withBlob(withFile(Component)));
+  // Then you can use your blob wrapped component.
+  return (
+    <Paper>
+      <WrappedComponent
+        //** Pass any props as you normally would. */
+        repositoryConfig={{
+          server: "https://git.door43.org/",
+          tokenid: "PlaygroundTesting",
+        }}
+      />
+    </Paper>
+  );
+}}
+</Playground>
+
+## Updating Files
+In order to update a file the authenticated user has to have write access to the repo.
+
+```withAuthentication(withRepository(withBlob(withFile(Component))))```
+
+### Example
+This example expects a markdown file to be selected and uses MarkdownTranslatable's BlockEditable component.
+
+<Playground>
+{() => {
+  // Define your React component and optionally access blob in props.
+  function Component({
+    repository,
+    file,
+  }) {
+    const [raw, setRaw] = useState();
+    const [markdown, setMarkdown] = useState(file.content);
+    const changed = (markdown !== file.content);
+    return (
+      <Card>
+        <CardHeader
+          avatar={<Avatar src={repository.owner.avatar_url} />}
+          title={<strong>{file.path}</strong>}
+          subheader={repository.full_name}
+        />
+        <CardContent>
+          <Paper>
+            <BlockEditable
+              raw={raw}
+              markdown={markdown}
+              onEdit={setMarkdown}
+            />
+          </Paper>
+        </CardContent>
+        <CardActions>
+          <IconButton onClick={()=> setRaw(!raw)}><Code /></IconButton>
+          <IconButton onClick={()=> { if (changed) file.saveContent(markdown); }}>
+            { changed ? <Save /> : <SaveOutlined /> }
+          </IconButton>
+        </CardActions>
+      </Card>
+    )
+  }
+  /** Usually you would wrap it during export at the bottom of your component's file.
+   *  export default withAuthentication(withRepository(withBlob(Component)));
+   */
+  const WrappedComponent = withAuthentication(withRepository(withBlob(withFile(Component))));
+  // Then you can use your blob wrapped component.
+  return (
+    <Paper>
+      <WrappedComponent
+        //** Pass any props as you normally would. */
+        authenticationConfig={{
+          server: "https://git.door43.org/",
+          tokenid: "PlaygroundTesting",
+        }}
+      />
+    </Paper>
+  );
+}}
+</Playground>
+
+
+## Creating Files
+In order to create a file the authenticated user has to have write access to the repo.
+
+The `withFile` HOC adds the ability to create a file, with the `filepath` and `defaultContent`.
+
+For creating files, a `filepath` for a non-existing file is required and incompatible with `withBlob` HOC and `blob` prop.
+
+```withAuthentication(withRepository(withFile(Component)))```
+
+Requires `authentication`, and `repository` props provided by wrapping it with the respective HOCs.
+
+### Example
+This example expects a filepath to be given, and creates it if it doesn't already exist.
+It will use BlockEditable component to populate the contents.
+
+This example manages application state to remove the need to login and select repo each time you change filepath.
+
+<Playground>
+{() => {
+  // Define your React component and optionally access blob in props.
+  function Component({
+    repository,
+    file,
+  }) {
+    const [raw, setRaw] = useState();
+    const [markdown, setMarkdown] = useState(file.content);
+    const changed = (markdown !== file.content);
+    return (
+      <Card>
+        <CardHeader
+          avatar={<Avatar src={repository.owner.avatar_url} />}
+          title={<strong>{file.path}</strong>}
+          subheader={repository.full_name}
+        />
+        <CardContent>
+          <Paper>
+            <BlockEditable
+              raw={raw}
+              markdown={markdown}
+              onEdit={setMarkdown}
+            />
+          </Paper>
+        </CardContent>
+        <CardActions>
+          <IconButton onClick={()=> setRaw(!raw)}><Code /></IconButton>
+          <IconButton onClick={()=> { if (changed) file.saveContent(markdown); }}>
+            { changed ? <Save /> : <SaveOutlined /> }
+          </IconButton>
+        </CardActions>
+      </Card>
+    )
+  }
+  /** Usually you would wrap it during export at the bottom of your component's file.
+   *  export default withAuthentication(withRepository(withBlob(Component)));
+   */
+  const WrappedComponent = withAuthentication(withRepository(withFile(Component)));
+  // Then you can use your blob wrapped component.
+  const [authentication, setAuthentication] = useState();
+  const [repository, setRepository] = useState();
+  const [filepath, setFilepath] = useState();
+  const [defaultContent, setDefaultContent] = useState();
+  const [fileConfig, setFileConfig] = useState();
+  return (
+    <>
+      <Paper style={{marginBottom: '1em', padding: '1.3em'}}>
+        <form>
+          <button type="submit" disabled style={{display: 'none'}} aria-hidden="true"></button>
+          <FormInput
+            id='filepath' label='filepath' type='text' autoComplete={undefined}
+            onChange={(e) => setFilepath(e.target.value)}
+          />
+          <FormInput
+            id='defaultContent' label='defaultContent' type='text' multiline={true} autoComplete={undefined}
+            onChange={(e) => setDefaultContent(e.target.value)}
+          />
+          <Button type="button" disabled={!(authentication && repository && filepath)} fullWidth variant="contained" color="primary"
+            onClick={() => setFileConfig({ filepath, defaultContent })}
+          >
+            Create
+          </Button>
+        </form>
+      </Paper>
+      <Paper>
+        <WrappedComponent
+          //** Pass any props as you normally would. */
+          authenticationConfig={{
+            server: "https://git.door43.org/",
+            tokenid: "PlaygroundTesting",
+          }}
+          authentication={authentication}
+          onAuthentication={setAuthentication}
+          repository={repository}
+          onRepository={setRepository}
+          fileConfig={fileConfig}
+        />
+      </Paper>
+    </>
+  );
+}}
+</Playground>
+
+
+## Deleting Files
+In order to delete a file the authenticated user has to have write access to the repo.
+
+```withAuthentication(withRepository(withBlob(withFile(Component))))```
+
+### Example
+This example expects any file file to be selected and will allow you to delete a file after you view it.
+
+<Playground>
+{() => {
+  // Define your React component and optionally access blob in props.
+  function Component({
+    repository,
+    file,
+  }) {
+    return (
+      <Card>
+        <CardHeader
+          avatar={<Avatar src={repository.owner.avatar_url} />}
+          title={<strong>{file.path}</strong>}
+          subheader={repository.full_name}
+        />
+        <CardContent>
+          <Paper>
+            <pre>
+              {
+                typeof file.content === 'string' ?
+                file.content :
+                JSON.stringify(file.content, null, 2)
+              }
+            </pre>
+          </Paper>
+        </CardContent>
+        <CardActions>
+          <IconButton onClick={()=> {
+            const message = `Are you sure you want to delete ${file.filepath}?`;
+            const confirmation = confirm(message);
+            if (confirmation) {
+              file.dangerouslyDelete();
+            }
+          }}>
+            <DeleteForever />
+          </IconButton>
+        </CardActions>
+      </Card>
+    )
+  }
+  /** Usually you would wrap it during export at the bottom of your component's file.
+   *  export default withAuthentication(withRepository(withBlob(Component)));
+   */
+  const WrappedComponent = withAuthentication(withRepository(withBlob(withFile(Component))));
+  // Then you can use your blob wrapped component.
+  return (
+    <Paper>
+      <WrappedComponent
+        //** Pass any props as you normally would. */
+        authenticationConfig={{
+          server: "https://git.door43.org/",
+          tokenid: "PlaygroundTesting",
+        }}
+      />
+    </Paper>
+  );
+}}
+</Playground>

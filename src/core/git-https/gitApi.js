@@ -9,11 +9,13 @@ const apiPath = 'api/v1';
 export const authenticate = async ({username='', password='', config}) => {
   let authentication = {config};
   if (username) authentication.user = await getUser({username, config});
-  if (password) {
-    const tokens = await getTokens({username, password, config}) || [];
-    const tokenMatches = tokens.filter(_token => _token.name === config.tokenid);
-    if (tokenMatches.length > 0) authentication.token = tokenMatches[0];
-    else authentication.token = await createToken({username, password, config});
+  if (username && password) {
+    const tokens = await getTokens({username, password, config});
+    if (tokens) {
+      const tokenMatches = tokens.filter(_token => _token.name === config.tokenid);
+      if (tokenMatches.length > 0) authentication.token = tokenMatches[0];
+      else authentication.token = await createToken({username, password, config});
+    }
   }
   return authentication;
 };
@@ -46,7 +48,7 @@ export const getTokens = async ({username, password, config}) => {
   };
   try {
     tokens = await get({url, config});
-  } catch { tokens = []; }
+  } catch { tokens = null; }
   return tokens;
 };
 
@@ -167,11 +169,11 @@ export const createFile = async ({owner, repo, filepath, payload, config}) => {
 };
 
 // DELETE /api/v1/repos/{owner}/{repo}/contents/{filepath}?ref={branch}
-export const removeFile = async ({owner, repo, filepath, config}) => {
+export const removeFile = async ({owner, repo, filepath, payload, config}) => {
   const url = Path.join(apiPath, 'repos', owner, repo, 'contents', filepath);
   let response;
   try {
-    response = await remove({url, config, noCache: true});
+    response = await remove({url, payload, config});
   } catch (error) { response = null }
   return response;
 };

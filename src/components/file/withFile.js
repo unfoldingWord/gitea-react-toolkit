@@ -15,38 +15,51 @@ function withFileComponent(Component) {
     } = props;
 
     const [_file, setFile] = useState(file);
+    const [deleted, setDeleted] = useState();
 
     const hasFile = () => !!_file;
 
-    const {filepath} = fileConfig || blob || {};
-    const defaultContent = (fileConfig) ? fileConfig.defaultContent : null;
+    let filepath, defaultContent;
+
+    if (fileConfig) {
+      filepath = fileConfig.filepath;
+      defaultContent = fileConfig.defaultContent;
+    }
+    if (blob) {
+      filepath = blob.filepath;
+    }
 
     const updateFile = async () => {
       const __file = await ensureFile(
-        {filepath, defaultContent, authentication, repository}
+        {filepath, defaultContent, authentication, config: fileConfig, repository}
       );
       const _content = await getContent({file: __file});
       __file.content = _content;
-      __file.saveContent = async (content) => {
-        await saveContent(
-          {content, authentication, repository, file: __file}
-        );
-        // setTimeout(updateFile, 1000);
-        updateFile();
-      };
-      __file.delete = async () => {
-        const deleted = await deleteFile({authentication, repository, file: __file});
-        if (deleted) {
-          if (onFile) onFile();
-          else setFile();
+      __file.filepath = __file.path;
+      if (repository.permissions.push) {
+        __file.saveContent = async (content) => {
+          await saveContent(
+            {content, authentication, repository, file: __file}
+          );
+          // setTimeout(updateFile, 1000);
+          updateFile();
+        };
+        __file.dangerouslyDelete = async () => {
+          const _deleted = await deleteFile({authentication, repository, file: __file});
+          if (_deleted) {
+            setDeleted(true);
+            if (onFile) onFile();
+            else setFile();
+            if (fileConfig.updateBlob) fileConfig.updateBlob();
+          }
+          return deleted;
         }
-        return deleted;
       }
       if (onFile) onFile(__file);
       else setFile(__file);
     };
 
-    if (!hasFile() && filepath) updateFile();
+    if (!hasFile() && filepath && !deleted) updateFile();
 
     let component = <div />;
     if (hasFile()) {
@@ -88,7 +101,7 @@ function withFileComponent(Component) {
         username: PropTypes.string.isRequired,
         email: PropTypes.string.isRequired,
       }).isRequired,
-    }).isRequired,
+    }),
     /** Repository tree_url can be used in place of blobConfig */
     repository: PropTypes.shape({
       owner: PropTypes.shape({

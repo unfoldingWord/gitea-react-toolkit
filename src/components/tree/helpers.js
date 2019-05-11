@@ -3,7 +3,7 @@ import { get } from '../../core/git-https';
 export const fetchTree = async ({url, config}) => {
   const _config = {
     cache: {
-      maxAge: 2 * 60 * 1000 // 2 min cache override
+      maxAge: 1 * 2 * 1000 // 2 sec cache override
     },
     ...config
   };

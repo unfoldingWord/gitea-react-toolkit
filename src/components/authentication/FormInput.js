@@ -10,21 +10,31 @@ import {
 function FormInputComponent ({
   id,
   label,
+  defaultValue,
   autoFocus,
   onChange,
   onBlur,
   type,
+  autoComplete,
+  multiline,
+  required,
 }) {
   return (
-    <FormControl margin="normal" required fullWidth>
+    <FormControl margin="normal" required={required} fullWidth>
       <InputLabel htmlFor={id}>
         {label}
       </InputLabel>
       <Input
-        id={id} name={id} autoComplete={id} autoFocus={autoFocus}
+        id={id + '-' + Math.random()}
+        name={id}
+        autoComplete={autoComplete || id}
+        multiline={multiline}
+        autoFocus={autoFocus}
         type={type}
+        defaultValue={defaultValue}
         onChange={onChange}
         onBlur={onBlur}
+        required={required}
       />
     </FormControl>
   );
@@ -46,16 +56,23 @@ FormInputComponent.propTypes = {
   ]).isRequired,
   /** The label of the field. */
   label: PropTypes.string.isRequired,
+  /** Prepopulate the default value. */
+  defaultValue: PropTypes.string,
   /** The function to propogate changes. */
   onChange: PropTypes.func,
   /** The function to propogate changes. */
   onBlur: PropTypes.func,
   /** Set if this field should be selected on load. */
   autoFocus: PropTypes.bool,
+  /** String to identify autoFill field. */
+  autoComplete: PropTypes.string,
+  /** Set if this field should be a textbox. */
+  multiline: PropTypes.bool,
+  /** Set if this field should be required. */
+  required: PropTypes.bool,
 };
 
 FormInputComponent.defaultProps = {
-  actionText: 'Login',
 }
 
 const styles = theme => ({

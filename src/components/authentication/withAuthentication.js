@@ -15,7 +15,7 @@ function withAuthenticationComponent(Component) {
   }) {
     const [auth, setAuth] = useState(authentication);
 
-    const isAuthenticated = () => (auth && auth.token && auth.user);
+    const isAuthenticated = () => (auth && auth.token && auth.token && auth.user);
 
     const updateAuthentication = (_auth) => {
       if (onAuthentication) onAuthentication(_auth);

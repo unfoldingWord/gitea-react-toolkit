@@ -23,10 +23,10 @@ function LoginFormComponent({
   const [formData, setFormData] = useState({});
 
   const updateFormData = (event) => {
-    const {type, id, value, checked} = event.target;
+    const {type, id, name, value, checked} = event.target;
     let _formData = {...formData};
     if (type === 'checkbox') _formData[id] = checked;
-    else _formData[id] = value;
+    else _formData[name] = value;
     setFormData(_formData);
   };
 
@@ -42,17 +42,17 @@ function LoginFormComponent({
         {errorText}
       </Typography>
       <form className={classes.form}>
-        <FormInput id="username" type="text" label="Username"
+        <FormInput id="username" type="text" label="Username" required
           onChange={updateFormData}
         />
-        <FormInput id="password" type="password" label="Password"
+        <FormInput id="password" type="password" label="Password" required
           onChange={updateFormData}
         />
         <FormControlLabel
           label="Remember me"
           control={
             <Checkbox color="primary" value="remember"
-              id="remember" onChange={updateFormData} />
+              id={'remember-' + Math.random()} onChange={updateFormData} />
           }
         />
         <Button type="button" fullWidth variant="contained" color="primary"
