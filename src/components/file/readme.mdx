@@ -1,5 +1,5 @@
 ---
-name: File
+name: File CRUD
 route: /file
 ---
 
@@ -12,18 +12,18 @@ import { FormInput } from '../authentication';
 import { BlockEditable } from "markdown-translatable";
 
 # File HOC
-The `withFile` HOC adds the ability to read a file contents, create a new file and save changes to a file's content.
+The `withFile` HOC adds the ability to create, read, update and delete a file.
 
 ```withAuthentication(withRepository(withBlob(withFile(Component))))```
 
 Requires `authentication`, `repository`, and `blob` (or `filepath`) props provided by wrapping it with the respective HOCs.
 
-- `withAuthentication` and 'authentication' are only required for creating and updating files.
+- `withAuthentication` and 'authentication' are only required for `create`, `update`, and `delete`.
 - `withBlob` and `blob` prop is optional, but then the `filepath` prop is required.
 
 See [Higher Order Components](/hoc) for more details on using HOCs.
 
-## Reading Files
+## Read
 Reading files only requires a `repository` and either a `blob` or a `filepath`.
 
 ```withRepository(withBlob(withFile(Component)))```
@@ -77,7 +77,7 @@ Reading files only requires a `repository` and either a `blob` or a `filepath`.
 }}
 </Playground>
 
-## Updating Files
+## Update
 In order to update a file the authenticated user has to have write access to the repo.
 
 ```withAuthentication(withRepository(withBlob(withFile(Component))))```
@@ -140,7 +140,7 @@ This example expects a markdown file to be selected and uses MarkdownTranslatabl
 </Playground>
 
 
-## Creating Files
+## Create
 In order to create a file the authenticated user has to have write access to the repo.
 
 The `withFile` HOC adds the ability to create a file, with the `filepath` and `defaultContent`.
@@ -242,7 +242,7 @@ This example manages application state to remove the need to login and select re
 </Playground>
 
 
-## Deleting Files
+## Delete
 In order to delete a file the authenticated user has to have write access to the repo.
 
 ```withAuthentication(withRepository(withBlob(withFile(Component))))```
