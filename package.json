@@ -37,18 +37,19 @@
   "peerDependencies": {
     "@material-ui/core": "^3.9.3",
     "@material-ui/icons": "^3.0.2",
-    "react": "latest"
+    "react": "next",
+    "react-dom": "next"
   },
   "devDependencies": {
     "@material-ui/core": "^3.9.3",
     "@material-ui/icons": "^3.0.2",
     "babel-eslint": "^10.0.1",
-    "docz": "1.1.0",
-    "docz-theme-default": "1.1.0",
+    "docz": "1.2.0",
+    "docz-theme-default": "1.2.0",
     "eslint": "^5.3.0",
     "eslint-plugin-react": "^7.12.4",
-    "react": "latest",
-    "react-dom": "latest"
+    "react": "next",
+    "react-dom": "next"
   },
   "main": "dist/index.js",
   "files": [

@@ -12,7 +12,7 @@ function withRepositoryComponent(Component) {
   }) {
     const [repo, setRepo] = useState(repository);
 
-    let repositoryConfig;
+    let repositoryConfig = {};
     if (props.repositoryConfig) {
       const {repositories, urls, defaultOwner, defaultQuery, ...config} = props.repositoryConfig;
       repositoryConfig = {repositories, urls, defaultOwner, defaultQuery, config};
@@ -30,6 +30,7 @@ function withRepositoryComponent(Component) {
     const hasRepository = () => (repo && repo.name && repo.owner && repo.permissions );
 
     const updateRepository  = (_repo) => {
+      if (_repo) _repo.close = () => {updateRepository()};
       if (onRepository) onRepository(_repo);
       else setRepo(_repo);
     }
@@ -89,9 +90,7 @@ withRepositoryComponent.propTypes = {
     /** Prefill the query search field. */
     defaultQuery: PropTypes.string,
     /** Configuration required for Search or Repositories if paths are provided as URL. */
-    config: PropTypes.shape({
-      server: PropTypes.string.isRequired,
-    }).isRequired,
+    server: PropTypes.string.isRequired,
   }).isRequired,
 };
 

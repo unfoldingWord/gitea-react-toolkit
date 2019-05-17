@@ -29,11 +29,20 @@ function withFileComponent(Component) {
       filepath = blob.filepath;
     }
 
-    const updateFile = async () => {
+    const updateFile = (__file) => {
+      if (onFile) onFile(__file);
+      else setFile(__file);
+    }
+
+    const populateFile = async () => {
       const __file = await ensureFile(
         {filepath, defaultContent, authentication, config: fileConfig, repository}
       );
       const _content = await getContent({file: __file});
+      __file.close = () => {
+        updateFile()
+        if (fileConfig.updateBlob) fileConfig.updateBlob();
+      };
       __file.content = _content;
       __file.filepath = __file.path;
       if (repository.permissions.push) {
@@ -41,25 +50,22 @@ function withFileComponent(Component) {
           await saveContent(
             {content, authentication, repository, file: __file}
           );
-          // setTimeout(updateFile, 1000);
-          updateFile();
+          populateFile();
         };
         __file.dangerouslyDelete = async () => {
           const _deleted = await deleteFile({authentication, repository, file: __file});
           if (_deleted) {
             setDeleted(true);
-            if (onFile) onFile();
-            else setFile();
+            updateFile();
             if (fileConfig.updateBlob) fileConfig.updateBlob();
           }
           return deleted;
         }
       }
-      if (onFile) onFile(__file);
-      else setFile(__file);
+      updateFile(__file);
     };
 
-    if (!hasFile() && filepath && !deleted) updateFile();
+    if (!hasFile() && filepath && !deleted) populateFile();
 
     let component = <div />;
     if (hasFile()) {

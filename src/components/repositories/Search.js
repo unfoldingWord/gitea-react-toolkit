@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import {
+  List,
   Divider,
 } from '@material-ui/core';
 import {
@@ -20,7 +21,7 @@ function SearchComponent({
   const [repositories, setRepositories] = useState([]);
 
   return (
-    <div>
+    <List className={classes.root}>
       <SearchForm
         defaultOwner={defaultOwner}
         defaultQuery={defaultQuery}
@@ -33,7 +34,7 @@ function SearchComponent({
         onRepository={onRepository}
         config={config}
       />
-    </div>
+    </List>
   );
 }
 
@@ -52,6 +53,10 @@ SearchComponent.propTypes = {
 };
 
 const styles = (theme) => ({
+  root: {
+    overflow: 'auto',
+    height: '100%',
+  }
 });
 
 export const Search = withStyles(styles)(SearchComponent);

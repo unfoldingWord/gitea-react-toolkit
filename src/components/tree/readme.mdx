@@ -2,7 +2,6 @@
 name: Tree
 route: /tree
 ---
-import { useState } from 'react';
 import { Playground, Props } from 'docz';
 import { Paper, Card, CardContent, CardHeader } from '@material-ui/core';
 import { Tree, TreeObject, BlobObject, withBlob } from './';
@@ -48,7 +47,7 @@ If a blob is not already selected, it will render the Tree component for selecti
    */
   const BlobComponent = withBlob(Component);
   // Then you can use your blob wrapped component.
-  // const [blob, setBlob] = useState();
+  const [blob, setBlob] = React.useState();
   return (
     <Paper>
       <BlobComponent
@@ -56,12 +55,9 @@ If a blob is not already selected, it will render the Tree component for selecti
         blobConfig={{
           url:"https://git.door43.org/api/v1/repos/unfoldingWord/en_ta/git/trees/master",
         }}
-        /** Pass a previously returned repository object to skip blob/tree selection.
-          blob={blob}
-          onBlob={(_blob) => {
-            setBlob(_blob);
-          }}
-          */
+        /** Pass a previously returned repository object to skip blob/tree selection. */
+        blob={blob}
+        onBlob={setBlob}
       />
     </Paper>
   );
@@ -199,7 +195,7 @@ You would typically use another component to render more than one.
   function Component({
     blobs,
   }) {
-    const [_blob, _setBlob] = useState();
+    const [_blob, _setBlob] = React.useState();
     const blobComponents = blobs.map((item) => {
       const key = JSON.stringify(item);
       const selected = (JSON.stringify(item) === JSON.stringify(_blob))

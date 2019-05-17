@@ -96,7 +96,7 @@ SearchFormComponent.propTypes = {
 
 const styles = (theme) => ({
   root: {
-    position: 'relative',
+    position: 'sticky',
     borderRadius: theme.shape.borderRadius,
     marginLeft: 0,
     width: '100%',

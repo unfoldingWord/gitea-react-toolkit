@@ -18,6 +18,9 @@ function withAuthenticationComponent(Component) {
     const isAuthenticated = () => (auth && auth.token && auth.token && auth.user);
 
     const updateAuthentication = (_auth) => {
+      if (_auth) {
+        _auth.logout = () => { updateAuthentication(); }
+      }
       if (onAuthentication) onAuthentication(_auth);
       else setAuth(_auth);
     }

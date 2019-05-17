@@ -30,11 +30,12 @@ function withBlobComponent(Component) {
       config,
     } = blobConfig;
 
-    const updateBlob = async (__blob) => {
+    const updateBlob = (__blob) => {
+      if (__blob) __blob.close = () => { updateBlob(); };
       if (onBlob) onBlob(__blob);
       else setBlob(__blob);
     };
-    config.updateBlob = updateBlob;
+    config.updateBlob = (__blob) => { updateBlob(__blob) };
 
     let component = <div />;
     if (!hasBlob() && (tree || url)) {
