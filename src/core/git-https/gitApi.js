@@ -108,8 +108,14 @@ export const repositoryExists = async ({owner, repository, config}) => {
 
 // /repos/search?q=ulb&uid=4598&limit=50&exclusive=true
 export const repositorySearch = async ({owner, query, config}) => {
+  let _query = query;
+  if (_query) {
+    _query = _query.replace(/_/g, '\\_');
+    _query = _query.replace(/\s+/g, '%');
+    _query = _query.replace(/\*/g, '_');
+  }
   let repositories = [];
-  let params = {q: query, limit: 50};
+  let params = {q: _query, limit: 50};
   if (owner) {
     params.uid = await getUID({username: owner, config});
     params.exclusive = true;
