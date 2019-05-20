@@ -37,8 +37,8 @@ function RepositoryMenuComponent({
   if (repository && repository.owner) {
     button = (
       <Chip
-        icon={<FolderShared />}
-        label={repository.full_name}
+        avatar={<Avatar src={repository.owner.avatar_url} />}
+        label={repository.name}
         onDelete={handleClose}
         color="primary"
       />

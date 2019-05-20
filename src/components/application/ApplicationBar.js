@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import {
@@ -9,7 +9,7 @@ import {
 import {
 } from '@material-ui/icons';
 
-import { withAuthentication, withRepository, withFile } from '../';
+// import { withAuthentication, withRepository, withFile } from '../';
 import { UserMenu, DrawerMenu, RepositoryMenu } from './';
 import styles from './styles';
 
@@ -33,6 +33,8 @@ function ApplicationBarComponent({
     _authenticationConfig = authentication.config;
     _repositoryConfig.defaultOwner = authentication.user.username;
   }
+
+  if (!repository && blob) onBlob();
 
   const drawerMenuComponent = (
     <DrawerMenu
@@ -68,8 +70,11 @@ function ApplicationBarComponent({
           <div className={classes.menuButton}>
             {drawerMenuComponent}
           </div>
-          <Typography variant="h6" color="inherit" className={classes.grow}>
-            {blob ? blob.filepath : title}
+          <Typography variant="h6" color="inherit" className={classes.grow} noWrap>
+            {title}
+          </Typography>
+          <Typography variant="subtitle2" color="inherit" className={classes.grow} noWrap>
+            {blob ? blob.filepath : ''}
           </Typography>
           <div className={classes.grow} />
           {buttons}

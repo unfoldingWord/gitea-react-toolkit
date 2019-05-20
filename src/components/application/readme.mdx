@@ -33,7 +33,7 @@ It will render the component passed via `drawerMenu` prop to a drawer menu.
   const drawerMenu = (
     <>
       <List>
-        {['Inbox', 'Starred', 'Sent', 'Drafts'].map((text, index) => (
+        {['Inbox', 'Sent'].map((text, index) => (
           <ListItem button key={text}>
             <ListItemIcon style={{margin:0}}>{index % 2 === 0 ? <Inbox /> : <Mail />}</ListItemIcon>
             <ListItemText primary={text} />
@@ -56,7 +56,15 @@ It will render the component passed via `drawerMenu` prop to a drawer menu.
       }}
       repository={repository}
       onRepository={setRepository}
-      repositoryConfig={config}
+      repositoryConfig={{
+        ...config,
+        urls: [
+          "https://git.door43.org/api/v1/repos/door43-catalog/en_ta",
+          "https://git.door43.org/api/v1/repos/door43-catalog/en_tw",
+          "https://git.door43.org/api/v1/repos/door43-catalog/en_tn",
+          "https://git.door43.org/api/v1/repos/door43-catalog/en_obs",
+        ],
+      }}
       blob={blob}
       onBlob={setBlob}
       file={file}
@@ -118,7 +126,29 @@ The `RepositoryMenu` component helps manage a repository via a modal with a menu
 }}
 </Playground>
 
-- Requires props from `withAuthentication`.
+Customized list of Repositories for selection.
+
+<Playground>
+{() => {
+  const [repository, setRepository] = React.useState();
+  return (
+    <Paper>
+      <RepositoryMenu
+        repository={repository}
+        onRepository={setRepository}
+        repositoryConfig={{
+          urls: [
+            "https://git.door43.org/api/v1/repos/door43-catalog/en_ta",
+            "https://git.door43.org/api/v1/repos/door43-catalog/en_tw",
+          ]
+        }}
+      />
+    </Paper>
+  );
+}}
+</Playground>
+
+- Requires props from `withRepository`.
 
 <Props of={UserMenu} isToggle title="Props" />
 

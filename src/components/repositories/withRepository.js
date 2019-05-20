@@ -77,7 +77,7 @@ withRepositoryComponent.propTypes = {
     html_url: PropTypes.string.isRequired,
     website: PropTypes.string.isRequired,
   }),
-  /** Function to call when repository is selected. */
+  /** Function to call when repository is selected, either server, urls, or repositories required. */
   onRepository: PropTypes.func.isRequired,
   /** Configuration to pass through to the Search/Repositories component. */
   repositoryConfig: PropTypes.shape({
@@ -90,7 +90,7 @@ withRepositoryComponent.propTypes = {
     /** Prefill the query search field. */
     defaultQuery: PropTypes.string,
     /** Configuration required for Search or Repositories if paths are provided as URL. */
-    server: PropTypes.string.isRequired,
+    server: PropTypes.string,
   }).isRequired,
 };
 
