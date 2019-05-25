@@ -18,7 +18,7 @@ const api = setup({
   crossDomain: true,
   cache: {
     store: cacheStore,
-    maxAge: 1 * 1 * 1 * 2 * 1000,
+    maxAge: 1 * 1 * 1 * 1 * 1000,
     exclude: { query: false },
     key: req => {
       // if (req.params) debugger
