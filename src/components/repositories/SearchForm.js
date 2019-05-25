@@ -13,7 +13,7 @@ import AwesomeDebouncePromise from 'awesome-debounce-promise';
 
 import { FormInput } from '../authentication';
 
-import { repositorySearch } from '../../core/git-https';
+import { repositorySearch } from '../../core';
 
 const repositorySearchDebounced = AwesomeDebouncePromise(repositorySearch, 250);
 
@@ -53,7 +53,7 @@ function SearchFormComponent({
       ContainerComponent="div"
       className={classes.root}
     >
-      <ListItemIcon style={{marginRight: '8px'}}>
+      <ListItemIcon className={classes.listItemIcon}>
         <IconButton
           onClick={() => updateRepositories(owner, query)}
         >
@@ -64,14 +64,14 @@ function SearchFormComponent({
         <div className={classes.input}>
           <FormInput
             id='owner' label='Owner' type='text'
-            defaultValue={owner}
+            defaultValue={owner}  autoComplete={undefined}
             onChange={(event) => {onOwner(event.target.value)}}
           />
         </div>
         <div className={classes.input}>
           <FormInput
             id='search' label='Search' type='text'
-            defaultValue={query} autoFocus
+            defaultValue={query} autoFocus  autoComplete={undefined}
             onChange={(event) => {onQuery(event.target.value)}}
           />
         </div>
@@ -100,6 +100,9 @@ const styles = (theme) => ({
     borderRadius: theme.shape.borderRadius,
     marginLeft: 0,
     width: '100%',
+  },
+  listItemIcon: {
+    marginRight: '8px',
   },
   form: {
     width: '100%',

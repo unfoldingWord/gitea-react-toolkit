@@ -1,4 +1,4 @@
-import { get } from '../../core/git-https';
+import { get } from '../../core';
 
 export const fetchTree = async ({url, config}) => {
   const _config = {

@@ -13,7 +13,7 @@ import {
   Code,
 } from '@material-ui/icons';
 
-import { get, repoTreeUrl } from '../../core/git-https';
+import { get, repoTreeUrl } from '../../core';
 
 function RepositoryComponent({
   classes,

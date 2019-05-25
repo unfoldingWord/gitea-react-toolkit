@@ -1,6 +1,6 @@
 import base64 from 'base-64';
 import utf8 from 'utf8';
-import { get, updateFile, getCreateFile, removeFile } from '../../core/git-https';
+import { get, updateFile, getCreateFile, removeFile } from '../../core';
 
 export const ensureFile = async (
   { filepath, defaultContent, message, authentication, repository, config, branch }

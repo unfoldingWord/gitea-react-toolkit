@@ -49,6 +49,7 @@ withAuthenticationComponent.propTypes = {
   authentication: PropTypes.shape({
     user: PropTypes.object.isRequired,
     token: PropTypes.object.isRequired,
+    config: PropTypes.object.isRequired,
   }),
   /** Callback function to propogate the user/token used for API Authentication. */
   onAuthentication: PropTypes.func,

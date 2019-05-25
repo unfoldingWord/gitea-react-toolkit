@@ -18,7 +18,7 @@ const api = setup({
   crossDomain: true,
   cache: {
     store: cacheStore,
-    maxAge: 1 * 1 * 1 * 60 * 1000,
+    maxAge: 1 * 1 * 1 * 2 * 1000,
     exclude: { query: false },
     key: req => {
       // if (req.params) debugger
@@ -76,7 +76,7 @@ export const put = async ({url, payload, config}) => {
   return data;
 };
 
-export const remove = async ({url, payload, config}) => {
+export const del = async ({url, payload, config}) => {
   if (config.server) config.baseURL = config.server;
   config.data = payload;
   const {data} = await axios.delete(url, config);

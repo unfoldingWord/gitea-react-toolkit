@@ -18,6 +18,7 @@ function FormInputComponent ({
   autoComplete,
   multiline,
   required,
+  disabled,
 }) {
   return (
     <FormControl margin="normal" required={required} fullWidth>
@@ -35,6 +36,7 @@ function FormInputComponent ({
         onChange={onChange}
         onBlur={onBlur}
         required={required}
+        disabled={disabled}
       />
     </FormControl>
   );
@@ -70,6 +72,8 @@ FormInputComponent.propTypes = {
   multiline: PropTypes.bool,
   /** Set if this field should be required. */
   required: PropTypes.bool,
+  /** Set if this field should be disabled. */
+  disabled: PropTypes.bool,
 };
 
 FormInputComponent.defaultProps = {

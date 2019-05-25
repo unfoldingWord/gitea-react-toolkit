@@ -4,13 +4,12 @@ import localforage from 'localforage';
 
 import {
   repositoryExists,
-} from './gitApi';
+} from './';
 
 const zipStore = localforage.createInstance({
   driver: [localforage.INDEXEDDB],
   name: 'zip-store',
 });
-
 
 // https://git.door43.org/unfoldingWord/en_ult/archive/master.zip
 export const fetchRepositoryZipFile = async ({username, repository, branch, options}) => {

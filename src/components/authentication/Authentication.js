@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 
 import { LoginForm } from './LoginForm';
-import { authenticate } from '../../core/git-https';
+import { authenticate } from '../../core';
 
 function AuthenticationComponent({
   classes,
