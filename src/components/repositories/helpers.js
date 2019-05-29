@@ -13,7 +13,7 @@ export const extendRepository = ({repository, authentication, updateRepository, 
   if (user && user.username === repository.owner.username) {
     repository.dangerouslyDelete = () => {
       deleteRepository({repository, config});
-      updateRepository();
+      window.setTimeout(updateRepository, 500);
     };
   } else {
     repository.fork = () => {
