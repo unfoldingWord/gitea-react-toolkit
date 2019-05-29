@@ -6,7 +6,7 @@ route: /authentication
 import { Playground, Props } from 'docz';
 import { Paper, Card, CardContent, CardHeader, Avatar, CardActions, IconButton } from '@material-ui/core';
 import { Favorite, Share } from '@material-ui/icons';
-import { withAuthentication, Authentication, LoginForm, FormInput } from './';
+import { withAuthentication, Authentication, LoginForm, FormInput } from '../';
 import { loremIpsum } from 'lorem-ipsum';
 import moment from 'moment';
 
@@ -123,34 +123,3 @@ The LoginForm component returns the form fields upon submission to the callback.
 </Playground>
 
 <Props of={LoginForm} isToggle title="Props" />
-
----
-
-## FormInput
-
-FormInput component enforces consistency for text input, and change propogation.
-
-<Playground>
-<Paper style={{margin: '1em'}}>
-  <FormInput
-    id="email"
-    type="email"
-    label="Email Address"
-    onChange={(event) => {
-      alert(event.target.value);
-    }}
-  />
-</Paper>
-<Paper style={{margin: '1em'}}>
-  <FormInput
-    id="password"
-    type="password"
-    label="Password"
-    onChange={(event) => {
-      // alert("Commented out to not trigger on autofill.");
-    }}
-  />
-</Paper>
-</Playground>
-
-<Props of={FormInput} isToggle title="Props" />

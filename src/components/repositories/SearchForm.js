@@ -11,7 +11,7 @@ import {
 } from '@material-ui/icons';
 import AwesomeDebouncePromise from 'awesome-debounce-promise';
 
-import { FormInput } from '../authentication';
+import { FormInput } from '../';
 
 import { repositorySearch } from '../../core';
 

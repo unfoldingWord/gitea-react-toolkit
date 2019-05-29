@@ -12,7 +12,7 @@ import {
   AddCircle,
 } from '@material-ui/icons';
 
-import { FormInput } from '../authentication';
+import { FormInput } from '../';
 
 import { createRepository, extendRepository } from './helpers';
 

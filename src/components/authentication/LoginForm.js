@@ -12,7 +12,7 @@ import {
   LockOutlined,
 } from '@material-ui/icons';
 
-import { FormInput } from './FormInput';
+import { FormInput } from '../';
 
 function LoginFormComponent({
   classes,
