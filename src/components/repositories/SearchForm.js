@@ -5,13 +5,12 @@ import {
   IconButton,
   ListItem,
   ListItemIcon,
+  TextField,
 } from '@material-ui/core';
 import {
   Search,
 } from '@material-ui/icons';
 import AwesomeDebouncePromise from 'awesome-debounce-promise';
-
-import { FormInput } from '../';
 
 import { repositorySearch } from '../../core';
 
@@ -62,15 +61,17 @@ function SearchFormComponent({
       </ListItemIcon>
       <form className={classes.form}>
         <div className={classes.input}>
-          <FormInput
+          <TextField
             id='owner' label='Owner' type='text'
+            variant="outlined" margin="normal" fullWidth
             defaultValue={owner}  autoComplete={undefined}
             onChange={(event) => {onOwner(event.target.value)}}
           />
         </div>
         <div className={classes.input}>
-          <FormInput
+          <TextField
             id='search' label='Search' type='text'
+            variant="outlined" margin="normal" fullWidth
             defaultValue={query} autoFocus  autoComplete={undefined}
             onChange={(event) => {onQuery(event.target.value)}}
           />

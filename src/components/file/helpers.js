@@ -1,10 +1,10 @@
 import base64 from 'base-64';
 import utf8 from 'utf8';
-import { get, updateFile, getCreateFile, removeFile } from '../../core';
+import { get, updateFile, ensureFile as _ensureFile, removeFile } from '../../core';
 
-export const ensureFile = async (
-  { filepath, defaultContent, message, authentication, repository, config, branch }
-) => {
+export const ensureFile = async ({
+  filepath, defaultContent, message, authentication, repository, config, branch
+}) => {
   let _config = config;
   if (authentication) _config = authentication.config;
   const { owner: {username}, name } = repository;
@@ -15,7 +15,7 @@ export const ensureFile = async (
       { content: defaultContent, message: _message, authentication, repository, branch }
     );
   }
-  const file = await getCreateFile(
+  const file = await _ensureFile(
     { owner: username, repo: name, filepath, payload: _payload, config: _config }
   );
   return file;

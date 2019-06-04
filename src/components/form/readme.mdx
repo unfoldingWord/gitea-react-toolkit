@@ -5,35 +5,5 @@ route: /form
 
 import { Playground, Props } from 'docz';
 import { Paper } from '@material-ui/core';
-import { FormInput } from '../';
 
 # Form Components
-
-## FormInput
-
-FormInput component enforces consistency for text input, and change propogation.
-
-<Playground>
-<Paper style={{margin: '1em'}}>
-  <FormInput
-    id="email"
-    type="email"
-    label="Email Address"
-    onChange={(event) => {
-      alert(event.target.value);
-    }}
-  />
-</Paper>
-<Paper style={{margin: '1em'}}>
-  <FormInput
-    id="password"
-    type="password"
-    label="Password"
-    onChange={(event) => {
-      // alert("Commented out to not trigger on autofill.");
-    }}
-  />
-</Paper>
-</Playground>
-
-<Props of={FormInput} isToggle title="Props" />

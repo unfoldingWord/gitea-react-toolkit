@@ -76,6 +76,12 @@ export const put = async ({url, payload, config}) => {
   return data;
 };
 
+export const patch = async ({url, payload, config}) => {
+  if (config.server) config.baseURL = config.server;
+  const {data} = await axios.patch(url, payload, config);
+  return data;
+};
+
 export const del = async ({url, payload, config}) => {
   if (config.server) config.baseURL = config.server;
   config.data = payload;

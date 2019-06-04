@@ -7,12 +7,11 @@ import {
   ListItemAvatar,
   ListItemSecondaryAction,
   IconButton,
+  TextField
 } from '@material-ui/core';
 import {
   AddCircle,
 } from '@material-ui/icons';
-
-import { FormInput } from '../';
 
 import { createRepository, extendRepository } from './helpers';
 
@@ -59,14 +58,16 @@ function CreateRepositoryComponent({
       </ListItemAvatar>
       <form className={classes.form}>
         <div className={classes.input}>
-          <FormInput
+          <TextField
             id='owner' label='Owner' type='text' disabled
+            variant="outlined" margin="normal" fullWidth
             defaultValue={username}
           />
         </div>
         <div className={classes.input}>
-          <FormInput
-            id='repo' label='Repository' type='text'
+          <TextField
+            id='repo' label='Repository' type='text' required
+            variant="outlined" margin="normal" fullWidth
             defaultValue="" autoFocus autoComplete={undefined}
             onChange={(event) => {setRepo(event.target.value)}}
           />

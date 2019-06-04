@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import {
   IconButton,
-  MenuItem,
-  Menu,
   Avatar,
   Modal,
   Paper,
@@ -14,7 +12,7 @@ import {
   FolderShared,
 } from '@material-ui/icons';
 
-import { withRepository } from '../repositories';
+import { withRepository } from '../';
 
 function RepositoryMenuComponent({
   classes,

@@ -5,7 +5,7 @@ import {
   List,
 } from '@material-ui/core';
 
-import { Repository } from './Repository';
+import { Repository } from '../';
 
 function RepositoriesComponent({
   classes,

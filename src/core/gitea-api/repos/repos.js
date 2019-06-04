@@ -1,6 +1,6 @@
 import Path from 'path';
 
-import { get, post, put, del } from '../';
+import { get, post, patch, del } from '../';
 
 const apiPath = 'api/v1';
 
@@ -52,7 +52,7 @@ export const updateRepo = async ({owner, repo, settings, config}) => {
   }
   let response;
   try {
-    response = await put({url, payload, config});
+    response = await patch({url, payload, config});
   } catch(error) { response = null }
   return response;
 };

@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from 'prop-types';
 
-import { Search } from './Search';
-import { Repositories } from './Repositories';
+import { Repositories, Search } from '../';
 import { Repository } from './Repository';
 
 import { extendRepository } from './helpers';
@@ -21,11 +20,9 @@ function withRepositoryComponent(Component) {
       const {repositories, urls, defaultOwner, defaultQuery, ...config} = props.repositoryConfig;
       repositoryConfig = {repositories, urls, defaultOwner, defaultQuery, config};
     }
-    let authenticationConfig = {};
     if (authentication && authentication.config) {
-      authenticationConfig = {config: authentication.config};
+      repositoryConfig.config = {...repositoryConfig.config, ...authentication.config};
     }
-    if (authenticationConfig) repositoryConfig.config = authenticationConfig.config;
     const {
       repositories,
       urls,

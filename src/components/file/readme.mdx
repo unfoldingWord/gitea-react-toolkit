@@ -5,10 +5,9 @@ route: /file
 
 import { useState } from 'react';
 import { Playground, Props } from 'docz';
-import { Paper, Card, CardContent, CardHeader, CardActions, Avatar, IconButton, Button } from '@material-ui/core';
+import { Paper, Card, CardContent, CardHeader, CardActions, Avatar, IconButton, Button, TextField } from '@material-ui/core';
 import { Code, Save, SaveOutlined, DeleteForever } from '@material-ui/icons';
 import { withAuthentication, withRepository, withBlob, withFile } from '../';
-import { FormInput } from '../';
 import { BlockEditable } from "markdown-translatable";
 
 # File HOC
@@ -69,7 +68,6 @@ Reading files only requires a `repository` and either a `blob` or a `filepath`.
         //** Pass any props as you normally would. */
         repositoryConfig={{
           server: "https://git.door43.org/",
-          tokenid: "PlaygroundTesting",
         }}
       />
     </Paper>
@@ -207,12 +205,14 @@ This example manages application state to remove the need to login and select re
       <Paper style={{marginBottom: '1em', padding: '1.3em'}}>
         <form>
           <button type="submit" disabled style={{display: 'none'}} aria-hidden="true"></button>
-          <FormInput
-            id='filepath' label='filepath' type='text' autoComplete={undefined}
+          <TextField
+            name='filepath' label='filepath' type='text' autoComplete={undefined}
+            variant="outlined" margin="normal" fullWidth
             onChange={(e) => setFilepath(e.target.value)}
           />
-          <FormInput
-            id='defaultContent' label='defaultContent' type='text' multiline={true} autoComplete={undefined}
+          <TextField
+            name='defaultContent' label='defaultContent' type='text' multiline={true} autoComplete={undefined}
+            variant="outlined" margin="normal" fullWidth
             onChange={(e) => setDefaultContent(e.target.value)}
           />
           <Button type="button" disabled={!(authentication && repository && filepath)} fullWidth variant="contained" color="primary"

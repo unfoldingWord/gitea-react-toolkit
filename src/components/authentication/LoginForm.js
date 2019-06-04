@@ -7,12 +7,11 @@ import {
   FormControlLabel,
   Checkbox,
   Typography,
+  TextField,
 } from '@material-ui/core';
 import {
   LockOutlined,
 } from '@material-ui/icons';
-
-import { FormInput } from '../';
 
 function LoginFormComponent({
   classes,
@@ -23,9 +22,9 @@ function LoginFormComponent({
   const [formData, setFormData] = useState({});
 
   const updateFormData = (event) => {
-    const {type, id, name, value, checked} = event.target;
+    const {type, name, value, checked} = event.target;
     let _formData = {...formData};
-    if (type === 'checkbox') _formData[id] = checked;
+    if (type === 'checkbox') _formData[value] = checked;
     else _formData[name] = value;
     setFormData(_formData);
   };
@@ -42,10 +41,12 @@ function LoginFormComponent({
         {errorText}
       </Typography>
       <form className={classes.form}>
-        <FormInput id="username" type="text" label="Username" required
+        <TextField name="username" type="text" label="Username" required
+          variant="outlined" margin="normal" fullWidth
           onChange={updateFormData}
         />
-        <FormInput id="password" type="password" label="Password" required
+        <TextField name="password" type="password" label="Password" required
+          variant="outlined" margin="normal" fullWidth
           onChange={updateFormData}
         />
         <FormControlLabel

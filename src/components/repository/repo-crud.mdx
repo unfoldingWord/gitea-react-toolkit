@@ -6,7 +6,8 @@ import { useState } from 'react';
 import { Playground, Props } from 'docz';
 import { Paper, Card, CardContent, CardHeader, CardActions, IconButton, Avatar } from '@material-ui/core';
 import { FolderSpecial, DeleteSweep, Cancel } from '@material-ui/icons';
-import { withAuthentication, withRepository, CreateRepository } from './';
+import { withAuthentication, withRepository } from '../';
+import { CreateRepository, RepositoryForm, RepositoryFormMenu } from './';
 import moment from 'moment';
 
 # Repository CRUD
@@ -70,7 +71,7 @@ import moment from 'moment';
         //** Pass any props as you normally would. */
         authenticationConfig={{
           tokenid: "PlaygroundTesting",
-          server: "https://git.door43.org",
+          server: "https://bg.door43.org",
         }}
       />
     </Paper>
@@ -139,7 +140,7 @@ import moment from 'moment';
         //** Pass any props as you normally would. */
         authenticationConfig={{
           tokenid: "PlaygroundTesting",
-          server: "https://git.door43.org",
+          server: "https://bg.door43.org",
         }}
       />
     </Paper>
@@ -149,3 +150,113 @@ import moment from 'moment';
 
 <Props of={withAuthentication} isToggle title="Props" />
 <Props of={withRepository} isToggle title="Props" />
+
+
+## RepositoryMenu
+
+The `RepositoryFormMenu` component helps manage a repository via a modal with a menu to select a repository.
+
+<Playground>
+
+<Paper>
+  <RepositoryFormMenu
+//  authentication={authentication}
+//  onAuthentication={setAuthentication}
+//  repository={repository}
+//  onRepository={setRepository}
+//  authenticationConfig={{
+//    server: "https://bg.door43.org",
+//    tokenid: "PlaygroundTesting"
+//  }}
+  />
+</Paper>
+</Playground>
+
+## RepositoryForm
+
+The component returns the form fields upon submission to the callback.
+
+### Create
+
+In order to create a repository you must pass authentication or wrap with `withAuthentication`.
+Once a repository is created and propogated, the Create form changes to an Edit form.
+
+<Playground>
+{() => {
+  const [authentication, setAuthentication] = React.useState();
+  const [repository, setRepository] = React.useState();
+  const AuthenticatedRepositoryForm = withAuthentication(RepositoryForm);
+  return (
+    <Paper>
+      <AuthenticatedRepositoryForm
+        authentication={authentication}
+        onAuthentication={setAuthentication}
+        repository={repository}
+        onRepository={setRepository}
+        authenticationConfig={{
+          server: "https://bg.door43.org",
+          tokenid: "PlaygroundTesting"
+        }}
+      />
+    </Paper>
+  );
+}}
+</Playground>
+
+### Edit
+
+In order to edit a repository you must pass authentication and repository or wrap with `withAuthentication` and `withRepository`.
+Once a repository is created and propogated, the Create form changes to an Edit form.
+
+<Playground>
+{() => {
+  const AuthenticatedRepositoryForm = withAuthentication(withRepository(RepositoryForm));
+  return (
+    <Paper>
+      <AuthenticatedRepositoryForm
+        authenticationConfig={{
+          server: "https://bg.door43.org",
+          tokenid: "PlaygroundTesting"
+        }}
+      />
+    </Paper>
+  );
+}}
+</Playground>
+
+### View
+
+In order to view a repository you must pass repository or wrap with `withRepository`.
+
+<Playground>
+{() => {
+  const RepositoryFormComponent = withRepository(RepositoryForm);
+  return (
+    <Paper>
+      <RepositoryFormComponent
+        repositoryConfig={{
+          server: "https://bg.door43.org",
+          tokenid: "PlaygroundTesting"
+        }}
+      />
+    </Paper>
+  );
+}}
+</Playground>
+
+### Blank
+
+Form is disabled and error displayed when either no authentication or repository is provided.
+
+<Playground>
+<Paper>
+  <RepositoryForm
+    actionText="Create/Edit Repository"
+    onSubmit={(formData) => {
+      alert(JSON.stringify(formData, null, 2));
+    }}
+  />
+</Paper>
+</Playground>
+
+<Props of={RepositoryForm} isToggle title="Props" />

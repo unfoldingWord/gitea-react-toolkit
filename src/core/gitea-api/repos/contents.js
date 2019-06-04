@@ -1,6 +1,6 @@
 import Path from 'path';
 
-import { get, post, put, del } from './';
+import { get, post, put, del } from '../';
 
 const apiPath = 'api/v1';
 

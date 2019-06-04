@@ -8,8 +8,7 @@ import {
 import {
 } from '@material-ui/icons';
 
-import { SearchForm } from './SearchForm';
-import { Repositories } from './Repositories';
+import { Repositories, SearchForm } from './';
 
 function SearchComponent({
   classes,
