@@ -2,9 +2,14 @@
 export default {
   menu: [
     'Getting Started',
-    'Repositories',
-    'Tree',
+    'ApplicationBar',
+    'Higher Order Components',
     'Authentication',
+    'Repository CRUD',
+    'Repositories',
+    'Repository',
+    'File CRUD',
+    'Tree/Blob',
   ],
   notUseSpecifiers: true,
   filterComponents: files => files.filter(filepath => /src\/components\/.*\/.*\.(js|jsx|ts|tsx)$/.test(filepath))

@@ -6,8 +6,8 @@ import { useState } from 'react';
 import { Playground, Props } from 'docz';
 import { Paper, Card, CardContent, CardHeader, CardActions, IconButton, Avatar } from '@material-ui/core';
 import { FolderSpecial, DeleteSweep, Cancel } from '@material-ui/icons';
-import { withAuthentication, withRepository } from '../';
-import { CreateRepository, RepositoryForm, RepositoryFormMenu } from './';
+import { withAuthentication, withRepository } from '../../';
+import { RepositoryQuickCreate, RepositoryForm, RepositoryFormMenu } from './';
 import moment from 'moment';
 
 # Repository CRUD
@@ -28,7 +28,7 @@ import moment from 'moment';
     const [repository, setRepository] = React.useState();
     return (!repository) ?
     (
-      <CreateRepository
+      <RepositoryQuickCreate
         authentication={authentication}
         onRepository={setRepository}
       />
@@ -152,9 +152,9 @@ import moment from 'moment';
 <Props of={withRepository} isToggle title="Props" />
 
 
-## RepositoryMenu
+## RepositoryFormMenu Modal
 
-The `RepositoryFormMenu` component helps manage a repository via a modal with a menu to select a repository.
+The `RepositoryFormMenu` component helps create/edit a repository via a modal.
 
 <Playground>
 

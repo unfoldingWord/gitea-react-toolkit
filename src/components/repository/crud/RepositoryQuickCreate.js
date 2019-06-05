@@ -13,9 +13,9 @@ import {
   AddCircle,
 } from '@material-ui/icons';
 
-import { createRepository, extendRepository } from './helpers';
+import { createRepository, extendRepository } from '../helpers';
 
-function CreateRepositoryComponent({
+function RepositoryQuickCreateComponent({
   classes,
   authentication,
   authentication: {
@@ -85,7 +85,7 @@ function CreateRepositoryComponent({
   );
 }
 
-CreateRepositoryComponent.propTypes = {
+RepositoryQuickCreateComponent.propTypes = {
   classes: PropTypes.object.isRequired,
   /** Function to call when repository is selected. */
   onRepository: PropTypes.func.isRequired,
@@ -125,4 +125,4 @@ const styles = (theme) => ({
   }
 });
 
-export const CreateRepository = withStyles(styles)(CreateRepositoryComponent);
+export const RepositoryQuickCreate = withStyles(styles)(RepositoryQuickCreateComponent);

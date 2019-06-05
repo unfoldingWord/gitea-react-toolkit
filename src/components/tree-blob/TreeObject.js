@@ -12,7 +12,7 @@ import {
   FolderOpen,
 } from '@material-ui/icons';
 
-import { Tree } from '../tree';
+import { Tree } from './';
 
 /**
  * A TreeObject Component to render a Git Tree tree object.
