@@ -12,7 +12,7 @@ import {
   FolderShared,
 } from '@material-ui/icons';
 
-import { withRepository } from '../';
+import { withRepository } from '../repository';
 
 function RepositoryMenuComponent({
   classes,
@@ -76,9 +76,11 @@ function RepositoryMenuComponent({
   );
 }
 
-RepositoryMenuComponent.propTypes = {
-  ...withRepository.propTypes
-};
+if (withRepository && withRepository.propTypes) {
+  RepositoryMenuComponent.propTypes = {
+    ...withRepository.propTypes
+  };
+}
 
 const styles = (theme) => ({
   avatar: {
