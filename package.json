@@ -1,6 +1,6 @@
 {
   "name": "gitea-react-toolkit",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "license": "MIT",
   "description": "A Gitea API React Toolkit Component Library",
   "homepage": "https://gitea-react-toolkit.netlify.com/",
@@ -15,9 +15,6 @@
     "base-64": "^0.1.0",
     "jszip": "^3.2.1",
     "localforage": "^1.7.3",
-    "lorem-ipsum": "^2.0.1",
-    "markdown-translatable": "^0.3.7",
-    "moment": "^2.24.0",
     "prop-types": "^15.7.2",
     "utf8": "^3.0.0"
   },
@@ -53,6 +50,9 @@
     "eslint": "^5.3.0",
     "eslint-plugin-mdx": "^1.0.1",
     "eslint-plugin-react": "^7.12.4",
+    "lorem-ipsum": "^2.0.1",
+    "markdown-translatable": "^0.3.7",
+    "moment": "^2.24.0",
     "path": "latest",
     "react": "next",
     "react-dom": "next"
