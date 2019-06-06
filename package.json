@@ -34,8 +34,8 @@
   "peerDependencies": {
     "@material-ui/core": "^3.9.3",
     "@material-ui/icons": "^3.0.2",
-    "react": "next",
-    "react-dom": "next"
+    "react": "16.8.6",
+    "react-dom": "16.8.6"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.3",
@@ -54,8 +54,8 @@
     "markdown-translatable": "^0.3.7",
     "moment": "^2.24.0",
     "path": "latest",
-    "react": "next",
-    "react-dom": "next"
+    "react": "16.8.6",
+    "react-dom": "16.8.6"
   },
   "main": "dist/index.js",
   "files": [

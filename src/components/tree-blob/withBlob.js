@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { Tree } from './Tree';
 
-function withBlobComponent(Component) {
+export function withBlob(Component) {
   return function BlobComponent ({
     blob,
     onBlob,
@@ -59,7 +59,7 @@ function withBlobComponent(Component) {
   }
 }
 
-withBlobComponent.propTypes = {
+withBlob.propTypes = {
   /** Pass a previously returned blob object to bypass the selection. */
   blob: PropTypes.shape({
     /** The filepath in the Git Tree Blob Object */
@@ -88,5 +88,3 @@ withBlobComponent.propTypes = {
     tree_url: PropTypes.string.isRequired,
   }),
 };
-
-export const withBlob = withBlobComponent;

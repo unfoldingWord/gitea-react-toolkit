@@ -13,7 +13,8 @@ import {
   Cancel,
 } from '@material-ui/icons';
 
-import { withRepository, withBlob } from '../';
+import { withRepository } from '../repository';
+import { withBlob } from '../tree-blob';
 
 import { humanFileSize } from './helpers';
 
