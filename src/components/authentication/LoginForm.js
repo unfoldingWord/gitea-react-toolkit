@@ -15,11 +15,15 @@ import {
 
 function LoginFormComponent({
   classes,
+  authentication,
   actionText,
   errorText,
   onSubmit,
 }) {
   const [formData, setFormData] = useState({});
+
+  let user;
+  if (authentication) user = authentication.user;
 
   const updateFormData = (event) => {
     const {type, name, value, checked} = event.target;
@@ -31,11 +35,11 @@ function LoginFormComponent({
 
   return (
     <div className={classes.root}>
-      <Avatar className={classes.avatar}>
+      <Avatar className={classes.avatar} src={user && user.avatar_url ? user.avatar_url : null}>
         <LockOutlined />
       </Avatar>
       <Typography component="h1" variant="h5">
-        {actionText}
+        {(user) ? user.full_name : actionText}
       </Typography>
       <Typography component="p" style={{ color: 'red' }}>
         {errorText}
@@ -43,16 +47,18 @@ function LoginFormComponent({
       <form className={classes.form}>
         <TextField name="username" type="text" label="Username" required
           variant="outlined" margin="normal" fullWidth
+          disabled={!!user} defaultValue={user ? user.username: ''}
           onChange={updateFormData}
         />
         <TextField name="password" type="password" label="Password" required
           variant="outlined" margin="normal" fullWidth
+          disabled={!!user} defaultValue={user ? user.username: ''}
           onChange={updateFormData}
         />
         <FormControlLabel
           label="Remember me"
           control={
-            <Checkbox color="primary" value="remember"
+            <Checkbox color="primary" value="remember" disabled={!!user}
               id={'remember-' + Math.random()} onChange={updateFormData} />
           }
         />
@@ -62,7 +68,7 @@ function LoginFormComponent({
             onSubmit(formData);
           }}
         >
-          {actionText}
+          {(user) ? 'Logout' : actionText}
         </Button>
       </form>
     </div>

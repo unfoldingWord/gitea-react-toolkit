@@ -84,23 +84,30 @@ This is a functional Authentication component that logs into a Gitea server.
 The Authentication component wraps the LoginForm component.
 
 <Playground>
-<Paper>
-  <Authentication
-    messages={{
-      actionText:"Authenticate",
-      genericError: "Something happened!",
-      usernameError: "No user found?",
-      passwordError: "Did you fat finger your password?",
-    }}
-    config={{
-      server: "https://git.door43.org",
-      tokenid:"PlaygroundTesting",
-    }}
-    onAuthentication={(data) => {
-      alert(JSON.stringify(data, null, 2));
-    }}
-  />
-</Paper>
+{() => {
+  const [authentication, setAuthentication] = React.useState();
+  return (
+    <Paper>
+      <Authentication
+        messages={{
+          actionText:"Authenticate",
+          genericError: "Something happened!",
+          usernameError: "No user found?",
+          passwordError: "Did you fat finger your password?",
+        }}
+        config={{
+          server: "https://git.door43.org",
+          tokenid:"PlaygroundTesting",
+        }}
+        authentication={authentication}
+        onAuthentication={(data) => {
+          setAuthentication(data);
+          alert(JSON.stringify(data, null, 2));
+        }}
+      />
+    </Paper>
+  );
+}}
 </Playground>
 
 <Props of={Authentication} isToggle title="Props" />

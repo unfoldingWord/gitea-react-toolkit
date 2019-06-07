@@ -13,32 +13,38 @@ function AuthenticationComponent({
     usernameError,
     passwordError,
   },
+  authentication,
   onAuthentication,
   config,
 }) {
   const [error, setError] = useState();
 
   const onSubmit = async ({username, password, remember}) => {
-    try {
-      const authentication = await authenticate({username, password, config});
-      authentication.remember = remember;
-      if (authentication) {
-        const {user, token} = authentication;
-        if (user && token) {
-          setError();
-          onAuthentication(authentication);
-        } else {
-          if (!user) setError(usernameError);
-          else if (!token) setError(passwordError);
+    if (authentication && onAuthentication) {
+      onAuthentication();
+    } else {
+      try {
+        const authentication = await authenticate({username, password, config});
+        authentication.remember = remember;
+        if (authentication) {
+          const {user, token} = authentication;
+          if (user && token) {
+            setError();
+            onAuthentication(authentication);
+          } else {
+            if (!user) setError(usernameError);
+            else if (!token) setError(passwordError);
+          }
         }
+      } catch {
+        setError(genericError);
       }
-    } catch {
-      setError(genericError);
     }
   }
 
   return (
     <LoginForm
+      authentication={authentication}
       actionText={actionText}
       errorText={error}
       onSubmit={onSubmit}
