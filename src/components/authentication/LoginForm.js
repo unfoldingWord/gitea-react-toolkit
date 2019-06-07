@@ -62,7 +62,8 @@ function LoginFormComponent({
               id={'remember-' + Math.random()} onChange={updateFormData} />
           }
         />
-        <Button type="button" fullWidth variant="contained" color="primary"
+        <Button type="button" fullWidth variant="contained"
+          color={(user) ? "secondary" : "primary"}
           className={classes.submit}
           onClick={() => {
             onSubmit(formData);
