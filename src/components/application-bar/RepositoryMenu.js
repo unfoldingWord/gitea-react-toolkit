@@ -16,6 +16,7 @@ import { withRepository } from '../repository';
 
 function RepositoryMenuComponent({
   classes,
+  authentication,
   repository,
   onRepository,
   repositoryConfig,
@@ -59,6 +60,7 @@ function RepositoryMenuComponent({
       <Modal open={true} onClose={() => setModal(false)}>
         <Paper className={classes.modal}>
           <RepositoryComponent
+            authentication={authentication}
             repository={repository}
             onRepository={onRepository}
             repositoryConfig={repositoryConfig}

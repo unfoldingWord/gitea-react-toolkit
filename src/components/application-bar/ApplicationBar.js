@@ -47,6 +47,7 @@ function ApplicationBarComponent({
   );
   const repositoryMenuComponent = (
     <RepositoryMenu
+      authentication={authentication}
       repository={repository}
       onRepository={onRepository}
       repositoryConfig={_repositoryConfig}
