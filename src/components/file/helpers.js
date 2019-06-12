@@ -1,6 +1,6 @@
 import base64 from 'base-64';
 import utf8 from 'utf8';
-import { get, updateFile, ensureFile as _ensureFile, removeFile } from '../../core';
+import { get, updateContent, ensureFile as _ensureFile, removeFile } from '../../core';
 
 export const ensureFile = async ({
   filepath, defaultContent, message, authentication, repository, config, branch
@@ -59,7 +59,7 @@ export const saveContent = async ({content, message, authentication, repository,
   const { config } = authentication;
   const { owner: {username}, name } = repository;
   const { path } = file;
-  const response = await updateFile({
+  const response = await updateContent({
     owner: username,
     repo: name,
     filepath: path,
