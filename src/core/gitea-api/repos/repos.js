@@ -4,6 +4,12 @@ import { get, post, patch, del } from '../';
 
 const apiPath = 'api/v1';
 
+export const ensureRepo = async ({owner, repo, settings, config}) => {
+  let repository = await readRepo({owner, repo, config});
+  if (!repository) repository = await createRepo({repo, settings, config});
+  return repository;
+};
+
 // POST /api/v1/user/repos
 export const createRepo = async ({repo, settings, config}) => {
   const url = Path.join(apiPath, 'user', 'repos');
