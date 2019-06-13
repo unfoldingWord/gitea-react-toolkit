@@ -58,7 +58,10 @@ const api = setup({
 export const get = async ({url, params, config={}, noCache}) => {
   if (config.server) config.baseURL = config.server;
   let response;
-  if (noCache) response = await axios.get(url, {...config, params});
+  if (noCache) {
+    const _params = {noCache: Math.random(), ...params};
+    response = await axios.get(url, {...config, params: _params});
+  }
   else response = await api.get(url, {...config, params});
   const {data} = response;
   return data;
