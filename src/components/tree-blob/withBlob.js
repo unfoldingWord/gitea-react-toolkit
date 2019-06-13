@@ -52,7 +52,8 @@ export function withBlob(Component) {
     }
 
     if (hasBlob()) {
-      component = <Component {...props} blob={_blob} fileConfig={config} />;
+      const fileConfig = {...config, ...props.fileConfig};
+      component = <Component {...props} blob={_blob} fileConfig={fileConfig} />;
     }
 
     return component;
