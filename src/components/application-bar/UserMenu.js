@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import {
   IconButton,
-  MenuItem,
-  Menu,
   Avatar,
   Modal,
   Paper,
@@ -13,7 +11,7 @@ import {
   AccountCircle,
 } from '@material-ui/icons';
 
-import { withAuthentication } from '../authentication';
+import { Authentication } from '../authentication';
 
 function UserMenuComponent({
   classes,
@@ -21,55 +19,25 @@ function UserMenuComponent({
   onAuthentication,
   authenticationConfig,
 }) {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
   const [modal, setModal] = useState(false);
-
-  const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  }
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  }
-
-  const handleLogout = () => {
-    handleClose();
-    authentication.logout();
-    setModal(false);
-  }
-
-  const handleLogin = () => {
-    handleClose();
-    setModal(true);
-  }
+  const closeModal = () => setModal(false);
+  const openModal = () => setModal(true);
 
   let avatar;
-  let menuItems = [];
-  if (authentication && authentication.user) {
-    avatar = (
-      <Avatar className={classes.avatar} src={authentication.user.avatar_url} />
-    );
-    menuItems.push(
-      <MenuItem key={Math.random()} onClick={handleLogout}>Logout</MenuItem>
-    );
-  } else {
+  if (authentication && authentication.user)
+    avatar = <Avatar className={classes.avatar} src={authentication.user.avatar_url} />;
+  else
     avatar = <AccountCircle fontSize="large" />;
-    menuItems.push(
-      <MenuItem key={Math.random()} onClick={handleLogin}>Login</MenuItem>
-    );
-  }
 
   let authenticationModal = <div />;
-  if (modal && !authentication) {
-    const AuthenticationComponent = withAuthentication(<div />);
+  if (modal) {
     authenticationModal = (
-      <Modal open={true} onClose={() => setModal(false)}>
+      <Modal open={true} onClose={closeModal}>
         <Paper className={classes.modal}>
-          <AuthenticationComponent
+          <Authentication
             authentication={authentication}
             onAuthentication={onAuthentication}
-            authenticationConfig={authenticationConfig}
+            config={authenticationConfig}
           />
         </Paper>
       </Modal>
@@ -79,36 +47,18 @@ function UserMenuComponent({
   return (
     <div>
       <IconButton
-        aria-owns={open ? 'menu-appbar' : undefined}
-        aria-haspopup="true"
-        onClick={handleMenu}
+        onClick={openModal}
         color="inherit"
       >
         {avatar}
       </IconButton>
-      <Menu
-        id="menu-appbar"
-        anchorEl={anchorEl}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        open={open}
-        onClose={handleClose}
-      >
-        {menuItems}
-      </Menu>
       {authenticationModal}
     </div>
   );
 }
 
 UserMenuComponent.propTypes = {
-  ...withAuthentication.propTypes
+  ...Authentication.propTypes
 };
 
 const styles = (theme) => ({
