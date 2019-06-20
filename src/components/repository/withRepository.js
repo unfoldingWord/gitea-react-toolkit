@@ -33,7 +33,7 @@ function withRepositoryComponent(Component) {
 
     const hasRepository = () => (repo && repo.name && repo.owner && repo.permissions );
 
-    const updateRepository  = (_repo) => {
+    const updateRepository = (_repo) => {
       let __repo;
       if (_repo) {
         __repo = {..._repo};

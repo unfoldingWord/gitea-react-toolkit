@@ -6,6 +6,7 @@ import {
 } from '@material-ui/core';
 
 import { Repository } from '../';
+import { extendRepository } from '../repository/helpers';
 
 function RepositoriesComponent({
   classes,
@@ -14,13 +15,22 @@ function RepositoriesComponent({
   onRepository,
   config,
 }) {
+  const updateRepository = (_repo) => {
+    let __repo;
+    if (_repo) {
+      __repo = {..._repo};
+      __repo = extendRepository({repository: __repo, updateRepository, config});
+    }
+    onRepository(__repo);
+  };
+
   let components = [];
   if (repositories) {
     components = repositories.map((repository) =>
       <Repository
         key={JSON.stringify(repository)}
         repository={repository}
-        onRepository={onRepository}
+        onRepository={updateRepository}
         config={config}
       />
     );
@@ -29,7 +39,7 @@ function RepositoriesComponent({
       <Repository
         key={index}
         url={url}
-        onRepository={onRepository}
+        onRepository={updateRepository}
         config={config}
       />
     );
