@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 import {
@@ -14,6 +14,7 @@ import {
 } from '@material-ui/icons';
 
 function LoginFormComponent({
+  config,
   classes,
   authentication,
   actionText,
@@ -41,18 +42,18 @@ function LoginFormComponent({
       <Typography component="h1" variant="h5">
         {(user) ? user.full_name : actionText}
       </Typography>
-      <Typography component="p" style={{ color: 'red' }}>
+      <Typography component="p" style={{color: 'red'}}>
         {errorText}
       </Typography>
       <form className={classes.form}>
         <TextField name="username" type="text" label="Username" required
           variant="outlined" margin="normal" fullWidth
-          disabled={!!user} defaultValue={user ? user.username: ''}
+          disabled={!!user} defaultValue={user ? user.username : ''}
           onChange={updateFormData}
         />
         <TextField name="password" type="password" label="Password" required
           variant="outlined" margin="normal" fullWidth
-          disabled={!!user} defaultValue={user ? user.username: ''}
+          disabled={!!user} defaultValue={user ? user.username : ''}
           onChange={updateFormData}
         />
         <FormControlLabel
@@ -62,6 +63,10 @@ function LoginFormComponent({
               id={'remember-' + Math.random()} onChange={updateFormData} />
           }
         />
+        <div className={classes.footer}>
+          <Typography variant="caption">Don&apos;t have an account?&nbsp;</Typography>
+          <Typography color="primary" variant="caption" component="a" target="_blank" href={`${config.server}/user/sign_up`}>Sign Up</Typography>
+        </div>
         <Button type="button" fullWidth variant="contained"
           color={(user) ? "secondary" : "primary"}
           className={classes.submit}
@@ -77,6 +82,8 @@ function LoginFormComponent({
 }
 
 LoginFormComponent.propTypes = {
+  /** Configuration to use for sign up/forgot password flow */
+  config: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
   /** Callback function to propogate the username and password entered. */
   onSubmit: PropTypes.func.isRequired,
@@ -84,6 +91,10 @@ LoginFormComponent.propTypes = {
   actionText: PropTypes.string,
   /** The text to describe the error when Authentication fails. */
   errorText: PropTypes.string,
+  /** The authenticated user object */
+  authentication: PropTypes.shape({
+    user: PropTypes.object
+  })
 };
 
 LoginFormComponent.defaultProps = {
@@ -108,6 +119,9 @@ const styles = theme => ({
   submit: {
     marginTop: theme.spacing.unit * 3,
   },
+  footer: {
+    display: 'flex'
+  }
 });
 
 export const LoginForm = withStyles(styles)(LoginFormComponent);
