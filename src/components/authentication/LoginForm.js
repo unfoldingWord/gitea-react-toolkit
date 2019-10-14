@@ -64,8 +64,13 @@ function LoginFormComponent({
           }
         />
         <div className={classes.footer}>
-          <Typography variant="caption">Don&apos;t have an account?&nbsp;</Typography>
-          <Typography color="primary" variant="caption" component="a" target="_blank" href={`${config.server}/user/sign_up`}>Sign Up</Typography>
+          <div className={classes.footer}>
+            <Typography variant="caption">Don&apos;t have an account?&nbsp;</Typography>
+            <Typography color="primary" variant="caption" component="a" target="_blank" href={`${config.server}/user/sign_up`}>Sign Up</Typography>
+          </div>
+          <div className={classes.footer}>
+            <Typography color="primary" variant="caption" component="a" target="_blank" href={`${config.server}/user/forgot_password`}>Reset password</Typography>
+          </div>
         </div>
         <Button type="button" fullWidth variant="contained"
           color={(user) ? "secondary" : "primary"}
@@ -120,7 +125,8 @@ const styles = theme => ({
     marginTop: theme.spacing.unit * 3,
   },
   footer: {
-    display: 'flex'
+    display: 'flex',
+    justifyContent: 'space-between'
   }
 });
 
