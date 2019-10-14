@@ -33,10 +33,11 @@ function LoginFormComponent({
     else _formData[name] = value;
     setFormData(_formData);
   };
+  const {root, avatar, form, footer, submit} = classes;
 
   return (
-    <div className={classes.root}>
-      <Avatar className={classes.avatar} src={user && user.avatar_url ? user.avatar_url : null}>
+    <div className={root}>
+      <Avatar className={avatar} src={user && user.avatar_url ? user.avatar_url : null}>
         <LockOutlined />
       </Avatar>
       <Typography component="h1" variant="h5">
@@ -45,7 +46,7 @@ function LoginFormComponent({
       <Typography component="p" style={{color: 'red'}}>
         {errorText}
       </Typography>
-      <form className={classes.form}>
+      <form className={form}>
         <TextField name="username" type="text" label="Username" required
           variant="outlined" margin="normal" fullWidth
           disabled={!!user} defaultValue={user ? user.username : ''}
@@ -63,24 +64,30 @@ function LoginFormComponent({
               id={'remember-' + Math.random()} onChange={updateFormData} />
           }
         />
-        <div className={classes.footer}>
-          <div className={classes.footer}>
-            <Typography variant="caption">Don&apos;t have an account?&nbsp;</Typography>
-            <Typography color="primary" variant="caption" component="a" target="_blank" href={`${config.server}/user/sign_up`}>Sign Up</Typography>
-          </div>
-          <div className={classes.footer}>
-            <Typography color="primary" variant="caption" component="a" target="_blank" href={`${config.server}/user/forgot_password`}>Reset password</Typography>
-          </div>
-        </div>
         <Button type="button" fullWidth variant="contained"
           color={(user) ? "secondary" : "primary"}
-          className={classes.submit}
+          className={submit}
           onClick={() => {
             onSubmit(formData);
           }}
         >
           {(user) ? 'Logout' : actionText}
         </Button>
+        {
+          config && config.server ? (
+            <>
+              <div className={footer}>
+                <div className={footer}>
+                  <Typography variant="caption">Need an account?&nbsp;</Typography>
+                  <Typography color="primary" variant="caption" component="a" target="_blank" href={`${config.server}/user/sign_up`}>Register now.</Typography>
+                </div>
+                <div className={footer}>
+                  <Typography color="primary" variant="caption" component="a" target="_blank" href={`${config.server}/user/forgot_password`}>Forgot password?</Typography>
+                </div>
+              </div>
+            </>
+          ) : null
+        }
       </form>
     </div>
   );
@@ -88,7 +95,7 @@ function LoginFormComponent({
 
 LoginFormComponent.propTypes = {
   /** Configuration to use for sign up/forgot password flow */
-  config: PropTypes.object.isRequired,
+  config: PropTypes.object,
   classes: PropTypes.object.isRequired,
   /** Callback function to propogate the username and password entered. */
   onSubmit: PropTypes.func.isRequired,
@@ -122,7 +129,7 @@ const styles = theme => ({
     marginTop: theme.spacing.unit,
   },
   submit: {
-    marginTop: theme.spacing.unit * 3,
+    marginBottom: theme.spacing.unit * 3,
   },
   footer: {
     display: 'flex',
