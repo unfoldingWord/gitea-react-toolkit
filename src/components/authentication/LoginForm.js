@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 import {
@@ -41,28 +41,29 @@ function LoginFormComponent({
       <Typography component="h1" variant="h5">
         {(user) ? user.full_name : actionText}
       </Typography>
-      <Typography component="p" style={{ color: 'red' }}>
+      <Typography component="p" style={{color: 'red'}}>
         {errorText}
       </Typography>
       <form className={classes.form}>
-        <TextField name="username" type="text" label="Username" required
+        <TextField data-cy="username-input" name="username" type="text" label="Username" required
           variant="outlined" margin="normal" fullWidth
-          disabled={!!user} defaultValue={user ? user.username: ''}
+          disabled={!!user} defaultValue={user ? user.username : ''}
           onChange={updateFormData}
         />
-        <TextField name="password" type="password" label="Password" required
+        <TextField data-cy="password-input" name="password" type="password" label="Password" required
           variant="outlined" margin="normal" fullWidth
-          disabled={!!user} defaultValue={user ? user.username: ''}
+          disabled={!!user} defaultValue={user ? user.username : ''}
           onChange={updateFormData}
         />
         <FormControlLabel
+          data-cy="remember-checkbox"
           label="Remember me"
           control={
             <Checkbox color="primary" value="remember" disabled={!!user}
               id={'remember-' + Math.random()} onChange={updateFormData} />
           }
         />
-        <Button type="button" fullWidth variant="contained"
+        <Button data-cy="submit-button" type="button" fullWidth variant="contained"
           color={(user) ? "secondary" : "primary"}
           className={classes.submit}
           onClick={() => {
