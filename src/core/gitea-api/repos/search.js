@@ -1,8 +1,6 @@
 import Path from 'path';
 
-import { get, getUID } from '../';
-
-const apiPath = 'api/v1';
+import {apiPath,  get, getUID } from '../';
 
 export const repositoryExists = async ({owner, repository, config}) => {
   const uid = await getUID({username: owner, config});

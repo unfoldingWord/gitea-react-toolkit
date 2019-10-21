@@ -1,8 +1,6 @@
 import Path from 'path';
 
-import { get, post, put, del } from '../';
-
-const apiPath = 'api/v1';
+import { apiPath, get, post, put, del } from '../';
 
 // POST /api/v1/repos/{owner}/{repo}/contents/{filepath}
 export const createContent = async ({owner, repo, filepath, payload, config}) => {

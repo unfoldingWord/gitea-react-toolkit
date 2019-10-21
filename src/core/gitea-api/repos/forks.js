@@ -1,8 +1,6 @@
 import Path from 'path';
 
-import { get, post } from '../';
-
-const apiPath = 'api/v1';
+import {apiPath, get, post } from '../';
 
 // GET /repos/{owner}/{repo}/forks
 export const readForks = async ({owner, repo, config}) => {

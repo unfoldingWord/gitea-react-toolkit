@@ -1,8 +1,6 @@
 import Path from 'path';
 
-import { get } from '../';
-
-const apiPath = 'api/v1';
+import {apiPath, get} from '../';
 
 export const getTree = async ({url, config}) => {
   const response = await get({url, config});
