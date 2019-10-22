@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from 'prop-types';
 
 import { Repositories, Search } from '../';
@@ -13,6 +13,10 @@ function withRepositoryComponent(Component) {
     ...props
   }) {
     const [repo, setRepo] = useState(repository);
+
+    useEffect(() => {
+      if (!repo.close) updateRepository(repo);
+    }, [repo])
 
     const {authentication} = props;
     let repositoryConfig = {};
