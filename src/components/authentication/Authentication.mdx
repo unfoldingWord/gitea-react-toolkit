@@ -5,7 +5,7 @@ route: /authentication
 
 import { Playground, Props } from 'docz';
 import { Paper, Card, CardContent, CardHeader, Avatar, CardActions, IconButton } from '@material-ui/core';
-import { Favorite, Share } from '@material-ui/icons';
+import { Favorite, Share, ExitToApp } from '@material-ui/icons';
 import { withAuthentication, Authentication, LoginForm } from '../';
 import { loremIpsum } from 'lorem-ipsum';
 import moment from 'moment';
@@ -23,6 +23,7 @@ If not already authenticated, it will render the Authenticaiton component.
   // Define your React component and optionally access authentication in props.
   function Mission({
     message,
+    authentication,
     authentication: {
       user,
       token,
@@ -38,6 +39,7 @@ If not already authenticated, it will render the Authenticaiton component.
         <CardActions>
           <IconButton onClick={()=> alert(`Now get out your decoder ring, ${user.full_name}, and get to work!`)}><Favorite /></IconButton>
           <IconButton onClick={()=> alert("Alright Elon, let's not tweet about our missions.")}><Share /></IconButton>
+          <IconButton onClick={()=> authentication.logout()}><ExitToApp /></IconButton>
         </CardActions>
       </Card>
     )

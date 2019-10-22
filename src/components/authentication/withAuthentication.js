@@ -1,5 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from 'prop-types';
+
+import localforage from 'localforage';
+
+const authenticationStore = localforage.createInstance({
+  driver: [localforage.INDEXEDDB],
+  name: 'authentication-store',
+});
+const saveAuth = (_auth) => {
+  if (_auth) {
+    const value = JSON.stringify(_auth);
+    authenticationStore.setItem('authentication', value);
+  } else {
+    authenticationStore.removeItem('authentication');
+  }
+};
+const getAuth = async () => {
+  const value = await authenticationStore.getItem('authentication');
+  return JSON.parse(value);
+};
 
 import { Authentication } from './Authentication';
 
@@ -15,15 +34,23 @@ function withAuthenticationComponent(Component) {
   }) {
     const [auth, setAuth] = useState(authentication);
 
+    useEffect(() => {
+      if (!auth) getAuth().then(_auth => updateAuthentication(_auth));
+    }, [auth]);
+
     const isAuthenticated = () => (auth && auth.token && auth.token && auth.user);
 
     const updateAuthentication = (_auth) => {
       if (_auth) {
-        _auth.logout = () => { updateAuthentication(); }
+        if (_auth.remember) saveAuth(_auth);
+        _auth.logout = () => {
+          saveAuth();
+          updateAuthentication();
+        }
       }
       if (onAuthentication) onAuthentication(_auth);
       else setAuth(_auth);
-    }
+    };
 
     let component = <div />;
     if (!isAuthenticated() && config) {
@@ -50,6 +77,7 @@ withAuthenticationComponent.propTypes = {
     user: PropTypes.object.isRequired,
     token: PropTypes.object.isRequired,
     config: PropTypes.object.isRequired,
+    remember: PropTypes.bool,
   }),
   /** Callback function to propogate the user/token used for API Authentication. */
   onAuthentication: PropTypes.func,
