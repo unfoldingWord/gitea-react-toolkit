@@ -1,12 +1,11 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
-import withStyles from '@material-ui/core/styles/withStyles';
 
 import {LoginForm} from './LoginForm';
 import {authenticate} from '../../core';
+import {getAuth, saveAuth} from './helpers';
 
-function AuthenticationComponent({
-  classes,
+function Authentication({
   messages: {
     actionText,
     genericError,
@@ -19,9 +18,26 @@ function AuthenticationComponent({
 }) {
   const [error, setError] = useState();
 
+  useEffect(() => {
+    if (!authentication) getAuth().then(_auth => updateAuthentication(_auth));
+  }, [authentication]);
+
+  const updateAuthentication = (_auth) => {
+    if (_auth) {
+      if (_auth.remember) saveAuth(_auth);
+      _auth.logout = () => logout();
+    }
+    onAuthentication(_auth);
+  };
+
+  const logout = () => {
+    saveAuth();
+    updateAuthentication();
+  }
+
   const onSubmit = async ({username, password, remember}) => {
-    if (authentication && onAuthentication) {
-      onAuthentication();
+    if (authentication) {
+      logout();
     } else {
       try {
         const authentication = await authenticate({username, password, config});
@@ -30,7 +46,7 @@ function AuthenticationComponent({
           const {user, token} = authentication;
           if (user && token) {
             setError();
-            onAuthentication(authentication);
+            updateAuthentication(authentication);
           } else {
             if (!user) setError(usernameError);
             else if (!token) setError(passwordError);
@@ -53,9 +69,14 @@ function AuthenticationComponent({
   )
 }
 
-AuthenticationComponent.propTypes = {
-  /** @ignore */
-  classes: PropTypes.object.isRequired,
+Authentication.propTypes = {
+  /** Pass a previously returned authentication object to bypass login. */
+  authentication: PropTypes.shape({
+    user: PropTypes.object.isRequired,
+    token: PropTypes.object.isRequired,
+    config: PropTypes.object.isRequired,
+    remember: PropTypes.bool,
+  }),
   /** Callback function to propogate the user/token used for API Authentication. */
   onAuthentication: PropTypes.func.isRequired,
   /** Override the default text and errors. Must override all or none. */
@@ -74,7 +95,7 @@ AuthenticationComponent.propTypes = {
   }).isRequired,
 };
 
-AuthenticationComponent.defaultProps = {
+Authentication.defaultProps = {
   messages: {
     actionText: "Login",
     genericError: "Something went wrong, please try again.",
@@ -83,8 +104,4 @@ AuthenticationComponent.defaultProps = {
   }
 };
 
-const styles = (theme) => ({
-  root: {},
-});
-
-export const Authentication = withStyles(styles)(AuthenticationComponent);
+export default Authentication;

@@ -1,26 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, {useState} from "react";
 import PropTypes from 'prop-types';
 
-import localforage from 'localforage';
-
-const authenticationStore = localforage.createInstance({
-  driver: [localforage.INDEXEDDB],
-  name: 'authentication-store',
-});
-const saveAuth = (_auth) => {
-  if (_auth) {
-    const value = JSON.stringify(_auth);
-    authenticationStore.setItem('authentication', value);
-  } else {
-    authenticationStore.removeItem('authentication');
-  }
-};
-const getAuth = async () => {
-  const value = await authenticationStore.getItem('authentication');
-  return JSON.parse(value);
-};
-
-import { Authentication } from './Authentication';
+import { Authentication } from './';
+import {isAuthenticated} from './helpers';
 
 function withAuthenticationComponent(Component) {
   return function AuthenticatedComponent ({
@@ -33,37 +15,25 @@ function withAuthenticationComponent(Component) {
     ...props
   }) {
     const [auth, setAuth] = useState(authentication);
-
-    useEffect(() => {
-      if (!auth) getAuth().then(_auth => updateAuthentication(_auth));
-    }, [auth]);
-
-    const isAuthenticated = () => (auth && auth.token && auth.token && auth.user);
-
+  
     const updateAuthentication = (_auth) => {
-      if (_auth) {
-        if (_auth.remember) saveAuth(_auth);
-        _auth.logout = () => {
-          saveAuth();
-          updateAuthentication();
-        }
-      }
       if (onAuthentication) onAuthentication(_auth);
       else setAuth(_auth);
     };
 
     let component = <div />;
-    if (!isAuthenticated() && config) {
+    if (!isAuthenticated(auth) && config) {
       component = (
         <Authentication
           messages={messages}
           config={config}
+          authentication={auth}
           onAuthentication={updateAuthentication}
         />
       );
     }
 
-    if (isAuthenticated()) {
+    if (isAuthenticated(auth)) {
       component = <Component {...props} authentication={auth} />;
     }
 
