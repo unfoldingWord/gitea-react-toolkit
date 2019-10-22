@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 
-import { LoginForm } from './LoginForm';
-import { authenticate } from '../../core';
+import {LoginForm} from './LoginForm';
+import {authenticate} from '../../core';
 
 function AuthenticationComponent({
   classes,
@@ -44,6 +44,7 @@ function AuthenticationComponent({
 
   return (
     <LoginForm
+      config={config}
       authentication={authentication}
       actionText={actionText}
       errorText={error}
