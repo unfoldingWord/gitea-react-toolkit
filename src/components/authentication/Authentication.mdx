@@ -123,6 +123,7 @@ The LoginForm component returns the form fields upon submission to the callback.
 <Playground>
 <Paper>
   <LoginForm
+    config={{server:'https://bg.door43.org'}}
     actionText="Sign in"
     onSubmit={(formData) => {
       alert(JSON.stringify(formData, null, 2));
