@@ -1,6 +1,6 @@
 import Path from 'path';
 
-import {apiPath, get} from '../';
+import {apiPath, get} from '../../';
 
 export const getTree = async ({url, config}) => {
   const response = await get({url, config});
