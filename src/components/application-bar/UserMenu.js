@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 // import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import {
@@ -12,6 +12,7 @@ import {
 } from '@material-ui/icons';
 
 import { Authentication } from '../authentication';
+import { getAuth, saveAuth } from '../authentication/helpers';
 
 function UserMenuComponent({
   classes,
@@ -22,6 +23,21 @@ function UserMenuComponent({
   const [modal, setModal] = useState(false);
   const closeModal = () => setModal(false);
   const openModal = () => setModal(true);
+
+  useEffect(() => {
+    if (!authentication) getAuth().then(_auth => updateAuthentication(_auth));
+  }, [authentication]);
+
+  const updateAuthentication = (_auth) => {
+    if (_auth) {
+      if (_auth.remember) saveAuth(_auth);
+      _auth.logout = () => {
+        saveAuth();
+        updateAuthentication();
+      };
+    }
+    onAuthentication(_auth);
+  };
 
   let avatar;
   if (authentication && authentication.user)
