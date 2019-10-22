@@ -19,7 +19,7 @@ function Authentication({
   const [error, setError] = useState();
 
   useEffect(() => {
-    if (!authentication) getAuth().then(_auth => updateAuthentication(_auth));
+    if (!authentication) getAuth().then(updateAuthentication);
   }, [authentication]);
 
   const updateAuthentication = (_auth) => {

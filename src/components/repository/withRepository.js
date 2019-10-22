@@ -44,7 +44,7 @@ function withRepositoryComponent(Component) {
         __repo = extendRepository({repository: __repo, authentication, updateRepository, config});
       }
       if (onRepository) onRepository(__repo);
-      else setRepo(__repo);
+      setRepo(__repo);
     };
 
     let component = <div />;
