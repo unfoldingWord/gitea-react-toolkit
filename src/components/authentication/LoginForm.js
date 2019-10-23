@@ -41,9 +41,10 @@ function LoginFormComponent({
       <Typography component="h1" variant="h5">
         {(user) ? user.full_name : actionText}
       </Typography>
-      <Typography component="p" style={{color: 'red'}}>
-        {errorText}
-      </Typography>
+      {errorText ? (
+        <Typography data-cy="login-error-text" component="p" style={{color: 'red'}}>
+          {errorText}
+        </Typography>) : null}
       <form className={classes.form}>
         <TextField data-cy="username-input" name="username" type="text" label="Username" required
           variant="outlined" margin="normal" fullWidth
