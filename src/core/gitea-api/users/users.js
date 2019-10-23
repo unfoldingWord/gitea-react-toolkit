@@ -1,8 +1,6 @@
 import Path from 'path';
 
-import { get } from '../core';
-
-const apiPath = 'api/v1';
+import { apiPath, get } from '../core';
 
 export const getUser = async ({username, config}) => {
   let user;

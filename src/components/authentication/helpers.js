@@ -5,22 +5,26 @@ const authenticationStore = localforage.createInstance({
   name: 'git-authentication-store',
 });
 
+export const isAuthenticated = (auth) => (auth && auth.token && auth.token && auth.user);
+
 export const getAuth = async () => {
   let authentication;
   try {
-    authentication = await localforage.getItem('authentication');
+    const value = await authenticationStore.getItem('authentication');
+    authentication = JSON.parse(value);
   } catch {
     authentication = null;
   }
   return authentication;
 };
 
-export const setAuth = async (authentication) => {
-  let response = await localforage.setItem('authentication', authentication);
+export const saveAuth = async (authentication) => {
+  let response;
+  if (authentication) {
+    const value = JSON.stringify(authentication);
+    response = await authenticationStore.setItem('authentication', value);
+  } else {
+    response = await authenticationStore.removeItem('authentication');
+  }
   return response;
-};
-
-export const logout = async () => {
-  await setAuth();
-  return true;
 };

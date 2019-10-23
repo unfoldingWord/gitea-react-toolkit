@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import PropTypes from 'prop-types';
 
-import { Authentication } from './Authentication';
+import { Authentication } from './';
+import {isAuthenticated} from './helpers';
 
 function withAuthenticationComponent(Component) {
   return function AuthenticatedComponent ({
@@ -14,29 +15,25 @@ function withAuthenticationComponent(Component) {
     ...props
   }) {
     const [auth, setAuth] = useState(authentication);
-
-    const isAuthenticated = () => (auth && auth.token && auth.token && auth.user);
-
+  
     const updateAuthentication = (_auth) => {
-      if (_auth) {
-        _auth.logout = () => { updateAuthentication(); }
-      }
       if (onAuthentication) onAuthentication(_auth);
       else setAuth(_auth);
-    }
+    };
 
     let component = <div />;
-    if (!isAuthenticated() && config) {
+    if (!isAuthenticated(auth) && config) {
       component = (
         <Authentication
           messages={messages}
           config={config}
+          authentication={auth}
           onAuthentication={updateAuthentication}
         />
       );
     }
 
-    if (isAuthenticated()) {
+    if (isAuthenticated(auth)) {
       component = <Component {...props} authentication={auth} />;
     }
 
@@ -50,6 +47,7 @@ withAuthenticationComponent.propTypes = {
     user: PropTypes.object.isRequired,
     token: PropTypes.object.isRequired,
     config: PropTypes.object.isRequired,
+    remember: PropTypes.bool,
   }),
   /** Callback function to propogate the user/token used for API Authentication. */
   onAuthentication: PropTypes.func,

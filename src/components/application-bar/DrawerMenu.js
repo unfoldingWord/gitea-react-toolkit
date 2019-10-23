@@ -29,24 +29,20 @@ function DrawerMenuComponent({
     setOpenDrawer(!openDrawer);
   }
 
-  let fileTree = <div />;
-  if (repository) {
-    fileTree = (
-      <Tree
-        url={repository.tree_url}
-        blob={blob}
-        onBlob={onBlob}
-        config={config}
-        selected={true}
-      />
-    );
-  }
+  let fileTree = (!repository) ? <></> : (
+    <Tree
+      url={repository.tree_url}
+      blob={blob}
+      onBlob={onBlob}
+      config={config}
+      selected={true}
+    />
+  );
 
+  const drawerClasses = { paper: classes.drawerPaper };
   return (
     <div>
-      <IconButton color="inherit" aria-label="Menu"
-        onClick={toggleDrawer}
-      >
+      <IconButton color="inherit" aria-label="Menu" onClick={toggleDrawer} >
         <Menu />
       </IconButton>
       <Drawer
@@ -54,9 +50,7 @@ function DrawerMenuComponent({
         variant="temporary" anchor="left"
         open={openDrawer}
         onClose={toggleDrawer}
-        classes={{
-          paper: classes.drawerPaper,
-        }}
+        classes={drawerClasses}
       >
         <div className={classes.drawerHeader}>
           <IconButton onClick={toggleDrawer}>
@@ -78,4 +72,12 @@ DrawerMenuComponent.propTypes = {
   drawerMenu: PropTypes.element,
 };
 
-export const DrawerMenu = withStyles(styles)(DrawerMenuComponent);
+const areEqual = (prevProps, nextProps) => {
+  const keys = ["blob", "repository", "config"];
+  const checks = keys.map(key => (JSON.stringify(prevProps[key]) === JSON.stringify(nextProps[key])));
+  const equal = !checks.includes(false);
+  console.log('DrawerMenuComponent', keys, checks, equal);
+  return equal;
+};
+
+export const DrawerMenu = React.memo(withStyles(styles)(DrawerMenuComponent), areEqual);

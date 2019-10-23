@@ -1,8 +1,6 @@
 import Path from 'path';
 
-import { get, post, patch, del } from '../';
-
-const apiPath = 'api/v1';
+import {apiPath, get, post, patch, del } from '../';
 
 export const ensureRepo = async ({owner, repo, settings, config}) => {
   let repository = await readRepo({owner, repo, config});

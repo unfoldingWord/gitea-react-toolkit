@@ -1,9 +1,7 @@
 import Path from 'path';
 
-import { get, post } from '../core';
+import {apiPath,  get, post } from '../core';
 import { encodeAuthentication } from '../authentication';
-
-const apiPath = 'api/v1';
 
 export const getTokens = async ({username, password, config}) => {
   let tokens;

@@ -20,12 +20,17 @@ function TreeComponent ({
   url,
   config,
   selected,
+  blob,
   onBlob,
   depth,
   filepath,
 }) {
   const [_tree, setTree] = useState(tree || []);
-  const [selectedIndex, setSelectedIndex] = useState();
+  let _selectedPath;
+  if (blob) {
+    _selectedPath = blob.filepath.split('/')[depth - 2];
+  }
+  const [selectedPath, setSelectedPath] = useState(_selectedPath);
 
   const updateTree = async () => {
     const __tree = await fetchTree({url, config});
@@ -37,19 +42,16 @@ function TreeComponent ({
     updateTree();
   }
 
-  const updateSelectedIndex = (index) => {
-    setSelectedIndex(index);
-  }
-
   let components = [];
   if (_tree) {
     components = _tree.map((object, index) => {
+      const _selected = (object.path === selectedPath);
       let component;
       if (object.type === 'tree') {
         component = (
           <TreeObject
             {...object}
-            selected={index === selectedIndex}
+            selected={_selected}
             depth={depth}
             onBlob={onBlob}
             filepath={filepath}
@@ -60,16 +62,17 @@ function TreeComponent ({
           <BlobObject
             blob={object}
             onBlob={onBlob}
-            selected={index === selectedIndex}
+            selected={_selected}
             depth={depth}
             filepath={filepath}
           />
         );
       }
+      const onSelectedPath = () => setSelectedPath(object.path);
       return (
         <div
           key={index}
-          onClick={()=> updateSelectedIndex(index)}
+          onClick={onSelectedPath}
         >
           {component}
         </div>
@@ -98,7 +101,7 @@ TreeComponent.propTypes = {
   url: PropTypes.string,
   /** If url is relative, pass the server in the config object. */
   config: PropTypes.shape({
-    server: PropTypes.string.isRequired,
+    server: PropTypes.string,
   }),
   /** Set if the Listing is currently selected, which will expand the collapsed view. */
   selected: PropTypes.bool,

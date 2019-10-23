@@ -14,6 +14,7 @@ import {
 } from '@material-ui/icons';
 
 function LoginFormComponent({
+  config,
   classes,
   authentication,
   actionText,
@@ -32,7 +33,20 @@ function LoginFormComponent({
     else _formData[name] = value;
     setFormData(_formData);
   };
-
+  let footer = <></>;
+  if (config && config.server) {
+    footer = (
+      <div className={classes.footer_container}>
+        <div className={classes.footer_column}>
+          <Typography variant="caption">Need an account?&nbsp;</Typography>
+          <Typography color="primary" variant="caption" component="a" target="_blank" href={`${config.server}/user/sign_up`}>Register now.</Typography>
+        </div>
+        <div className={classes.footer_column}>
+          <Typography color="primary" variant="caption" component="a" target="_blank" href={`${config.server}/user/forgot_password`}>Forgot password?</Typography>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className={classes.root}>
       <Avatar className={classes.avatar} src={user && user.avatar_url ? user.avatar_url : null}>
@@ -44,7 +58,7 @@ function LoginFormComponent({
       {errorText ? (
         <Typography data-test="login-error-text" component="p" style={{color: 'red'}}>
           {errorText}
-        </Typography>) : null}
+        </Typography>) : <></>}
       <form className={classes.form}>
         <TextField data-test="username-input" name="username" type="text" label="Username" required
           variant="outlined" margin="normal" fullWidth
@@ -69,16 +83,20 @@ function LoginFormComponent({
           className={classes.submit}
           onClick={() => {
             onSubmit(formData);
-          }}
-        >
+          }}>
           {(user) ? 'Logout' : actionText}
         </Button>
+        {footer}
       </form>
     </div>
   );
 }
 
 LoginFormComponent.propTypes = {
+  /** Configuration to use for sign up/forgot password flow */
+  config: PropTypes.shape({
+    server: PropTypes.string.isRequired,
+  }),
   classes: PropTypes.object.isRequired,
   /** Callback function to propogate the username and password entered. */
   onSubmit: PropTypes.func.isRequired,
@@ -86,6 +104,10 @@ LoginFormComponent.propTypes = {
   actionText: PropTypes.string,
   /** The text to describe the error when Authentication fails. */
   errorText: PropTypes.string,
+  /** The authenticated user object */
+  authentication: PropTypes.shape({
+    user: PropTypes.object
+  })
 };
 
 LoginFormComponent.defaultProps = {
@@ -109,7 +131,16 @@ const styles = theme => ({
   },
   submit: {
     marginTop: theme.spacing.unit * 3,
+    marginBottom: theme.spacing.unit * 2,
   },
+  footer_container: {
+    display: 'flex',
+    justifyContent: 'space-between'
+  },
+  footer_column: {
+    display: 'flex',
+    justifyContent: 'space-between'
+  }
 });
 
 export const LoginForm = withStyles(styles)(LoginFormComponent);
