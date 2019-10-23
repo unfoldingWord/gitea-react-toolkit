@@ -35,7 +35,7 @@ export function withBlob(Component) {
       if (onBlob) onBlob(__blob);
       else setBlob(__blob);
     };
-    config.updateBlob = (__blob) => { updateBlob(__blob) };
+    const _config = {...config, updateBlob}
 
     let component = <div />;
     if (!hasBlob() && (tree || url)) {
@@ -43,7 +43,7 @@ export function withBlob(Component) {
         <Tree
           tree={tree}
           url={url}
-          config={config}
+          config={_config}
           selected={true}
           onBlob={updateBlob}
           {...blobConfig}
