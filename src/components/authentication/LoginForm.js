@@ -42,29 +42,29 @@ function LoginFormComponent({
         {(user) ? user.full_name : actionText}
       </Typography>
       {errorText ? (
-        <Typography data-cy="login-error-text" component="p" style={{color: 'red'}}>
+        <Typography data-test="login-error-text" component="p" style={{color: 'red'}}>
           {errorText}
         </Typography>) : null}
       <form className={classes.form}>
-        <TextField data-cy="username-input" name="username" type="text" label="Username" required
+        <TextField data-test="username-input" name="username" type="text" label="Username" required
           variant="outlined" margin="normal" fullWidth
           disabled={!!user} defaultValue={user ? user.username : ''}
           onChange={updateFormData}
         />
-        <TextField data-cy="password-input" name="password" type="password" label="Password" required
+        <TextField data-test="password-input" name="password" type="password" label="Password" required
           variant="outlined" margin="normal" fullWidth
           disabled={!!user} defaultValue={user ? user.username : ''}
           onChange={updateFormData}
         />
         <FormControlLabel
-          data-cy="remember-checkbox"
+          data-test="remember-checkbox"
           label="Remember me"
           control={
             <Checkbox color="primary" value="remember" disabled={!!user}
               id={'remember-' + Math.random()} onChange={updateFormData} />
           }
         />
-        <Button data-cy="submit-button" type="button" fullWidth variant="contained"
+        <Button data-test="submit-button" type="button" fullWidth variant="contained"
           color={(user) ? "secondary" : "primary"}
           className={classes.submit}
           onClick={() => {
