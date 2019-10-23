@@ -5,39 +5,39 @@ import { setup } from 'axios-cache-adapter';
 export const apiPath = 'api/v1';
 
 export const get = async ({url, params, config={}, noCache}) => {
-  if (config.server) config.baseURL = config.server;
+  const _config = {baseURL: config.server, ...config};
   let response;
   if (noCache) {
     const _params = {noCache: Math.random(), ...params};
-    response = await axios.get(url, {...config, params: _params});
+    response = await axios.get(url, {..._config, params: _params});
   }
-  else response = await api.get(url, {...config, params});
+  else response = await api.get(url, {..._config, params});
   const {data} = response;
   return data;
 };
 
 export const post = async ({url, payload, config}) => {
-  if (config.server) config.baseURL = config.server;
-  const {data} = await axios.post(url, payload, config);
+  const _config = {baseURL: config.server, ...config};
+  const {data} = await axios.post(url, payload, _config);
   return data;
 };
 
 export const put = async ({url, payload, config}) => {
-  if (config.server) config.baseURL = config.server;
-  const {data} = await axios.put(url, payload, config);
+  const _config = {baseURL: config.server, ...config};
+  const {data} = await axios.put(url, payload, _config);
   return data;
 };
 
 export const patch = async ({url, payload, config}) => {
-  if (config.server) config.baseURL = config.server;
-  const {data} = await axios.patch(url, payload, config);
+  const _config = {baseURL: config.server, ...config};
+  const {data} = await axios.patch(url, payload, _config);
   return data;
 };
 
 export const del = async ({url, payload, config}) => {
-  if (config.server) config.baseURL = config.server;
+  const _config = {baseURL: config.server, ...config};
   config.data = payload;
-  const {data} = await axios.delete(url, config);
+  const {data} = await axios.delete(url, _config);
   return data;
 };
 
