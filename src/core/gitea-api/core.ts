@@ -1,21 +1,8 @@
 import localforage from "localforage";
 import axios from "axios";
 import { setup } from "axios-cache-adapter";
+import { CoreOptions } from './core.d';
 export const apiPath = "api/v1";
-
-interface APIConfig {
-  server?: string;
-  baseURL?: string;
-  data?: object;
-}
-
-interface CoreOptions {
-  url: string;
-  params: object;
-  payload?: object;
-  config?: APIConfig;
-  noCache?: boolean;
-}
 
 export const get = async ({ url, params, config = {}, noCache }: CoreOptions): Promise<any> => {
   if (config.server) config.baseURL = config.server;
