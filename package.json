@@ -11,7 +11,7 @@
   "private": false,
   "dependencies": {
     "awesome-debounce-promise": "^2.1.0",
-    "axios-cache-adapter": "^2.3.0",
+    "axios-cache-adapter": "^2.4.1",
     "base-64": "^0.1.0",
     "jszip": "^3.2.1",
     "localforage": "^1.7.3",
@@ -44,6 +44,7 @@
     "@babel/preset-react": "^7.0.0",
     "@material-ui/core": "^3.9.3",
     "@material-ui/icons": "^3.0.2",
+    "@unfoldingword/eslint-config": "^1.0.1",
     "babel-eslint": "^10.0.1",
     "docz": "1.2.0",
     "docz-theme-default": "1.2.0",
