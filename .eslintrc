@@ -1,6 +1,6 @@
 {
   "extends": ["eslint:recommended", "plugin:react/recommended"],
-  "plugins": ["react"],
+  "plugins": ["react", "cypress"],
   "parser": "babel-eslint",
   "parserOptions": {
     "ecmaFeatures": {
@@ -12,6 +12,8 @@
   },
   "env": {
     "browser": true,
-    "node": true
+    "node": true,
+    "jest": true,
+    "cypress/globals": true
   }
 }
