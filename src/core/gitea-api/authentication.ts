@@ -1,13 +1,13 @@
 import base64 from 'base-64';
 import utf8 from 'utf8';
 import { AuthenticateOptions, Authenticate, AuthenticationToken } from './authenticate.d'
+import { APIConfig } from './core.d';
 import {
   getUser, getTokens, createToken,
 } from './users';
 
-
-export const authenticate: (args: AuthenticateOptions) => Promise<Authenticate> = async ({ username = '', password = '', config }) => {
-  let authentication: { config: any, user?: object, token?: AuthenticationToken } = { config };
+export var authenticate: (args: AuthenticateOptions) => Promise<Authenticate> = async ({ username = '', password = '', config }) => {
+  let authentication: { config: APIConfig, user?: object, token?: AuthenticationToken } = { config };
 
   if (username) {
     authentication.user = await getUser({ username, config });

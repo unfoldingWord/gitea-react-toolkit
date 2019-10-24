@@ -15,25 +15,25 @@ export const get = async ({ url, params, config = {}, noCache }: CoreOptions): P
   return data;
 };
 
-export const post = async ({ url, payload, config = {} }: CoreOptions) => {
+export const post = async ({ url, payload, config = {} }: CoreOptions): Promise<any> => {
   if (config.server) config.baseURL = config.server;
   const { data } = await axios.post(url, payload, config);
   return data;
 };
 
-export const put = async ({ url, payload, config = {} }: CoreOptions) => {
+export const put = async ({ url, payload, config = {} }: CoreOptions): Promise<any> => {
   if (config.server) config.baseURL = config.server;
   const { data } = await axios.put(url, payload, config);
   return data;
 };
 
-export const patch = async ({ url, payload, config = {} }: CoreOptions) => {
+export const patch = async ({ url, payload, config = {} }: CoreOptions): Promise<any> => {
   if (config.server) config.baseURL = config.server;
   const { data } = await axios.patch(url, payload, config);
   return data;
 };
 
-export const del = async ({ url, payload, config = {} }: CoreOptions) => {
+export const del = async ({ url, payload, config = {} }: CoreOptions): Promise<any> => {
   if (config.server) config.baseURL = config.server;
   config.data = payload;
   const { data } = await axios.delete(url, config);

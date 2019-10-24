@@ -1,12 +1,12 @@
+import { APIConfig } from './core.d';
+
 export interface AuthenticateOptions {
   username: string;
   password: string;
   token?: string | {
     sha1: string;
   };
-  config: {
-    headers: object;
-  }
+  config: APIConfig;
 }
 
 export interface Authenticate {
