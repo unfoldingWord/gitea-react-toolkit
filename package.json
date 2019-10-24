@@ -25,7 +25,7 @@
     "predeploy": "yarn docz:build",
     "prepublishOnly": "rm -fr ./dist & babel ./src --out-dir ./dist -s inline",
     "test:open": "npm start & wait-on http-get://localhost:3000 && $(npm bin)/cypress open",
-    "test": "npm start & wait-on http-get://localhost:3000 && $(npm bin)/cypress run"
+    "test:e2e": "npm start & wait-on http-get://localhost:3000 && $(npm bin)/cypress run"
   },
   "browserslist": [
     ">0.2%",
