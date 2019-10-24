@@ -1,24 +1,21 @@
-name: RCL Build & Test
+name: Install, Build & Run Cypress
 
 on: [push]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
+  test:
+    runs-on: macos-latest
     strategy:
       matrix:
-        node-version: [8.x, 10.x, 12.x]
-
+        node-version: [12.x]
     steps:
       - uses: actions/checkout@v1
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Install modules and run integration tests
-        run: |
-          yarn
-          yarn test:e2e
+      - name: Install Packages
+        run: yarn
+      - name: Build Docz and Run Cypress
+        run: yarn test:ci
         env:
-          CI: true
+          CYPRESS_DASHBOARD_KEY: ${{ secrets.CYPRESS_DASHBOARD_KEY }}
