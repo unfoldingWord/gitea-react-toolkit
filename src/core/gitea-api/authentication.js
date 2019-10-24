@@ -5,7 +5,6 @@ import { getUser, getTokens, createToken } from './users';
 
 export const authenticate = async ({username='', password='', config}) => {
   let authentication = {config};
-  if (username) authentication.user = await getUser({username, config});
   if (username && password) {
     const tokens = await getTokens({username, password, config});
     if (tokens) {
@@ -13,6 +12,14 @@ export const authenticate = async ({username='', password='', config}) => {
       if (tokenMatches.length > 0) authentication.token = tokenMatches[0];
       else authentication.token = await createToken({username, password, config});
     }
+  }
+  if (username) {
+    const authorization = encodeAuthentication({username, password});
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': authorization,
+    };
+    authentication.user = await getUser({username, config: {...config, headers}});
   }
   return authentication;
 };
