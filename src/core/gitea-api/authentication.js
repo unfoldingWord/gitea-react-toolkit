@@ -5,19 +5,27 @@ import { getUser, ensureToken } from './users';
 
 export const authenticate = async ({username, password, config}) => {
   let token, user;
+  let _config = {...config};
   if (username && password) {
-    const authorization = encodeAuthentication({username, password});
-    const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': authorization,
-      ...config.headers
-    };
-    const _config = {...config, headers};
+    const headers = authorizationHeaders({username, password});
+    _config = {...config, headers: {...config.headers, ...headers}};
     user = await getUser({username, config: _config});
     token = await ensureToken({username, config: _config});
   }
-  const authentication = {user, token, config};
+  const authentication = {user, token, config: _config};
   return authentication;
+};
+
+export const authorizationHeaders = ({username, password, token}) => {
+  let headers = {};
+  const authorization = encodeAuthentication({username, password, token});
+  if (authorization) {
+    headers = {
+      'Content-Type': 'application/json',
+      'Authorization': authorization,
+    };
+  }
+  return headers;
 };
 
 export const encodeAuthentication = ({username, password, token}) => {
