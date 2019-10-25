@@ -7,10 +7,12 @@ export const authenticate = async ({username, password, config}) => {
   let token, user;
   let _config = {...config};
   if (username && password) {
-    const headers = authorizationHeaders({username, password});
-    _config = {...config, headers: {...config.headers, ...headers}};
+    let authHeaders = authorizationHeaders({username, password});
+    _config = {...config, headers: {...config.headers, ...authHeaders}};
     user = await getUser({username, config: _config});
     token = await ensureToken({username, config: _config});
+    authHeaders = authorizationHeaders({token});
+    _config = {...config, headers: {...config.headers, ...authHeaders}};
   }
   const authentication = {user, token, config: _config};
   return authentication;
