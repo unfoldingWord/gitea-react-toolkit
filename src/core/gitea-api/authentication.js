@@ -1,26 +1,22 @@
 import base64 from 'base-64';
 import utf8 from 'utf8';
 
-import { getUser, getTokens, createToken } from './users';
+import { getUser, ensureToken } from './users';
 
-export const authenticate = async ({username='', password='', config}) => {
-  let authentication = {config};
+export const authenticate = async ({username, password, config}) => {
+  let token, user;
   if (username && password) {
-    const tokens = await getTokens({username, password, config});
-    if (tokens) {
-      const tokenMatches = tokens.filter(_token => _token.name === config.tokenid);
-      if (tokenMatches.length > 0) authentication.token = tokenMatches[0];
-      else authentication.token = await createToken({username, password, config});
-    }
-  }
-  if (username) {
     const authorization = encodeAuthentication({username, password});
     const headers = {
       'Content-Type': 'application/json',
       'Authorization': authorization,
+      ...config.headers
     };
-    authentication.user = await getUser({username, config: {...config, headers}});
+    const _config = {...config, headers};
+    user = await getUser({username, config: _config});
+    token = await ensureToken({username, config: _config});
   }
+  const authentication = {user, token, config};
   return authentication;
 };
 

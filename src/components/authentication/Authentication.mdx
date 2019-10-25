@@ -104,7 +104,6 @@ The Authentication component wraps the LoginForm component.
         authentication={authentication}
         onAuthentication={(data) => {
           setAuthentication(data);
-          alert(JSON.stringify(data, null, 2));
         }}
       />
     </Paper>
@@ -126,7 +125,7 @@ The LoginForm component returns the form fields upon submission to the callback.
     config={{server:'https://bg.door43.org'}}
     actionText="Sign in"
     onSubmit={(formData) => {
-      alert(JSON.stringify(formData, null, 2));
+      console.log(JSON.stringify(formData, null, 2));
     }}
   />
 </Paper>

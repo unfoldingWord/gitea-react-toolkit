@@ -1,33 +1,51 @@
 import Path from 'path';
 
-import {apiPath,  get, post } from '../core';
-import { encodeAuthentication } from '../authentication';
+import {apiPath,  get, post, del } from '../core';
 
-export const getTokens = async ({username, password, config}) => {
+// requires config.headers with authorization
+export const getTokens = async ({username, config}) => {
   let tokens;
   const url = Path.join(apiPath, 'users', username, 'tokens');
-  const authentication = encodeAuthentication({username, password});
-  const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': authentication,
-  };
   try {
-    tokens = await get({url, config: {...config, headers}});
+    tokens = await get({url, config});
   } catch { tokens = null; }
   return tokens;
 };
 
-export const createToken = async ({username, password, config={}}) => {
+// requires config.headers with authorization
+export const createToken = async ({username, config}) => {
   let token;
   const url = Path.join(apiPath, 'users', username, 'tokens');
-  const authentication = encodeAuthentication({username, password});
-  const headers = {
-    'Content-Type': 'application/json',
-    'Authorization': authentication,
-  };
   const payload = {"name": config.tokenid};
   try {
-    token = await post({url, payload, config: {...config, headers}});
+    token = await post({url, payload, config});
   } catch { token = []; }
   return token;
+};
+
+// requires config.headers with authorization
+export const ensureToken = async ({username, config}) => {
+  let token;
+  const tokens = await getTokens({username, config});
+  if (tokens) {
+    const tokenMatches = tokens.filter(_token => _token.name === config.tokenid);
+    if (tokenMatches) {
+      const token = tokenMatches[0];
+      await deleteToken({username, token, config});
+    }
+  }
+  token = await createToken({username, config});
+  return token;
+};
+
+// requires config.headers with authorization
+export const deleteToken = async ({username, token, config}) => {
+  let success;
+  const id = token.id.toString();
+  const url = Path.join(apiPath, 'users', username, 'tokens', id);
+  try {
+    await del({url, config});
+    success = true;
+  } catch { success = false; }
+  return success;
 };
