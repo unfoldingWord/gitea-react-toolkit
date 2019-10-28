@@ -21,7 +21,9 @@ export const getUID = async ({ username, config }: {
   let uid;
   try {
     const user = await getUser({ username, config });
-    uid = user.id;
+    if (user) {
+      uid = user.id;
+    }
   } catch { uid = null; }
   return uid;
 };
