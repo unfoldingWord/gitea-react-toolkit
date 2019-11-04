@@ -1,5 +1,9 @@
 {
-  "extends": ["eslint:recommended", "plugin:react/recommended"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "@unfoldingword"
+  ],
   "plugins": ["react", "cypress"],
   "parser": "babel-eslint",
   "parserOptions": {
