@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, {
+  useState, useEffect, useCallback,
+} from 'react';
 // import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import {
@@ -7,9 +9,7 @@ import {
   Modal,
   Paper,
 } from '@material-ui/core';
-import {
-  AccountCircle,
-} from '@material-ui/icons';
+import { AccountCircle } from '@material-ui/icons';
 
 import { Authentication } from '../authentication';
 import { getAuth, saveAuth } from '../authentication/helpers';
@@ -25,27 +25,34 @@ function UserMenuComponent({
   const openModal = () => setModal(true);
 
   useEffect(() => {
-    if (!authentication) getAuth().then(_auth => updateAuthentication(_auth));
-  }, [authentication]);
+    if (!authentication) {
+      getAuth().then(_auth => updateAuthentication(_auth));
+    }
+  }, [authentication, updateAuthentication]);
 
-  const updateAuthentication = (_auth) => {
+  const updateAuthentication = useCallback((_auth) => {
     if (_auth) {
-      if (_auth.remember) saveAuth(_auth);
+      if (_auth.remember) {
+        saveAuth(_auth);
+      }
       _auth.logout = () => {
         saveAuth();
         updateAuthentication();
       };
     }
     onAuthentication(_auth);
-  };
+  }, [onAuthentication]);
 
   let avatar;
-  if (authentication && authentication.user)
+
+  if (authentication && authentication.user) {
     avatar = <Avatar className={classes.avatar} src={authentication.user.avatar_url} />;
-  else
+  } else {
     avatar = <AccountCircle fontSize="large" />;
+  }
 
   let authenticationModal = <div />;
+
   if (modal) {
     authenticationModal = (
       <Modal open={true} onClose={closeModal}>
@@ -73,9 +80,7 @@ function UserMenuComponent({
   );
 }
 
-UserMenuComponent.propTypes = {
-  ...Authentication.propTypes
-};
+UserMenuComponent.propTypes = { ...Authentication.propTypes };
 
 const styles = (theme) => ({
   avatar: {
@@ -87,7 +92,7 @@ const styles = (theme) => ({
     top: '10%',
     left: '10%',
     right: '10%',
-  }
+  },
 });
 
 export const UserMenu = withStyles(styles, { withTheme: true })(UserMenuComponent);
