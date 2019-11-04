@@ -8,6 +8,8 @@ videos/*
 /node_modules
 /.pnp
 .pnp.js
+**.mp4
+**.png
 
 # testing
 /coverage
