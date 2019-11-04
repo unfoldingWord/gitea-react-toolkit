@@ -13,7 +13,16 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+      - name: Cache node modules
+        uses: actions/cache@v1
+        id: cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
       - name: Install Packages
+        if: steps.cache.outputs.cache-hit != 'true'
         run: npm i
       - name: Build Docz and Run Cypress
         run: npm run test:ci
