@@ -21,9 +21,11 @@ jobs:
           key: ${{ runner.os }}-cypress-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-cypress-
+      - name: ls cache
+        run: ls ~/.cache/Cypress
       - name: Install Cypress
         if: steps.cypress_cache.outputs.cache-hit != 'true'
-        run: npm i cypress --save-dev
+        run: CYPRESS_CACHE_FOLDER=~/.cache/Cypress npm i cypress --save-dev
       - name: Cache node_modules
         uses: actions/cache@v1
         id: node_cache
