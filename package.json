@@ -62,12 +62,16 @@
     "markdown-translatable": "^0.3.7",
     "moment": "^2.24.0",
     "path": "latest",
-    "react": "16.8.6",
-    "react-dom": "16.8.6",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0",
     "wait-on": "^3.3.0"
   },
   "main": "dist/index.js",
   "files": [
     "dist/*"
-  ]
+  ],
+  "resolutions": {
+    "react": "16.11.0",
+    "react-dom": "16.11.0"
+  }
 }
