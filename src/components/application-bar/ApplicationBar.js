@@ -10,8 +10,10 @@ import {
 } from '@material-ui/icons';
 
 // import { withAuthentication, withRepository, withFile } from '../';
-import { UserMenu, DrawerMenu, RepositoryMenu } from './';
 import styles from './styles';
+import {
+  UserMenu, DrawerMenu, RepositoryMenu,
+} from './';
 
 function ApplicationBarComponent({
   classes,
@@ -27,14 +29,17 @@ function ApplicationBarComponent({
   blob,
   onBlob,
 }) {
-  let _authenticationConfig = {...authenticationConfig};
-  let _repositoryConfig = {...repositoryConfig};
+  let _authenticationConfig = { ...authenticationConfig };
+  let _repositoryConfig = { ...repositoryConfig };
+
   if (authentication && authentication.config) {
     _authenticationConfig = authentication.config;
     _repositoryConfig.defaultOwner = authentication.user.username;
   }
 
-  if (!repository && blob) onBlob();
+  if (!repository && blob) {
+    onBlob();
+  }
 
   const drawerMenuComponent = (
     <DrawerMenu
