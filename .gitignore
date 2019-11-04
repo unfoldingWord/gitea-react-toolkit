@@ -6,6 +6,8 @@
 .pnp.js
 **.mp4
 **.png
+cypress.env.json
+**/example.json
 
 # testing
 /coverage

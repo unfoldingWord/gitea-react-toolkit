@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 import {
@@ -9,9 +9,7 @@ import {
   Typography,
   TextField,
 } from '@material-ui/core';
-import {
-  LockOutlined,
-} from '@material-ui/icons';
+import { LockOutlined } from '@material-ui/icons';
 
 function LoginFormComponent({
   config,
@@ -24,16 +22,27 @@ function LoginFormComponent({
   const [formData, setFormData] = useState({});
 
   let user;
-  if (authentication) user = authentication.user;
+
+  if (authentication) {
+    user = authentication.user;
+  }
 
   const updateFormData = (event) => {
-    const {type, name, value, checked} = event.target;
-    let _formData = {...formData};
-    if (type === 'checkbox') _formData[value] = checked;
-    else _formData[name] = value;
+    const {
+      type, name, value, checked,
+    } = event.target;
+    let _formData = { ...formData };
+
+    if (type === 'checkbox') {
+      _formData[value] = checked;
+    } else {
+      _formData[name] = value;
+    }
     setFormData(_formData);
   };
+
   let footer = <></>;
+
   if (config && config.server) {
     footer = (
       <div className={classes.footer_container}>
@@ -56,7 +65,7 @@ function LoginFormComponent({
         {(user) ? user.full_name : actionText}
       </Typography>
       {errorText ? (
-        <Typography data-test="login-error-text" component="p" style={{color: 'red'}}>
+        <Typography data-test="login-error-text" component="p" style={{ color: 'red' }}>
           {errorText}
         </Typography>) : <></>}
       <form className={classes.form}>
@@ -79,7 +88,7 @@ function LoginFormComponent({
           }
         />
         <Button data-test="submit-button" type="button" fullWidth variant="contained"
-          color={(user) ? "secondary" : "primary"}
+          color={(user) ? 'secondary' : 'primary'}
           className={classes.submit}
           onClick={() => {
             onSubmit(formData);
@@ -94,9 +103,7 @@ function LoginFormComponent({
 
 LoginFormComponent.propTypes = {
   /** Configuration to use for sign up/forgot password flow */
-  config: PropTypes.shape({
-    server: PropTypes.string.isRequired,
-  }),
+  config: PropTypes.shape({ server: PropTypes.string.isRequired }),
   classes: PropTypes.object.isRequired,
   /** Callback function to propogate the username and password entered. */
   onSubmit: PropTypes.func.isRequired,
@@ -105,14 +112,10 @@ LoginFormComponent.propTypes = {
   /** The text to describe the error when Authentication fails. */
   errorText: PropTypes.string,
   /** The authenticated user object */
-  authentication: PropTypes.shape({
-    user: PropTypes.object
-  })
+  authentication: PropTypes.shape({ user: PropTypes.object }),
 };
 
-LoginFormComponent.defaultProps = {
-  actionText: 'Login',
-}
+LoginFormComponent.defaultProps = { actionText: 'Login' };
 
 const styles = theme => ({
   root: {
@@ -135,12 +138,12 @@ const styles = theme => ({
   },
   footer_container: {
     display: 'flex',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   footer_column: {
     display: 'flex',
-    justifyContent: 'space-between'
-  }
+    justifyContent: 'space-between',
+  },
 });
 
 export const LoginForm = withStyles(styles)(LoginFormComponent);
