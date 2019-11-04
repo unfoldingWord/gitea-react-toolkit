@@ -22,8 +22,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cypress-
       - name: Print Cache
-        run: ls ~/.cache/Cypress
-        run: ls node_modules
+        run: ls ~/.cache/Cypress; ls node_modules;
       - name: Cache node_modules
         uses: actions/cache@v1
         id: node_cache
