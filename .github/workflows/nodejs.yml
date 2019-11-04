@@ -21,8 +21,6 @@ jobs:
           key: ${{ runner.os }}-cypress-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-cypress-
-      - name: Print Cache
-        run: ls ~/.cache/Cypress; ls node_modules;
       - name: Cache node_modules
         uses: actions/cache@v1
         id: node_cache
