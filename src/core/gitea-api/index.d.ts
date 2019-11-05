@@ -1,5 +1,4 @@
-import { string, object } from "prop-types";
-import { APIConfig } from './core';
+import { APIConfig } from './core.d';
 
 export interface AuthObject {
   user: object | null | undefined;

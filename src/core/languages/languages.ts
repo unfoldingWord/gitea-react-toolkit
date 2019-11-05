@@ -1,6 +1,6 @@
 import langnames from './langnames.json';
 
-interface getLanguage {
+interface GetLanguage {
   (args: { languageId: string }): {
     id: string;
     languageName: string;
@@ -15,9 +15,10 @@ interface getLanguage {
   } | undefined;
 }
 
-export const getLanguage: getLanguage = ({ languageId }) => {
+export const getLanguage: GetLanguage = ({ languageId }) => {
   let language;
   const langname = langnames.filter(object => object.lc === languageId)[0];
+
   if (langname) {
     language = {
       id: langname.pk,
@@ -35,11 +36,11 @@ export const getLanguage: getLanguage = ({ languageId }) => {
   return language;
 };
 
-interface getLanguageName {
+interface GetLanguageName {
   (args: { languageId: string }): string | null;
 }
 
-export const getLanguageName = ({ languageId }) => {
+export const getLanguageName: GetLanguageName = ({ languageId }) => {
   const language = getLanguage({ languageId });
   const languageName = language ? language.localized : null;
   return languageName;

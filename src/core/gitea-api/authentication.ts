@@ -1,36 +1,43 @@
 import base64 from 'base-64';
 import utf8 from 'utf8';
-import { AuthObject, AuthToken, AuthConfigObject } from './index.d';
+import { AuthObject, AuthToken } from './index.d';
 import { getUser, ensureToken } from './users';
-import { APIConfig } from './core';
+import { APIConfig } from './core.d';
 
-interface authenticate {
-  (args: { username: string; password: string; config: APIConfig }): Promise<AuthObject>;
+interface EncodeAuthentication {
+  (args: { username: string; password: string; token?: AuthToken | string }): string;
+  (args: { username?: string; password?: string; token: AuthToken | string }): string;
 }
 
-export const authenticate: authenticate = async ({ username, password, config }) => {
-  let token, user;
-  let _config = { ...config };
-  if (username && password) {
-    let authHeaders = authorizationHeaders({ username, password });
-    _config = { ...config, headers: { ...config.headers, ...authHeaders } };
-    user = await getUser({ username, config: _config });
-    token = await ensureToken({ username, config: _config });
-    authHeaders = authorizationHeaders({ token });
-    _config = { ...config, headers: { ...config.headers, ...authHeaders } };
+export const encodeAuthentication: EncodeAuthentication = ({
+  username, password, token,
+}) => {
+  let authentication = '';
+
+  if (token) {
+    const sha1 = typeof token === 'object' ? token.sha1 : token;
+    authentication = `token ${sha1}`;
+  } else if (username && password) {
+    const encoded = base64.encode(utf8.encode(`${username}:${password}`));
+    authentication = 'Basic ' + encoded;
   }
-  const authentication = { user, token, config: _config };
   return authentication;
 };
 
-interface authorizationHeaders {
+
+interface AuthorizationHeaders {
   (args: { username: string; password: string; token?: string | AuthToken }): object;
   (args: { username?: string; password?: string; token: string | AuthToken }): object;
 }
 
-export const authorizationHeaders: authorizationHeaders = ({ username, password, token }) => {
+export const authorizationHeaders: AuthorizationHeaders = ({
+  username, password, token,
+}) => {
   let headers = {};
-  const authorization = encodeAuthentication({ username, password, token });
+  const authorization = encodeAuthentication({
+    username, password, token,
+  });
+
   if (authorization) {
     headers = {
       'Content-Type': 'application/json',
@@ -40,19 +47,27 @@ export const authorizationHeaders: authorizationHeaders = ({ username, password,
   return headers;
 };
 
-interface encodeAuthentication {
-  (args: { username: string; password: string; token?: AuthToken | string }): string;
-  (args: { username?: string; password?: string; token: AuthToken | string }): string;
+interface Authenticate {
+  (args: { username: string; password: string; config: APIConfig }): Promise<AuthObject>;
 }
 
-export const encodeAuthentication: encodeAuthentication = ({ username, password, token }) => {
-  let authentication = '';
-  if (token) {
-    let sha1 = typeof token === 'object' ? token.sha1 : token;
-    authentication = `token ${sha1}`;
-  } else if (username && password) {
-    const encoded = base64.encode(utf8.encode(`${username}:${password}`));
-    authentication = 'Basic ' + encoded;
+export const authenticate: Authenticate = async ({
+  username, password, config,
+}) => {
+  let token, user;
+  let _config = { ...config };
+
+  if (username && password) {
+    let authHeaders = authorizationHeaders({ username, password });
+    _config = { ...config, headers: { ...config.headers, ...authHeaders } };
+    user = await getUser({ username, config: _config });
+    token = await ensureToken({ username, config: _config });
+    authHeaders = authorizationHeaders({ token });
+    _config = { ...config, headers: { ...config.headers, ...authHeaders } };
   }
+
+  const authentication = {
+    user, token, config: _config,
+  };
   return authentication;
 };
