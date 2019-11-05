@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   test:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [12.x]
@@ -13,9 +13,28 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+      - name: Cache Cypress
+        uses: actions/cache@v1
+        id: cypress_cache
+        with:
+          path: ~/.cache/Cypress
+          key: ${{ runner.os }}-cypress-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cypress-
+      - name: Cache node_modules
+        uses: actions/cache@v1
+        id: node_cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
       - name: Install Packages
-        run: npm i
+        if: steps.node_cache.outputs.cache-hit != 'true'
+        run: yarn
       - name: Build Docz and Run Cypress
-        run: npm run test:ci
+        run: yarn test:ci
         env:
           CYPRESS_DASHBOARD_KEY: ${{ secrets.CYPRESS_DASHBOARD_KEY }}
+          CYPRESS_TEST_USERNAME: ${{ secrets.CYPRESS_TEST_USERNAME }}
+          CYPRESS_TEST_PASSWORD: ${{ secrets.CYPRESS_TEST_PASSWORD }}

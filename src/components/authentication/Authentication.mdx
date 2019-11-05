@@ -39,7 +39,7 @@ If not already authenticated, it will render the Authenticaiton component.
         <CardActions>
           <IconButton onClick={()=> alert(`Now get out your decoder ring, ${user.full_name}, and get to work!`)}><Favorite /></IconButton>
           <IconButton onClick={()=> alert("Alright Elon, let's not tweet about our missions.")}><Share /></IconButton>
-          <IconButton onClick={()=> authentication.logout()}><ExitToApp /></IconButton>
+          <IconButton data-test="logout-button" onClick={()=> authentication.logout()}><ExitToApp /></IconButton>
         </CardActions>
       </Card>
     )

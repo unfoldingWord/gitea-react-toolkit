@@ -4,7 +4,11 @@
     "plugin:react/recommended",
     "@unfoldingword"
   ],
-  "plugins": ["react", "cypress"],
+  "plugins": [
+    "react",
+    "cypress",
+    "chai-friendly"
+  ],
   "parser": "babel-eslint",
   "parserOptions": {
     "ecmaFeatures": {
@@ -12,7 +16,9 @@
     }
   },
   "rules": {
-    "no-unused-vars": "warn"
+    "no-unused-vars": "warn",
+    "no-unused-expressions": 0,
+    "chai-friendly/no-unused-expressions": 2
   },
   "env": {
     "browser": true,
