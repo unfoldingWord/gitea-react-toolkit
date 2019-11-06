@@ -8,6 +8,8 @@ export interface AuthObject {
 
 export interface AuthToken {
   sha1: string;
+  id: string;
+  name: string;
 }
 
 export interface AuthConfigObject {

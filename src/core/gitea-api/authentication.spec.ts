@@ -53,7 +53,7 @@ describe('authenticate', () => {
       password: 'password',
       config: {
         tokenid: 'test-token',
-        token: { sha1: TEST_TOKEN },
+        token: { sha1: TEST_TOKEN, id: '', name: '' },
       },
     };
     const res = await helpers.authenticate(params);
@@ -64,7 +64,7 @@ describe('authenticate', () => {
           'Authorization': expect.stringMatching(/token\s/),
           'Content-Type': 'application/json',
         }),
-        token: { sha1: TEST_TOKEN },
+        token: { sha1: TEST_TOKEN, id: '', name: '' },
         tokenid: params.config.tokenid,
       }),
       user: expect.objectContaining({ id: expect.any(String) }),
