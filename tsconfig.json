@@ -8,6 +8,12 @@
     "skipLibCheck": false,
     "noEmit": true,
     /** For function overloads*/
-    "noImplicitAny": false
-  }
+    "noImplicitAny": false,
+  },
+  "include": [
+    "**/*"
+  ],
+  "exclude": [
+    "**/node_modules/**"
+  ]
 }
