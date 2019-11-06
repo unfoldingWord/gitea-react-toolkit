@@ -1,4 +1,4 @@
-import { AuthToken } from "./index.d";
+import { AuthToken } from './index.d';
 
 export interface APIConfig {
   server?: string;

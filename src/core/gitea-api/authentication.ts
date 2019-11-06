@@ -24,16 +24,23 @@ export const encodeAuthentication: EncodeAuthentication = ({
   return authentication;
 };
 
+interface AuthorizationHeadersObject {
+  'Content-Type': string;
+  Authorization: string;
+}
 
 interface AuthorizationHeaders {
-  (args: { username: string; password: string; token?: string | AuthToken }): object;
-  (args: { username?: string; password?: string; token: string | AuthToken }): object;
+  (args: { username: string; password: string; token?: string | AuthToken }): AuthorizationHeadersObject;
+  (args: { username?: string; password?: string; token: string | AuthToken }): AuthorizationHeadersObject;
 }
 
 export const authorizationHeaders: AuthorizationHeaders = ({
   username, password, token,
 }) => {
-  let headers = {};
+  let headers: AuthorizationHeadersObject = {
+    'Content-Type': '',
+    'Authorization': '',
+  };
   const authorization = encodeAuthentication({
     username, password, token,
   });

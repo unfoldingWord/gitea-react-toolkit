@@ -28,7 +28,8 @@
     "predeploy": "yarn docz:build",
     "prepublishOnly": "rm -fr ./dist & babel ./src --out-dir ./dist -s inline",
     "test:e2e": "yarn start & wait-on http-get://localhost:3000 && $(npm bin)/cypress open",
-    "test:ci": "yarn start & wait-on http-get://localhost:3000 && $(npm bin)/cypress run"
+    "test:ci": "yarn start & wait-on http-get://localhost:3000 && $(npm bin)/cypress run",
+    "test": "jest ./src/core"
   },
   "browserslist": [
     ">0.2%",

@@ -8,9 +8,12 @@ export const getUser = async ({ username, config }: {
 }): Promise<{ id: object } | null> => {
   let user;
   const url = Path.join(apiPath, 'users', username);
+
   try {
     user = await get({ url, config });
-  } catch { user = null; }
+  } catch {
+    user = null;
+  }
   return user;
 };
 
@@ -19,11 +22,15 @@ export const getUID = async ({ username, config }: {
   config: APIConfig;
 }): Promise<string> => {
   let uid;
+
   try {
     const user = await getUser({ username, config });
+
     if (user) {
       uid = user.id;
     }
-  } catch { uid = null; }
+  } catch {
+    uid = null;
+  }
   return uid;
 };
