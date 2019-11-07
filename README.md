@@ -1,4 +1,5 @@
 [![Netlify Status](https://api.netlify.com/api/v1/badges/bdf2f405-9184-49b6-a40c-a6e441e01161/deploy-status)](https://app.netlify.com/sites/gitea-react-toolkit/deploys)
+[![Coverage Status](https://coveralls.io/repos/github/unfoldingWord/gitea-react-toolkit/badge.svg?branch=master)](https://coveralls.io/github/unfoldingWord/gitea-react-toolkit?branch=master)
 
 # Gitea React Toolkit
 
