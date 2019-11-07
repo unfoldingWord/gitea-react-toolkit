@@ -29,7 +29,8 @@
     "prepublishOnly": "rm -fr ./dist & babel ./src --out-dir ./dist -s inline",
     "test:e2e": "yarn start & wait-on http-get://localhost:3000 && $(npm bin)/cypress open",
     "test:ci": "yarn start & wait-on http-get://localhost:3000 && $(npm bin)/cypress run",
-    "test": "NODE_ENV=test jest ./src/core --coverage && cat ./coverage/lcov.info | coveralls",
+    "test:cov": "NODE_ENV=test jest ./src/core --coverage && cat ./coverage/lcov.info | coveralls",
+    "test": "NODE_ENV=test jest ./src/core",
     "test:watch": "NODE_ENV=test jest ./src/core --watch"
   },
   "browserslist": [
