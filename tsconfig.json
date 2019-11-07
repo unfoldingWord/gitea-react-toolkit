@@ -9,6 +9,7 @@
     "noEmit": true,
     /** For function overloads*/
     "noImplicitAny": false,
+    "sourceMap": true,
   },
   "include": [
     "**/*"
