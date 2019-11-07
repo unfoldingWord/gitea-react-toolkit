@@ -62,7 +62,7 @@ export const authenticate: Authenticate = async ({
   username, password, config,
 }) => {
   let token, user;
-  let _config = { ...config };
+  let _config = { ...config, headers: {} };
 
   if (username && password) {
     let authHeaders = authorizationHeaders({ username, password });

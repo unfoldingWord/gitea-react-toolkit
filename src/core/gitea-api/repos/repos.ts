@@ -1,15 +1,28 @@
 import Path from 'path';
 
-import { apiPath, get, post, patch, del } from '../';
+import {
+  apiPath, get, post, patch, del,
+} from '../';
 
-export const ensureRepo = async ({ owner, repo, settings, config }) => {
-  let repository = await readRepo({ owner, repo, config });
-  if (!repository) repository = await createRepo({ repo, settings, config });
+export const ensureRepo = async ({
+  owner, repo, settings, config,
+}) => {
+  let repository = await readRepo({
+    owner, repo, config,
+  });
+
+  if (!repository) {
+    repository = await createRepo({
+      repo, settings, config,
+    });
+  }
   return repository;
 };
 
 // POST /api/v1/user/repos
-export const createRepo = async ({ repo, settings, config }) => {
+export const createRepo = async ({
+  repo, settings, config,
+}) => {
   const url = Path.join(apiPath, 'user', 'repos');
   const payload = {
     name: repo,
@@ -18,24 +31,35 @@ export const createRepo = async ({ repo, settings, config }) => {
     // private: true,
     // readme: `# ${repo} README`,
     // license: `license text here`,
-    ...settings
-  }
-  const response = await post({ url, payload, config });
+    ...settings,
+  };
+  const response = await post({
+    url, payload, config,
+  });
   return response;
 };
 
 // GET /api/v1/repos/{owner}/{repo}
-export const readRepo = async ({ owner, repo, config }) => {
+export const readRepo = async ({
+  owner, repo, config,
+}) => {
   const url = Path.join(apiPath, 'repos', owner, repo);
   let response;
+
   try {
-    response = await get({ url, config, noCache: true });
-  } catch (error) { response = null }
+    response = await get({
+      url, config, noCache: true,
+    });
+  } catch (error) {
+    response = null;
+  }
   return response;
 };
 
 // PATCH /api/v1/repos/{owner}/{repo}
-export const updateRepo = async ({ owner, repo, settings, config }) => {
+export const updateRepo = async ({
+  owner, repo, settings, config,
+}) => {
   const url = Path.join(apiPath, 'repos', owner, repo);
   const payload = {
     // allow_merge_commits: true,
@@ -53,20 +77,30 @@ export const updateRepo = async ({ owner, repo, settings, config }) => {
     // private: true,
     // website: "string",
     ...settings,
-  }
+  };
   let response;
+
   try {
-    response = await patch({ url, payload, config });
-  } catch (error) { response = null }
+    response = await patch({
+      url, payload, config,
+    });
+  } catch (error) {
+    response = null;
+  }
   return response;
 };
 
 // DELETE /api/v1/repos/{owner}/{repo}
-export const deleteRepo = async ({ owner, repo, config }) => {
+export const deleteRepo = async ({
+  owner, repo, config,
+}) => {
   const url = Path.join(apiPath, 'repos', owner, repo);
   let response;
+
   try {
     response = await del({ url, config });
-  } catch (error) { response = null }
+  } catch (error) {
+    response = null;
+  }
   return response;
 };
