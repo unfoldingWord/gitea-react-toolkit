@@ -7,6 +7,10 @@ jest.mock('axios-cache-adapter', () => ({
       url.match(/fail/ig) ? Promise.reject(new Error('Request failed with status code 404')) : Promise.resolve({ data: 'OK' }),
   }),
 }));
+jest.mock('axios', () => ({
+  get: (url) =>
+    url.match(/fail/ig) ? Promise.reject(new Error('Request failed with status code 404')) : Promise.resolve({ data: 'OK' }),
+}));
 
 const TEST_TOKEN = 'encrypted123456789';
 const authToken = {
@@ -39,19 +43,43 @@ describe('extendConfig', () => {
 });
 
 describe('get', () => {
-  it('should fail with 404', () => {
+  it('should pass with noCache', () => {
     const params = {
       config,
-      url: 'https://failing.com',
+      noCache: true,
+      url: 'https://passing.com',
     };
 
-    return expect(helpers.get(params)).rejects.toMatchSnapshot();
+    return expect(helpers.get(params)).resolves.toEqual('OK');
   });
 
   it('should pass', () => {
     const params = {
       config,
       url: 'https://passing.com',
+    };
+
+    return expect(helpers.get(params)).resolves.toEqual('OK');
+  });
+
+
+  it('should fail with 404', () => {
+    const params = {
+      config,
+      url: 'https://failing.com',
+    };
+
+    return expect(helpers.get(params)).rejects.toThrowError('Request failed with status code 404');
+  });
+});
+
+describe('post', () => {
+  it('should pass with basic data', () => {
+    const payload = { data: '123helloWorld' };
+    const params = {
+      url: 'https://passing.com',
+      payload,
+      config,
     };
 
     return expect(helpers.get(params)).resolves.toEqual('OK');

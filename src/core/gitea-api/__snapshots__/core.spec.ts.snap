@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`get should fail with 404 1`] = `[Error: Request failed with status code 404]`;
