@@ -19,14 +19,8 @@ interface TokenConfigWithHeaders {
   tokenid: string;
 }
 
-interface TokenObject {
-  name: string;
-  id: string;
-  sha1: string;
-}
-
 interface GetTokens {
-  (args: { username: string; config: TokenConfig }): Promise<TokenObject[]>;
+  (args: { username: string; config: TokenConfig }): Promise<AuthToken[]>;
 }
 
 // requires config.headers with authorization
@@ -43,7 +37,7 @@ export const getTokens: GetTokens = async ({ username, config }) => {
 };
 
 interface CreateToken {
-  (args: { username: string; config: TokenConfigWithHeaders }): Promise<TokenObject[]>;
+  (args: { username: string; config: TokenConfigWithHeaders }): Promise<AuthToken[]>;
 }
 
 // requires config.headers with authorization
