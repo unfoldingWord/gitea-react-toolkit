@@ -20,5 +20,4 @@ module.exports = {
     '!**/vendor/**',
   ],
   'coverageDirectory': './coverage/',
-  'collectCoverage': true,
 };
