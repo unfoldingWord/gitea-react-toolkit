@@ -5,7 +5,7 @@ env:
   CYPRESS_DASHBOARD_KEY: ${{ secrets.CYPRESS_DASHBOARD_KEY }}
   CYPRESS_TEST_USERNAME: ${{ secrets.CYPRESS_TEST_USERNAME }}
   CYPRESS_TEST_PASSWORD: ${{ secrets.CYPRESS_TEST_PASSWORD }}
-  COVERALLS_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
+  COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
 
 jobs:
   test:
@@ -38,6 +38,6 @@ jobs:
         if: steps.node_cache.outputs.cache-hit != 'true'
         run: yarn;
       - name: Build Docz and Run Cypress
-        run: printenv; yarn test:ci;
+        run: yarn test:ci;
       - name: Run Unit Tests With Coverage
         run: yarn test:cov;
