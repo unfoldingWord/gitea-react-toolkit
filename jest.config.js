@@ -15,9 +15,10 @@ module.exports = {
     'components',
   ],
   'collectCoverageFrom': [
-    'src/core/**/*.{js,jsx,ts}',
+    'src/**/*.{js,jsx,ts}',
     '!**/node_modules/**',
     '!**/vendor/**',
+    '!**/components/**',
   ],
   'coverageDirectory': './coverage/',
 };
