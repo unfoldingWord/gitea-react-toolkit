@@ -61,7 +61,7 @@ describe('get', () => {
       url: 'https://failing.com',
     };
 
-    return expect(helpers.get(params)).rejects.toThrowError('Request failed with status code 404');
+    return expect(helpers.get(params)).rejects.toEqual('Request failed with status code 404');
   });
 });
 

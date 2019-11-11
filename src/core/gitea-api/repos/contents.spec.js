@@ -35,7 +35,7 @@ describe('createContent', () => {
       payload,
       config,
     };
-    expect(helpers.createContent(params)).rejects.toEqual('Request failed with status code 404');
+    return expect(helpers.createContent(params)).rejects.toEqual('Request failed with status code 404');
   });
 });
 
