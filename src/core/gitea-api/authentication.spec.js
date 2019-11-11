@@ -1,7 +1,10 @@
 /// <reference types="jest" />
 import * as helpers from './authentication';
+jest.unmock('axios');
+jest.unmock('axios-cache-adapter');
 jest.mock('./users', () => ({ ...require.requireActual('./users'), getUser: () => Promise.resolve({ id: 'test-user' }) }));
 const TEST_TOKEN = 'encrypted123456789';
+
 
 describe('encodeAuthentication', () => {
   it('should encode authentication given username/password', () => {

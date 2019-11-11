@@ -95,3 +95,22 @@ describe('deleteToken', () => {
     return expect(helpers.deleteToken(params)).resolves.toEqual(false);
   });
 });
+
+describe('ensureTokens', () => {
+  const params = {
+    username: 'username',
+    config: {
+      headers,
+      token: {
+        sha1: 'string',
+        id: 'string',
+        name: 'string',
+      },
+      tokenid: 'token-id',
+    },
+  };
+
+  it('should delete tokens from match', () => {
+
+  });
+});

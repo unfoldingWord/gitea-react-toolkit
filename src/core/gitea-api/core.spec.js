@@ -1,22 +1,8 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 /// <reference types="jest" />
 import * as helpers from './core';
-jest.mock('axios-cache-adapter', () => ({
-  setup: () => ({
-    get: (url) =>
-      url.match(/fail/ig) ? Promise.reject(new Error('Request failed with status code 404')) : Promise.resolve({ data: 'OK' }),
-  }),
-}));
-jest.mock('axios', () => ({
-  get: (url) =>
-    url.match(/fail/ig) ? Promise.reject(new Error('Request failed with status code 404')) : Promise.resolve({ data: 'OK' }),
-  post: (url) =>
-    url.match(/fail/ig) ? Promise.reject(new Error('Request failed with status code 404')) : Promise.resolve({ data: 'OK' }),
-  patch: (url) =>
-    url.match(/fail/ig) ? Promise.reject(new Error('Request failed with status code 404')) : Promise.resolve({ data: 'OK' }),
-  put: (url) =>
-    url.match(/fail/ig) ? Promise.reject(new Error('Request failed with status code 404')) : Promise.resolve({ data: 'OK' }),
-}));
+jest.mock('axios');
+jest.mock('axios-cache-adapter');
 
 const TEST_TOKEN = 'encrypted123456789';
 const authToken = {
