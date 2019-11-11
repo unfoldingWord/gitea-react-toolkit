@@ -58,7 +58,7 @@ interface Get {
 
 export const get = async ({
   url, params = {}, config, noCache,
-}: Get): Promise<object> => {
+}: Get): Promise<any> => {
   const _config = extendConfig(config);
   let response;
 

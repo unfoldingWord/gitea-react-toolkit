@@ -1,31 +1,40 @@
-import Path from 'path';
+import path from 'path';
 
 import {
   apiPath, get, getUID,
 } from '../';
-import { APIConfig } from '../core.d'
+import { APIConfig } from '../core.d';
 
-interface repositoryExists {
-  (args: { owner: string; config: APIConfig; repository: object }): Promise<boolean>
+interface RepositoryExistsOptions {
+  owner: string;
+  config: APIConfig;
+  repository: object;
 }
 
-export const repositoryExists: repositoryExists = async ({
+export const repositoryExists = async ({
   owner, repository, config,
-}) => {
+}: RepositoryExistsOptions): Promise<boolean> => {
   const uid = await getUID({ username: owner, config });
   const params = { q: repository, uid };
-  const url = Path.join(apiPath, 'repos', 'search');
-  const { data: repos } = await get({
+  const url = path.join(apiPath, 'repos', 'search');
+  const repos = await get({
     url, params, config,
   });
+
   const repo = repos.filter(repo => repo.name === repository)[0];
   return !!repo;
 };
 
+interface RepositorySearchOptions {
+  owner: string;
+  config: APIConfig;
+  query: string;
+}
+
 // /repos/search?q=ulb&uid=4598&limit=50&exclusive=true
 export const repositorySearch = async ({
   owner, query, config,
-}) => {
+}: RepositorySearchOptions): Promise<any[]> => {
   let _query = query;
 
   if (_query) {
@@ -35,20 +44,19 @@ export const repositorySearch = async ({
   }
 
   let repositories = [];
-  let params: { q: object; limit: number; uid?: string; exclusive?: boolean; } = { q: _query, limit: 50 };
+  const params: { q: string; limit: number; uid?: string; exclusive?: boolean } = { q: _query, limit: 50 };
 
   if (owner) {
     params.uid = await getUID({ username: owner, config });
     params.exclusive = true;
   }
 
-  const url = Path.join(apiPath, 'repos', 'search');
+  const url = path.join(apiPath, 'repos', 'search');
 
   try {
-    const { data } = await get({
+    repositories = await get({
       url, params, config,
     });
-    repositories = data;
   } catch {
     repositories = [];
   }
