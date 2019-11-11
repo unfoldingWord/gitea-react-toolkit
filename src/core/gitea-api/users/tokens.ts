@@ -87,7 +87,7 @@ export const ensureToken: CreateToken = async ({ username, config }) => {
   if (tokens) {
     const tokenMatches = tokens.filter(_token => _token.name === config.tokenid);
 
-    if (tokenMatches) {
+    if (tokenMatches && tokenMatches.length) {
       const token = tokenMatches[0];
 
       await deleteToken({

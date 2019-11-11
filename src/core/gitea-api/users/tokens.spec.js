@@ -110,7 +110,11 @@ describe('ensureTokens', () => {
     },
   };
 
-  it('should delete tokens from match', () => {
-
+  it('should delete tokens from match', async () => {
+    const expected = [{
+      'id': 'test-id', 'name': 'user-token', 'sha1': 'encrypted123456789',
+    }];
+    const res = await helpers.ensureToken(params);
+    expect(res).toEqual(expected);
   });
 });
