@@ -1,28 +1,18 @@
 import Path from 'path';
-
 import {
   apiPath, get, post, patch, del,
 } from '../';
+import { ExtendConfig } from '../core';
 
-export const ensureRepo = async ({
-  owner, repo, settings, config,
-}) => {
-  let repository = await readRepo({
-    owner, repo, config,
-  });
-
-  if (!repository) {
-    repository = await createRepo({
-      repo, settings, config,
-    });
-  }
-  return repository;
-};
-
+interface CreateRepoOptions {
+  repo: string;
+  settings: object;
+  config: ExtendConfig;
+}
 // POST /api/v1/user/repos
 export const createRepo = async ({
   repo, settings, config,
-}) => {
+}: CreateRepoOptions): Promise<object> => {
   const url = Path.join(apiPath, 'user', 'repos');
   const payload = {
     name: repo,
@@ -39,10 +29,16 @@ export const createRepo = async ({
   return response;
 };
 
+interface ReadRepoOptions {
+  owner: string;
+  repo: string;
+  config: ExtendConfig;
+}
+
 // GET /api/v1/repos/{owner}/{repo}
 export const readRepo = async ({
   owner, repo, config,
-}) => {
+}: ReadRepoOptions): Promise<object> => {
   const url = Path.join(apiPath, 'repos', owner, repo);
   let response;
 
@@ -56,10 +52,32 @@ export const readRepo = async ({
   return response;
 };
 
+interface EnsureRepoOptions {
+  repo: string;
+  settings: object;
+  config: ExtendConfig;
+  owner: string;
+}
+
+export const ensureRepo = async ({
+  owner, repo, settings, config,
+}: EnsureRepoOptions): Promise<object> => {
+  let repository = await readRepo({
+    owner, repo, config,
+  });
+
+  if (!repository) {
+    repository = await createRepo({
+      repo, settings, config,
+    });
+  }
+  return repository;
+};
+
 // PATCH /api/v1/repos/{owner}/{repo}
 export const updateRepo = async ({
   owner, repo, settings, config,
-}) => {
+}: EnsureRepoOptions): Promise<object> => {
   const url = Path.join(apiPath, 'repos', owner, repo);
   const payload = {
     // allow_merge_commits: true,
@@ -93,12 +111,14 @@ export const updateRepo = async ({
 // DELETE /api/v1/repos/{owner}/{repo}
 export const deleteRepo = async ({
   owner, repo, config,
-}) => {
+}: ReadRepoOptions): Promise<object> => {
   const url = Path.join(apiPath, 'repos', owner, repo);
   let response;
 
   try {
-    response = await del({ url, config });
+    response = await del({
+      url, config, payload: {},
+    });
   } catch (error) {
     response = null;
   }
