@@ -1,6 +1,11 @@
 name: Install, Build & Run Cypress
 
 on: [push]
+env:
+  CYPRESS_DASHBOARD_KEY: ${{ secrets.CYPRESS_DASHBOARD_KEY }}
+  CYPRESS_TEST_USERNAME: ${{ secrets.CYPRESS_TEST_USERNAME }}
+  CYPRESS_TEST_PASSWORD: ${{ secrets.CYPRESS_TEST_PASSWORD }}
+  COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
 
 jobs:
   test:
@@ -31,10 +36,8 @@ jobs:
             ${{ runner.os }}-node-
       - name: Install Packages
         if: steps.node_cache.outputs.cache-hit != 'true'
-        run: yarn
+        run: yarn;
       - name: Build Docz and Run Cypress
-        run: yarn test:ci
-        env:
-          CYPRESS_DASHBOARD_KEY: ${{ secrets.CYPRESS_DASHBOARD_KEY }}
-          CYPRESS_TEST_USERNAME: ${{ secrets.CYPRESS_TEST_USERNAME }}
-          CYPRESS_TEST_PASSWORD: ${{ secrets.CYPRESS_TEST_PASSWORD }}
+        run: yarn test:ci;
+      - name: Run Unit Tests With Coverage
+        run: yarn test:cov;

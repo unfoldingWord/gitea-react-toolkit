@@ -1,7 +1,10 @@
 /// <reference types="jest" />
 import * as helpers from './authentication';
+jest.unmock('axios');
+jest.unmock('axios-cache-adapter');
 jest.mock('./users', () => ({ ...require.requireActual('./users'), getUser: () => Promise.resolve({ id: 'test-user' }) }));
 const TEST_TOKEN = 'encrypted123456789';
+
 
 describe('encodeAuthentication', () => {
   it('should encode authentication given username/password', () => {
@@ -53,7 +56,9 @@ describe('authenticate', () => {
       password: 'password',
       config: {
         tokenid: 'test-token',
-        token: { sha1: TEST_TOKEN, id: '', name: '' },
+        token: {
+          sha1: TEST_TOKEN, id: '', name: '',
+        },
       },
     };
     const res = await helpers.authenticate(params);
@@ -64,7 +69,9 @@ describe('authenticate', () => {
           'Authorization': expect.stringMatching(/token\s/),
           'Content-Type': 'application/json',
         }),
-        token: { sha1: TEST_TOKEN, id: '', name: '' },
+        token: {
+          sha1: TEST_TOKEN, id: '', name: '',
+        },
         tokenid: params.config.tokenid,
       }),
       user: expect.objectContaining({ id: expect.any(String) }),

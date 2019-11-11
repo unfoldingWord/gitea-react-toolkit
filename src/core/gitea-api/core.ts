@@ -19,7 +19,6 @@ const api = setup({
     maxAge: 1 * 1 * 1 * 1 * DEFAULT_MAX_AGE,
     exclude: { query: false },
     key: req => {
-      // if (req.params) debugger
       const serialized = req.params instanceof URLSearchParams ?
         req.params.toString() : JSON.stringify(req.params) || '';
       return req.url + serialized;
@@ -51,15 +50,15 @@ export const extendConfig = (config: ExtendConfig): APIConfig => {
 };
 
 interface Get {
-  config: { token: AuthToken; tokenid: string; headers?: object; server?: string };
+  config: ExtendConfig;
   url: string;
   params?: object;
-  noCache?: number;
+  noCache?: number | boolean;
 }
 
 export const get = async ({
   url, params = {}, config, noCache,
-}: Get): Promise<object> => {
+}: Get): Promise<any> => {
   const _config = extendConfig(config);
   let response;
 

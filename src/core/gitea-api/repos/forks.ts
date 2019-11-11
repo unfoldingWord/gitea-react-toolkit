@@ -19,14 +19,17 @@ export const readForks: ReadForks = async ({
   return response;
 };
 
-interface CreateFork {
-  (args: { owner: string; repo: string; organization: string; config: ExtendConfig }): Promise<object>;
+interface CreateForkOptions {
+  owner: string;
+  repo: string;
+  organization: string;
+  config: ExtendConfig;
 }
 
 // POST /repos/{owner}/{repo}/forks
-export const createFork: CreateFork = async ({
+export const createFork = async ({
   owner, repo, organization, config,
-}) => {
+}: CreateForkOptions): Promise<object> => {
   const url = Path.join(apiPath, 'repos', owner, repo, 'forks');
   const payload = (organization) ? { organization } : {};
   const response = await post({
