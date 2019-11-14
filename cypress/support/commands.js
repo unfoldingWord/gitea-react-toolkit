@@ -23,3 +23,17 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+Cypress.Commands.add('clearLocalStorage', () => {
+  return new Cypress.Promise((resolve) => {
+    const deleteRequest = indexedDB.deleteDatabase('git-authentication-store');
+
+    deleteRequest.onerror = function (event) {
+      console.log('Error deleting database.');
+      resolve();
+    };
+
+    deleteRequest.onsuccess = function (event) {
+      resolve();
+    };
+  });
+});

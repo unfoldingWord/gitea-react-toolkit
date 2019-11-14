@@ -47,6 +47,12 @@ module.exports = {
     "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
     "@typescript-eslint/class-name-casing": ["error"],
     "@typescript-eslint/camelcase": ["warn"],
+    "@typescript-eslint/no-misused-promises": [
+      "error",
+      {
+        "checksVoidReturn": false
+      }
+    ],
     "camelcase": ["warn"],
     "no-undefined": "warn",
     "semi": ["error", "always", { "omitLastInOneLineBlock": true }],
