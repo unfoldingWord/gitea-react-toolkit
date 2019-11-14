@@ -20,32 +20,35 @@ function Authentication({
 }) {
   const [error, setError] = useState();
 
-  useEffect(() => {
-    if (!authentication) {
-      getAuth().then(updateAuthentication);
-    }
-  }, [authentication, updateAuthentication]);
+  const logout = useCallback(() => {
+    saveAuth();
+  });
 
   const updateAuthentication = useCallback((_auth) => {
     if (_auth) {
       if (_auth.remember) {
         saveAuth(_auth);
       }
-      _auth.logout = () => logout();
+      _auth.logout = () => {
+        logout();
+        updateAuthentication();
+      }
     }
     onAuthentication(_auth);
   }, [logout, onAuthentication]);
 
-  const logout = useCallback(() => {
-    saveAuth();
-    updateAuthentication();
-  }, [updateAuthentication]);
+  useEffect(() => {
+    if (!authentication) {
+      getAuth().then(updateAuthentication);
+    }
+  }, [authentication, updateAuthentication]);
 
   const onSubmit = async ({
     username, password, remember,
   }) => {
     if (authentication) {
       logout();
+      updateAuthentication();
     } else {
       try {
         const authentication = await authenticate({

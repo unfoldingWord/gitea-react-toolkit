@@ -13,5 +13,12 @@ export default {
     'Tree/Blob',
   ],
   notUseSpecifiers: true,
-  filterComponents: files => files.filter(filepath => /src\/components\/.*\/.*\.(js|jsx|ts|tsx)$/.test(filepath))
+  filterComponents: files => files.filter(filepath => /src\/components\/.*\/.*\.(js|jsx|ts|tsx)$/.test(filepath)),
+  modifyBabelRc: (config) => {
+    config.plugins = [['istanbul', {
+      exclude: [
+        '**/*.spec.js',
+      ],
+    }]]
+  }
 }
