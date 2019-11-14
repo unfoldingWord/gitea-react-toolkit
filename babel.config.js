@@ -7,5 +7,8 @@ module.exports = {
     exclude: [
       '**/*.spec.js',
     ],
+    include: [
+      '**/components/**',
+    ]
   }]],
 };

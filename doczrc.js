@@ -19,6 +19,9 @@ export default {
       exclude: [
         '**/*.spec.js',
       ],
-    }]]
-  }
-}
+      include: [
+        '**/components/**',
+      ],
+    }]];
+  },
+};

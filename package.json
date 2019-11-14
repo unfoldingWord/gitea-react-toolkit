@@ -97,12 +97,11 @@
     "react-dom": "16.11.0"
   },
   "nyc": {
+    "exclude": [
+      "**/*.spec.js"
+    ],
     "include": [
       "**/components/**"
-    ],
-    "all": true,
-    "excludeAfterRemap": false,
-    "sourceMap": false,
-    "instrument": false
+    ]
   }
 }
