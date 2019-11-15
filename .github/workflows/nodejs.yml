@@ -38,6 +38,6 @@ jobs:
         if: steps.node_cache.outputs.cache-hit != 'true'
         run: yarn;
       - name: Build Docz and Run Cypress
-        run: yarn test:ci;
+        run: yarn test;
       - name: Run Unit Tests With Coverage
-        run: yarn test:cov;
+        run: yarn create-coverage-badge;
