@@ -29,7 +29,8 @@
     "prepublishOnly": "rm -fr ./dist & babel ./src --out-dir ./dist -s inline",
     "test:e2e": "yarn start & wait-on http-get://localhost:3000 && $(npm bin)/cypress open",
     "test:cov": "NODE_ENV=test jest ./src/core --coverage && cat ./coverage/lcov.info | coveralls",
-    "test": "NODE_ENV=test start-test 3000 cypress:run",
+    "test": "NODE_ENV=test start-test 3000 cypress:run && jest ./src/core",
+    "test:ci": "",
     "cypress:run": "cypress run",
     "report:cov": "nyc report"
   },
@@ -95,13 +96,5 @@
   "resolutions": {
     "react": "16.11.0",
     "react-dom": "16.11.0"
-  },
-  "nyc": {
-    "exclude": [
-      "**/*.spec.js"
-    ],
-    "include": [
-      "**/components/**"
-    ]
   }
 }

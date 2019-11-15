@@ -3,12 +3,4 @@ module.exports = {
     '@babel/preset-env',
     { 'targets': { 'node': 'current' } },
   ], '@babel/preset-react', '@babel/preset-typescript'],
-  plugins: [['istanbul', {
-    exclude: [
-      '**/*.spec.js',
-    ],
-    include: [
-      '**/components/**',
-    ]
-  }]],
 };

@@ -17,6 +17,7 @@ cypress.env.json
 /coverage
 /.docz
 /dist
+/.nyc_output
 
 # production
 /build
