@@ -6,7 +6,7 @@ env:
   CYPRESS_TEST_USERNAME: ${{ secrets.CYPRESS_TEST_USERNAME }}
   CYPRESS_TEST_PASSWORD: ${{ secrets.CYPRESS_TEST_PASSWORD }}
   COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-
+  COVERALLS_PARALLEL: true
 jobs:
   test:
     runs-on: ubuntu-latest

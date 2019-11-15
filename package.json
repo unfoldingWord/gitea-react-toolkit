@@ -28,7 +28,8 @@
     "predeploy": "yarn docz:build",
     "prepublishOnly": "rm -fr ./dist & babel ./src --out-dir ./dist -s inline",
     "cypress:run": "cypress run",
-    "test:e2e": "NODE_ENV=test start-test 3000 cypress:run && nyc report --reporter=json-summary",
+    "cypress:open": "cypress open",
+    "test:e2e": "NODE_ENV=test start-test 3000 cypress:run && nyc report --reporter=text-lcov | coveralls",
     "test:unit": "NODE_ENV=test jest ./src/core --coverage && cat ./coverage/lcov.info | coveralls",
     "test": "npm run test:unit && npm run test:e2e",
     "create-coverage-badge": "bash scripts/create-badge-json.sh"

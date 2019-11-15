@@ -24,12 +24,6 @@ function UserMenuComponent({
   const closeModal = () => setModal(false);
   const openModal = () => setModal(true);
 
-  useEffect(() => {
-    if (!authentication) {
-      getAuth().then(_auth => updateAuthentication(_auth));
-    }
-  }, [authentication, updateAuthentication]);
-
   const updateAuthentication = useCallback((_auth) => {
     if (_auth) {
       if (_auth.remember) {
@@ -42,6 +36,12 @@ function UserMenuComponent({
     }
     onAuthentication(_auth);
   }, [onAuthentication]);
+
+  useEffect(() => {
+    if (!authentication) {
+      getAuth().then(_auth => updateAuthentication(_auth));
+    }
+  }, [authentication, updateAuthentication]);
 
   let avatar;
 

@@ -18,8 +18,8 @@ function RepositoriesComponent({
   const updateRepository = (_repo) => {
     let __repo;
     if (_repo) {
-      __repo = {..._repo};
-      __repo = extendRepository({repository: __repo, updateRepository, config});
+      __repo = { ..._repo };
+      __repo = extendRepository({ repository: __repo, updateRepository, config });
     }
     onRepository(__repo);
   };

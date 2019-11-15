@@ -12,3 +12,4 @@ describe('Authentication', function () {
     cy.get('[data-test=logout-button]');
   });
 });
+

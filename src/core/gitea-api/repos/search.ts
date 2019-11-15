@@ -57,6 +57,7 @@ export const repositorySearch = async ({
     repositories = await get({
       url, params, config,
     });
+    repositories = repositories.data || repositories;
   } catch {
     repositories = [];
   }
