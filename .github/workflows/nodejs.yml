@@ -37,7 +37,7 @@ jobs:
       - name: Install Packages
         if: steps.node_cache.outputs.cache-hit != 'true'
         run: yarn;
-      - name: Build Docz and Run Cypress
+      - name: Run Tests
         run: yarn test;
-      - name: Run Unit Tests With Coverage
+      - name: Create Badge For Coverage Results
         run: yarn create-coverage-badge;
