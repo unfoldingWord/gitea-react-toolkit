@@ -14,9 +14,13 @@ jobs:
       matrix:
         node-version: [12.x]
     steps:
+      - name: Extract branch name
+        shell: bash
+        run: echo ${GITHUB_REF##*/}
+        id: extract_branch
       - uses: actions/checkout@v1
         with:
-          ref: ${{ GITHUB_REF##*/ }}
+          ref: ${{ steps.extract_branch.outputs.branch }}
       - uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
@@ -53,4 +57,4 @@ jobs:
         with:
           github_token: ${{ secrets.ACTIONS_TOKEN }}
           force: true
-          branch: ${{ GITHUB_REF##*/ }}
+          branch: ${{ steps.extract_branch.outputs.branch }}
