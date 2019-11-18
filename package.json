@@ -29,11 +29,10 @@
     "prepublishOnly": "rm -fr ./dist & babel ./src --out-dir ./dist -s inline",
     "cypress:run": "cypress run",
     "cypress:open": "cypress open",
-    "test:e2e": "NODE_ENV=test start-test 3000 cypress:run",
-    "cypress:cov": "nyc report --reporter=text-lcov --cache false | coveralls",
-    "test:unit": "NODE_ENV=test jest ./src/core --coverage",
-    "unit:cov": "cat ./coverage/lcov.info | coveralls",
-    "test": "NODE_ENV=test yarn test:unit && yarn test:e2e",
+    "test:cypress": "NODE_ENV=test start-test 3000 cypress:run && nyc report --reporter=json-summary",
+    "cypress:cov": "NODE_ENV=test nyc report --reporter=text-lcov | coveralls",
+    "test:unit": "NODE_ENV=test jest ./src/core --coverage && cat ./coverage/lcov.info | coveralls",
+    "test": "NODE_ENV=test yarn test:cypress && yarn test:unit",
     "create-coverage-badge": "bash scripts/create-badge-json.sh"
   },
   "browserslist": [
@@ -98,11 +97,5 @@
   "resolutions": {
     "react": "16.11.0",
     "react-dom": "16.11.0"
-  },
-  "nyc": {
-    "reporter": [
-      "lcov",
-      "text"
-    ]
   }
 }
