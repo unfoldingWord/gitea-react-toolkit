@@ -50,7 +50,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add ./coverage/shields.json -f
-          git commit -m "Add Coverage Results" &> /dev/null
+          git diff-index --quiet HEAD || git commit -m "Add Coverage Results"
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
