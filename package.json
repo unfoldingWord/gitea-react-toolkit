@@ -23,9 +23,9 @@
   },
   "scripts": {
     "start": "docz dev",
-    "docz:build": "docz build && yarn docz:netlify",
+    "docz:build": "docz build && npm run docz:netlify",
     "docz:netlify": "npx ./scripts/docz-netlify.js",
-    "predeploy": "yarn docz:build",
+    "predeploy": "npm run docz:build",
     "prepublishOnly": "rm -fr ./dist & babel ./src --out-dir ./dist -s inline",
     "cypress:run": "cypress run",
     "test:e2e": "NODE_ENV=test start-test 3000 cypress:run && nyc report --reporter=json-summary",

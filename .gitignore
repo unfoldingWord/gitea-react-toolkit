@@ -14,10 +14,10 @@ cypress.env.json
 **/example.json
 
 # testing
-/coverage
-/.docz
-/dist
-/.nyc_output
+/coverage/**
+/.docz/**
+/dist/**
+/.nyc_output/**
 
 # production
 /build
