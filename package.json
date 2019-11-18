@@ -31,7 +31,7 @@
     "cypress:open": "cypress open",
     "test:e2e": "start-test 3000 cypress:run && nyc report --reporter=text-lcov | coveralls",
     "test:unit": "jest ./src/core --coverage && cat ./coverage/lcov.info | coveralls",
-    "test": "NODE_ENV=test npm run test:unit && npm run test:e2e",
+    "test": "NODE_ENV=test yarn test:unit && yarn test:e2e",
     "create-coverage-badge": "bash scripts/create-badge-json.sh"
   },
   "browserslist": [

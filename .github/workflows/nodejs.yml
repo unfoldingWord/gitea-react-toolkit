@@ -6,6 +6,7 @@ env:
   CYPRESS_TEST_USERNAME: ${{ secrets.CYPRESS_TEST_USERNAME }}
   CYPRESS_TEST_PASSWORD: ${{ secrets.CYPRESS_TEST_PASSWORD }}
   COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+  CHILD_CONCURRENCY: 1
   COVERALLS_PARALLEL: true
   NODE_ENV: test
 jobs:
@@ -25,14 +26,14 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Cache Cypress
-        uses: actions/cache@v1
-        id: cypress_cache
-        with:
-          path: ~/.cache/Cypress
-          key: ${{ runner.os }}-cypress-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cypress-
+      # - name: Cache Cypress
+      #   uses: actions/cache@v1
+      #   id: cypress_cache
+      #   with:
+      #     path: ~/.cache/Cypress
+      #     key: ${{ runner.os }}-cypress-${{ hashFiles('**/yarn.lock') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-cypress-
       - name: Get yarn cache
         id: yarn-cache
         run: echo "::set-output name=dir::$(yarn cache dir)"
