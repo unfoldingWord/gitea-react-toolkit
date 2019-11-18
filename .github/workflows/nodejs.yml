@@ -46,7 +46,6 @@ jobs:
       - name: Create Badge For Coverage Results
         run: npm run create-coverage-badge;
       - name: Commit Coverage Results
-        if: git diff --exit-code
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
