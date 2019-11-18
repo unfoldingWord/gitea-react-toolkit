@@ -18,9 +18,7 @@ const config = {
 
 describe('extendConfig', () => {
   it('should pass', () => {
-    const res = helpers.extendConfig(config);
-
-    expect(res).toEqual(expect.objectContaining({
+    const expected = expect.objectContaining({
       baseURL: config.server,
       headers: expect.objectContaining({
         'Authorization': expect.stringMatching(/token\s/),
@@ -30,28 +28,30 @@ describe('extendConfig', () => {
         sha1: TEST_TOKEN, id: authToken.id, name: authToken.name,
       },
       tokenid: config.tokenid,
-    }));
+    });
+    const res = helpers.extendConfig(config);
+    expect(res).toEqual(expected);
   });
 });
 
 describe('get', () => {
-  it('should pass with noCache', () => {
+  it('should pass with noCache', async () => {
     const params = {
       config,
       noCache: true,
       url: 'https://passing.com',
     };
-
-    return expect(helpers.get(params)).resolves.toEqual('OK');
+    const res = await helpers.get(params);
+    return expect(res).toEqual('OK');
   });
 
-  it('should pass', () => {
+  it('should pass', async () => {
     const params = {
       config,
       url: 'https://passing.com',
     };
-
-    return expect(helpers.get(params)).resolves.toEqual('OK');
+    const res = await helpers.get(params);
+    return expect(res).toEqual('OK');
   });
 
 
@@ -66,46 +66,46 @@ describe('get', () => {
 });
 
 describe('post-like methods', () => {
-  it('should perform POST method', () => {
+  it('should perform POST method', async () => {
     const payload = { data: '123helloWorld' };
     const params = {
       url: 'https://passing.com',
       payload,
       config,
     };
-
-    return expect(helpers.post(params)).resolves.toEqual('OK');
+    const res = await helpers.post(params);
+    expect(res).toEqual('OK');
   });
-  it('should perform PUT method', () => {
+  it('should perform PUT method', async () => {
     const payload = { data: '123helloWorld' };
     const params = {
       url: 'https://passing.com',
       payload,
       config,
     };
-
-    return expect(helpers.put(params)).resolves.toEqual('OK');
+    const res = await helpers.put(params);
+    return expect(res).toEqual('OK');
   });
-  it('should perform PATCH method', () => {
+  it('should perform PATCH method', async () => {
     const payload = { data: '123helloWorld' };
     const params = {
       url: 'https://passing.com',
       payload,
       config,
     };
-
-    return expect(helpers.patch(params)).resolves.toEqual('OK');
+    const res = await helpers.patch(params);
+    return expect(res).toEqual('OK');
   });
 });
 
 describe('delete', () => {
-  it('should perform DELETE method', () => {
+  it('should perform DELETE method', async () => {
     const params = {
       config,
       noCache: true,
       url: 'https://passing.com',
     };
-
-    return expect(helpers.get(params)).resolves.toEqual('OK');
+    const res = await helpers.get(params);
+    return expect(res).toEqual('OK');
   });
 });

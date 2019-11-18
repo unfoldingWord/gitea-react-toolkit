@@ -6,14 +6,16 @@ import {
 import { APIConfig } from '../core.d';
 import { ExtendConfig } from '../core';
 
-interface ReadForks {
-  (args: { owner: string; repo: string; config: APIConfig }): Promise<object>;
+interface ReadForksOptions {
+  owner: string;
+  repo: string;
+  config: APIConfig;
 }
 
 // GET /repos/{owner}/{repo}/forks
-export const readForks: ReadForks = async ({
+export const readForks = async ({
   owner, repo, config,
-}) => {
+}: ReadForksOptions): Promise<object> => {
   const url = Path.join(apiPath, 'repos', owner, repo, 'forks');
   const response = await get({ url, config });
   return response;
