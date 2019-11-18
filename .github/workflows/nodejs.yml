@@ -16,7 +16,7 @@ jobs:
         node-version: [10.15.1]
     steps:
       - name: Extract Branch Name
-        run: ::set-env name=BRANCH::${GITHUB_REF##*/}
+        run: echo "::set-env name=BRANCH::${GITHUB_REF##*/}"
       - uses: actions/checkout@v1
         with:
           ref: ${{ env.BRANCH }}
