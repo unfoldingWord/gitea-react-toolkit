@@ -49,8 +49,8 @@ jobs:
         run: yarn test;
       - name: Send Coverage
         run: |
-        yarn unit:cov
-        yarn cypress:cov
+          yarn unit:cov
+          yarn cypress:cov
       - name: Create Badge For Coverage Results
         run: yarn create-coverage-badge;
       - name: Commit Coverage Results
