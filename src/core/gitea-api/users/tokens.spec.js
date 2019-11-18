@@ -1,20 +1,6 @@
 /// <reference types="jest" />
 import * as helpers from './tokens';
-
-jest.mock('../core', () => ({
-  ...require.requireActual('../core'),
-  get: ({ config }) => config.headers ? Promise.resolve([{
-    name: 'user-token',
-    id: 'test-id',
-    sha1: 'encrypted123456789',
-  }]) : Promise.reject(),
-  post: ({ url }) => !url.match(/fail/ig) ? Promise.resolve([{
-    name: 'user-token',
-    id: 'test-id',
-    sha1: 'encrypted123456789',
-  }]) : Promise.reject(),
-  del: ({ url }) => !url.match(/fail/ig) ? Promise.resolve() : Promise.reject(),
-}));
+jest.mock('../core');
 
 const headers = {
   'Authorization': 'basic 123456789',
@@ -34,14 +20,18 @@ describe('getTokens', () => {
     },
   };
 
-  it('should not get tokens without headers.config', () => expect(helpers.getTokens(params)).resolves.toEqual(null));
+  it('should not get tokens without headers.config', async () => {
+    const res = await helpers.getTokens(params);
+    expect(res).toEqual(null);
+  });
 
-  it('should get tokens with headers.config', () => {
+  it('should get tokens with headers.config', async () => {
     params.config.headers = headers;
-
-    return expect(helpers.getTokens(params)).resolves.toEqual([{
-      'id': 'test-id', 'name': 'user-token', 'sha1': 'encrypted123456789',
-    }]);
+    const expected = [{
+      'id': params.config.tokenid, 'name': 'user-token', 'sha1': 'encrypted123456789',
+    }];
+    const res = await helpers.getTokens(params);
+    return expect(res).toEqual(expected);
   });
 });
 
@@ -62,10 +52,14 @@ describe('createTokens', () => {
     'id': 'test-id', 'name': 'user-token', 'sha1': 'encrypted123456789',
   }];
 
-  it('should create tokens from a user', () => expect(helpers.createToken(params)).resolves.toEqual(expected));
-  it('should not create tokens from an invalid user', () => {
+  it('should create tokens from a user', async () => {
+    const res = await helpers.createToken(params);
+    expect(res).toEqual(expected);
+  });
+  it('should not create tokens from an invalid user', async () => {
     params.username = 'fail';
-    return expect(helpers.createToken(params)).resolves.toEqual([]);
+    const res = await helpers.createToken(params);
+    return expect(res).toEqual([]);
   });
 });
 
@@ -89,10 +83,14 @@ describe('deleteToken', () => {
     },
   };
 
-  it('should delete the token', () => expect(helpers.deleteToken(params)).resolves.toEqual(true));
-  it('should not delete tokens from an invalid user', () => {
+  it('should delete the token', async () => {
+    const res = await helpers.deleteToken(params);
+    expect(res).toEqual(true);
+  });
+  it('should not delete tokens from an invalid user', async () => {
     params.username = 'fail';
-    return expect(helpers.deleteToken(params)).resolves.toEqual(false);
+    const res = await helpers.deleteToken(params);
+    expect(res).toEqual(false);
   });
 });
 

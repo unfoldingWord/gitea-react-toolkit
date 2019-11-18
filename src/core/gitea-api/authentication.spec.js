@@ -25,26 +25,26 @@ describe('encodeAuthentication', () => {
 
 describe('authorizationHeaders', () => {
   it('should return correct authorization headers given username/password', () => {
+    const expected = expect.objectContaining({
+      'Content-Type': expect.any(String),
+      'Authorization': expect.any(String),
+    });
     const params = {
       username: 'username',
       password: 'password',
     };
     const res = helpers.authorizationHeaders(params);
-
-    expect(res).toEqual(expect.objectContaining({
-      'Content-Type': expect.any(String),
-      'Authorization': expect.any(String),
-    }));
+    expect(res).toEqual(expected);
   });
 
   it('should return correct authorization headers given token', () => {
-    const params = { token: TEST_TOKEN };
-    const res = helpers.authorizationHeaders(params);
-
-    expect(res).toEqual(expect.objectContaining({
+    const expected = expect.objectContaining({
       'Content-Type': expect.any(String),
       'Authorization': expect.any(String),
-    }));
+    });
+    const params = { token: TEST_TOKEN };
+    const res = helpers.authorizationHeaders(params);
+    expect(res).toEqual(expected);
   });
 });
 
@@ -61,9 +61,7 @@ describe('authenticate', () => {
         },
       },
     };
-    const res = await helpers.authenticate(params);
-
-    expect(res).toEqual(expect.objectContaining({
+    const expected = expect.objectContaining({
       config: expect.objectContaining({
         headers: expect.objectContaining({
           'Authorization': expect.stringMatching(/token\s/),
@@ -75,6 +73,8 @@ describe('authenticate', () => {
         tokenid: params.config.tokenid,
       }),
       user: expect.objectContaining({ id: expect.any(String) }),
-    }));
+    });
+    const res = await helpers.authenticate(params);
+    expect(res).toEqual(expected);
   });
 });
