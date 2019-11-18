@@ -7,21 +7,21 @@ import { Repository } from './Repository';
 import { extendRepository } from './helpers';
 
 function withRepositoryComponent(Component) {
-  return function RepositoryComponent ({
+  return function RepositoryComponent({
     repository,
     onRepository,
     ...props
   }) {
     const [repo, setRepo] = useState(repository);
 
-    const {authentication} = props;
+    const { authentication } = props;
     let repositoryConfig = {};
     if (props.repositoryConfig) {
-      const {repositories, urls, defaultOwner, defaultQuery, ...config} = props.repositoryConfig;
-      repositoryConfig = {repositories, urls, defaultOwner, defaultQuery, config};
+      const { repositories, urls, defaultOwner, defaultQuery, ...config } = props.repositoryConfig;
+      repositoryConfig = { repositories, urls, defaultOwner, defaultQuery, config };
     }
     if (authentication && authentication.config) {
-      repositoryConfig.config = {...repositoryConfig.config, ...authentication.config};
+      repositoryConfig.config = { ...repositoryConfig.config, ...authentication.config };
     }
     const {
       repositories,
@@ -31,13 +31,13 @@ function withRepositoryComponent(Component) {
       config
     } = repositoryConfig;
 
-    const hasRepository = () => (repo && repo.name && repo.owner && repo.permissions );
+    const hasRepository = () => (repo && repo.name && repo.owner && repo.permissions);
 
     const updateRepository = (_repo) => {
       let __repo;
       if (_repo) {
-        __repo = {..._repo};
-        __repo = extendRepository({repository: __repo, authentication, updateRepository, config});
+        __repo = { ..._repo };
+        __repo = extendRepository({ repository: __repo, authentication, updateRepository, config });
       }
       if (onRepository) onRepository(__repo);
       else setRepo(__repo);

@@ -71,7 +71,7 @@ function RepositoryMenuComponent({
   }
 
   return (
-    <div>
+    <div data-test="repository-menu">
       {button}
       {modalComponent}
     </div>
