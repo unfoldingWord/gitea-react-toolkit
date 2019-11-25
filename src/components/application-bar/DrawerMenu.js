@@ -11,9 +11,9 @@ import {
   ChevronLeft,
 } from '@material-ui/icons';
 
+import { Tree } from '../';
 import styles from './styles';
 
-import { Tree } from '../';
 
 function DrawerMenuComponent({
   classes,
@@ -27,9 +27,9 @@ function DrawerMenuComponent({
 
   const toggleDrawer = () => {
     setOpenDrawer(!openDrawer);
-  }
+  };
 
-  let fileTree = (!repository) ? <></> : (
+  const fileTree = (!repository) ? <></> : (
     <Tree
       url={repository.tree_url}
       blob={blob}
@@ -50,10 +50,9 @@ function DrawerMenuComponent({
         variant="temporary" anchor="left"
         open={openDrawer}
         onClose={toggleDrawer}
-        classes={drawerClasses}
-      >
+        classes={drawerClasses}>
         <div className={classes.drawerHeader}>
-          <IconButton onClick={toggleDrawer}>
+          <IconButton data-test="drawer-menu-close-button" onClick={toggleDrawer}>
             <ChevronLeft />
           </IconButton>
         </div>
@@ -73,7 +72,7 @@ DrawerMenuComponent.propTypes = {
 };
 
 const areEqual = (prevProps, nextProps) => {
-  const keys = ["blob", "repository", "config"];
+  const keys = ['blob', 'repository', 'config'];
   const checks = keys.map(key => (JSON.stringify(prevProps[key]) === JSON.stringify(nextProps[key])));
   const equal = !checks.includes(false);
   console.log('DrawerMenuComponent', keys, checks, equal);

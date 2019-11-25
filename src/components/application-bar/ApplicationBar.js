@@ -30,7 +30,7 @@ function ApplicationBarComponent({
   onBlob,
 }) {
   let _authenticationConfig = { ...authenticationConfig };
-  let _repositoryConfig = { ...repositoryConfig };
+  const _repositoryConfig = { ...repositoryConfig };
 
   if (authentication && authentication.config) {
     _authenticationConfig = authentication.config;
@@ -70,9 +70,8 @@ function ApplicationBarComponent({
     <div className={classes.root}>
       <AppBar
         position="static"
-        className={classes.appBar}
-      >
-        <Toolbar>
+        className={classes.appBar}>
+        <Toolbar data-test="application-bar">
           <div className={classes.menuButton}>
             {drawerMenuComponent}
           </div>

@@ -35,6 +35,7 @@ function RepositoryMenuComponent({
   if (repository && repository.owner) {
     button = (
       <Chip
+        data-test="repository-item-icon"
         avatar={<Avatar src={repository.owner.avatar_url} />}
         label={repository.name}
         onDelete={handleClose}
