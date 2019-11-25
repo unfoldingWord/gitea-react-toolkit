@@ -14,7 +14,7 @@ import { fetchTree } from './helpers';
 /**
  * A Listing Component to render an array of Git Tree objects.
  */
-function TreeComponent ({
+function TreeComponent({
   classes,
   tree,
   url,
@@ -33,7 +33,7 @@ function TreeComponent ({
   const [selectedPath, setSelectedPath] = useState(_selectedPath);
 
   const updateTree = async () => {
-    const __tree = await fetchTree({url, config});
+    const __tree = await fetchTree({ url, config });
     setTree(__tree);
   };
 
@@ -82,7 +82,7 @@ function TreeComponent ({
 
   return (
     <Collapse in={selected} timeout="auto" unmountOnExit>
-      <List dense className={classes.list}>
+      <List data-test="file-tree" dense className={classes.list}>
         {components}
       </List>
     </Collapse>
@@ -95,7 +95,7 @@ TreeComponent.propTypes = {
   /** An array of paths from the Gitea file tree api. */
   tree: PropTypes.arrayOf(PropTypes.shape({
     path: PropTypes.string.isRequired,
-    type: PropTypes.oneOf(['tree','blob']).isRequired,
+    type: PropTypes.oneOf(['tree', 'blob']).isRequired,
   })),
   /** The Url to fetch the listing if listing is not provided. */
   url: PropTypes.string,

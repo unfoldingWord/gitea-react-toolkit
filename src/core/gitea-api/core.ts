@@ -41,6 +41,9 @@ export interface ExtendConfig {
 }
 
 export const extendConfig = (config: ExtendConfig): APIConfig => {
+  if (!config) {
+    config = { token: '', tokenid: '' };
+  }
   const authHeaders = authorizationHeaders({ token: config.token });
   const headers = { ...config.headers, ...authHeaders };
   const _config = {

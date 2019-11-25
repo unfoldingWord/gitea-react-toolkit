@@ -34,9 +34,11 @@ function RepositoryComponent({
   }
 
   const _onRepository = () => {
-    const tree_url = repoTreeUrl(repo);
-    const _repo = { tree_url, ...repo };
-    onRepository(_repo);
+    if (repo && repo.full_name && (repo.branch || repo.default_branch)) {
+      const tree_url = repoTreeUrl(repo);
+      const _repo = { tree_url, ...repo };
+      onRepository(_repo);
+    }
   };
 
   const {

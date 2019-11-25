@@ -8,9 +8,7 @@ import {
   Paper,
   Chip,
 } from '@material-ui/core';
-import {
-  FolderShared,
-} from '@material-ui/icons';
+import { FolderShared, } from '@material-ui/icons';
 
 import { withRepository } from '../repository';
 
@@ -26,16 +24,18 @@ function RepositoryMenuComponent({
   const handleClose = () => {
     repository.close();
     setModal(false);
-  }
+  };
 
   const handleOpen = () => {
     setModal(true);
-  }
+  };
 
   let button;
+
   if (repository && repository.owner) {
     button = (
       <Chip
+        data-test="repository-item-icon"
         avatar={<Avatar src={repository.owner.avatar_url} />}
         label={repository.name}
         onDelete={handleClose}
@@ -54,10 +54,12 @@ function RepositoryMenuComponent({
   }
 
   let modalComponent = <div />;
+
   if (modal && !repository) {
     const RepositoryComponent = withRepository(<div />);
+
     modalComponent = (
-      <Modal open={true} onClose={() => setModal(false)}>
+      <Modal data-test="repository-menu-modal" open={true} onClose={() => setModal(false)}>
         <Paper className={classes.modal}>
           <RepositoryComponent
             authentication={authentication}
@@ -79,9 +81,7 @@ function RepositoryMenuComponent({
 }
 
 if (withRepository && withRepository.propTypes) {
-  RepositoryMenuComponent.propTypes = {
-    ...withRepository.propTypes
-  };
+  RepositoryMenuComponent.propTypes = { ...withRepository.propTypes, };
 }
 
 const styles = (theme) => ({
@@ -96,7 +96,7 @@ const styles = (theme) => ({
     right: '10%',
     maxHeight: '80%',
     overflow: 'scroll',
-  }
+  },
 });
 
 export const RepositoryMenu = withStyles(styles, { withTheme: true })(RepositoryMenuComponent);

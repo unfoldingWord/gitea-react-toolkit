@@ -70,6 +70,7 @@ function UserMenuComponent({
   return (
     <div>
       <IconButton
+        data-test="user-menu-icon"
         onClick={openModal}
         color="inherit"
       >
