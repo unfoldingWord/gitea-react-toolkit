@@ -42,7 +42,7 @@ function DrawerMenuComponent({
   const drawerClasses = { paper: classes.drawerPaper };
   return (
     <div>
-      <IconButton color="inherit" aria-label="Menu" onClick={toggleDrawer} >
+      <IconButton data-test="drawer-menu-button" color="inherit" aria-label="Menu" onClick={toggleDrawer} >
         <Menu />
       </IconButton>
       <Drawer
