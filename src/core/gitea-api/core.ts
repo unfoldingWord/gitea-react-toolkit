@@ -45,7 +45,7 @@ export const extendConfig = (config: ExtendConfig): APIConfig => {
   if (!config) {
     _config = { token: '', tokenid: '' };
   }
-  const authHeaders = authorizationHeaders({ token: config.token });
+  const authHeaders = authorizationHeaders({ token: _config.token });
   const headers = { ...authHeaders, ...config.headers };
   _config = {
     baseURL: config.server, ..._config, headers,
