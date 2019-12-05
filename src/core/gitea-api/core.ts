@@ -33,22 +33,21 @@ interface RestAPI {
 }
 
 export interface ExtendConfig {
-  token: AuthToken;
-  tokenid: string;
+  token?: string;
+  tokenid?: string;
   headers?: object;
   server?: string;
   data?: object;
 }
 
 export const extendConfig = (config: ExtendConfig): APIConfig => {
-  let _config;
-  if (!config) {
-    _config = { token: '', tokenid: '' };
+  let headers = {...config.headers}
+  if (config && config.token) {
+    const authHeaders = authorizationHeaders({ token: config.token });
+    headers = { ...config.headers, ...authHeaders };
   }
-  const authHeaders = authorizationHeaders({ token: _config.token });
-  const headers = { ...authHeaders, ...config.headers };
-  _config = {
-    baseURL: config.server, ..._config, headers,
+  const _config = {
+    baseURL: config.server, ...config, headers,
   };
   return _config;
 };

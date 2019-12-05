@@ -4,9 +4,9 @@ export interface APIConfig {
   server?: string;
   baseURL?: string;
   data?: object;
-  tokenid: string;
+  tokenid?: string;
   headers?: object;
-  token: AuthToken;
+  token?: string;
 }
 
 
