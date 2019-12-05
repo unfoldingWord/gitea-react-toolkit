@@ -1,14 +1,23 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+#cypress
+screenshots/*
+videos/*
+
 # dependencies
 /node_modules
 /.pnp
 .pnp.js
+**.mp4
+**.png
+cypress.env.json
+**/example.json
 
 # testing
-/coverage
-/.docz
-/dist
+/coverage/**
+/.docz/**
+/dist/**
+/.nyc_output/**
 
 # production
 /build

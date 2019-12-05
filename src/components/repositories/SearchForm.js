@@ -7,9 +7,7 @@ import {
   ListItemIcon,
   TextField,
 } from '@material-ui/core';
-import {
-  Search,
-} from '@material-ui/icons';
+import { Search } from '@material-ui/icons';
 import AwesomeDebouncePromise from 'awesome-debounce-promise';
 
 import { repositorySearch } from '../../core';
@@ -28,24 +26,26 @@ function SearchFormComponent({
   const [initialSearch, setInitialSearch] = useState(false);
 
   const updateRepositories = async (owner, query) => {
-    const repositories = await repositorySearchDebounced({owner, query, config});
+    const repositories = await repositorySearchDebounced({
+      owner, query, config,
+    });
     onRepositories(repositories);
-  }
+  };
 
   if (!initialSearch) {
     updateRepositories(owner, query)
-    .then(()=> setInitialSearch(true) );
+      .then(() => setInitialSearch(true));
   }
 
   const onOwner = (_owner) => {
     setOwner(_owner);
     updateRepositories(_owner, query);
-  }
+  };
 
   const onQuery = (_query) => {
     setQuery(_query);
     updateRepositories(owner, _query);
-  }
+  };
 
   return (
     <ListItem
@@ -64,16 +64,20 @@ function SearchFormComponent({
           <TextField
             id='owner' label='Owner' type='text'
             variant="outlined" margin="normal" fullWidth
-            defaultValue={owner}  autoComplete={undefined}
-            onChange={(event) => {onOwner(event.target.value)}}
+            defaultValue={owner} autoComplete={undefined}
+            onChange={(event) => {
+              onOwner(event.target.value);
+            }}
           />
         </div>
         <div className={classes.input}>
           <TextField
             id='search' label='Search' type='text'
             variant="outlined" margin="normal" fullWidth
-            defaultValue={query} autoFocus  autoComplete={undefined}
-            onChange={(event) => {onQuery(event.target.value)}}
+            defaultValue={query} autoFocus autoComplete={undefined}
+            onChange={(event) => {
+              onQuery(event.target.value);
+            }}
           />
         </div>
       </form>
@@ -90,9 +94,7 @@ SearchFormComponent.propTypes = {
   /** Function to propogate the returned repositories data array. */
   onRepositories: PropTypes.func.isRequired,
   /** Configuration required if paths are provided as URL. */
-  config: PropTypes.shape({
-    server: PropTypes.string.isRequired,
-  }).isRequired,
+  config: PropTypes.shape({ server: PropTypes.string.isRequired }).isRequired,
 };
 
 const styles = (theme) => ({
@@ -102,17 +104,13 @@ const styles = (theme) => ({
     marginLeft: 0,
     width: '100%',
   },
-  listItemIcon: {
-    marginRight: '8px',
-  },
-  form: {
-    width: '100%',
-  },
+  listItemIcon: { marginRight: '8px' },
+  form: { width: '100%' },
   input: {
     width: '40%',
     display: 'inline-block',
     marginRight: '1em',
-  }
+  },
 });
 
 export const SearchForm = withStyles(styles)(SearchFormComponent);

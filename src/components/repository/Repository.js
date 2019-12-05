@@ -22,10 +22,10 @@ function RepositoryComponent({
   onRepository,
   config,
 }) {
-  const [repo, setRepo] = useState(repository || {owner: {}});
+  const [repo, setRepo] = useState(repository || { owner: {} });
 
   const getData = async () => {
-    const data = await get({url, config});
+    const data = await get({ url, config });
     setRepo(data);
   };
 
@@ -34,9 +34,11 @@ function RepositoryComponent({
   }
 
   const _onRepository = () => {
-    const tree_url = repoTreeUrl(repo);
-    const _repo = {tree_url, ...repo};
-    onRepository(_repo);
+    if (repo && repo.full_name && (repo.branch || repo.default_branch)) {
+      const tree_url = repoTreeUrl(repo);
+      const _repo = { tree_url, ...repo };
+      onRepository(_repo);
+    }
   };
 
   const {
@@ -49,6 +51,7 @@ function RepositoryComponent({
 
   return (
     <ListItem
+      data-test="repository-item"
       alignItems="flex-start"
       button
       ContainerComponent="div"
@@ -69,7 +72,7 @@ function RepositoryComponent({
         <IconButton
           aria-label="Open Link"
           onClick={() => {
-            window.open(html_url,'_blank');
+            window.open(html_url, '_blank');
           }}
         >
           <Code />

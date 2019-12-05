@@ -1,25 +1,59 @@
-name: Node CI
+name: Install, Build & Run Cypress
 
 on: [push]
-
+env:
+  CYPRESS_DASHBOARD_KEY: ${{ secrets.CYPRESS_DASHBOARD_KEY }}
+  CYPRESS_TEST_USERNAME: ${{ secrets.CYPRESS_TEST_USERNAME }}
+  CYPRESS_TEST_PASSWORD: ${{ secrets.CYPRESS_TEST_PASSWORD }}
+  COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+  CHILD_CONCURRENCY: 1
+  NODE_ENV: test
 jobs:
-  build:
-
-    runs-on: ubuntu-latest
-
+  test:
+    runs-on: macos-latest
     strategy:
       matrix:
-        node-version: [8.x, 10.x, 12.x]
-
+        node-version: [10.15.1]
     steps:
-    - uses: actions/checkout@v1
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: npm install, build, and test
-      run: |
-        yarn build
-        yarn test
-      env:
-        CI: true
+      - name: Extract Branch Name
+        run: echo "::set-env name=BRANCH::${GITHUB_REF##*/}"
+      - uses: actions/checkout@v1
+        with:
+          ref: ${{ env.BRANCH }}
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Cache Cypress
+        uses: actions/cache@v1
+        id: cypress_cache
+        with:
+          path: ~/.cache/Cypress
+          key: ${{ runner.os }}-cypress-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-cypress-
+      - uses: actions/cache@v1
+        id: node-cache
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install Packages
+        if: steps.node-cache.outputs.cache-hit != 'true'
+        run: npm i;
+      - name: Run Tests
+        run: npm test;
+      - name: Create Badge For Coverage Results
+        run: npm run create-coverage-badge;
+      - name: Commit Coverage Results
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add ./coverage/shields.json -f
+          git checkout .
+          git diff-index --quiet HEAD || git commit -m "Add Coverage Results"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.ACTIONS_TOKEN }}
+          branch: ${{ env.BRANCH }}

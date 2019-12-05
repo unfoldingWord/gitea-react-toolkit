@@ -1,9 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, {
+  useState, useEffect, useCallback,
+} from 'react';
 import PropTypes from 'prop-types';
 
-import {LoginForm} from './LoginForm';
-import {authenticate} from '../../core';
-import {getAuth, saveAuth} from './helpers';
+import { authenticate } from '../../core';
+import { LoginForm } from './LoginForm';
+import { getAuth, saveAuth } from './helpers';
 
 function Authentication({
   messages: {
@@ -18,45 +20,61 @@ function Authentication({
 }) {
   const [error, setError] = useState();
 
-  useEffect(() => {
-    if (!authentication) getAuth().then(updateAuthentication);
-  }, [authentication]);
+  const logout = useCallback(() => {
+    saveAuth();
+  });
 
-  const updateAuthentication = (_auth) => {
+  const updateAuthentication = useCallback((_auth) => {
     if (_auth) {
-      if (_auth.remember) saveAuth(_auth);
-      _auth.logout = () => logout();
+      if (_auth.remember) {
+        saveAuth(_auth);
+      }
+      _auth.logout = () => {
+        logout();
+        updateAuthentication();
+      }
     }
     onAuthentication(_auth);
-  };
+  }, [logout, onAuthentication]);
 
-  const logout = () => {
-    saveAuth();
-    updateAuthentication();
-  }
+  useEffect(() => {
+    if (!authentication) {
+      getAuth().then(updateAuthentication);
+    }
+  }, [authentication, updateAuthentication]);
 
-  const onSubmit = async ({username, password, remember}) => {
+  const onSubmit = async ({
+    username, password, remember,
+  }) => {
     if (authentication) {
       logout();
+      updateAuthentication();
     } else {
       try {
-        const authentication = await authenticate({username, password, config});
+        const authentication = await authenticate({
+          username, password, config,
+        });
         authentication.remember = remember;
+
         if (authentication) {
-          const {user, token} = authentication;
+          const { user, token } = authentication;
+
           if (user && token) {
             setError();
             updateAuthentication(authentication);
           } else {
-            if (!user) setError(usernameError);
-            else if (!token) setError(passwordError);
+            if (!user) {
+              setError(usernameError);
+            } else if (!token) {
+              setError(passwordError);
+            }
           }
         }
       } catch {
         setError(genericError);
       }
     }
-  }
+  };
 
   return (
     <LoginForm
@@ -66,7 +84,7 @@ function Authentication({
       errorText={error}
       onSubmit={onSubmit}
     />
-  )
+  );
 }
 
 Authentication.propTypes = {
@@ -97,11 +115,11 @@ Authentication.propTypes = {
 
 Authentication.defaultProps = {
   messages: {
-    actionText: "Login",
-    genericError: "Something went wrong, please try again.",
-    usernameError: "Username does not exist.",
-    passwordError: "Password is invalid.",
-  }
+    actionText: 'Login',
+    genericError: 'Something went wrong, please try again.',
+    usernameError: 'Username does not exist.',
+    passwordError: 'Password is invalid.',
+  },
 };
 
 export default Authentication;
