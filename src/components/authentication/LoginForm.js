@@ -70,12 +70,12 @@ function LoginFormComponent({
         </Typography>) : <></>}
       <form className={classes.form}>
         <TextField data-test="username-input" name="username" type="text" label="Username" required
-          variant="outlined" margin="normal" fullWidth
+          variant="outlined" margin="normal" fullWidth autoComplete="username"
           disabled={!!user} defaultValue={user ? user.username : ''}
           onChange={updateFormData}
         />
         <TextField data-test="password-input" name="password" type="password" label="Password" required
-          variant="outlined" margin="normal" fullWidth
+          variant="outlined" margin="normal" fullWidth autoComplete="current-password"
           disabled={!!user} defaultValue={user ? user.username : ''}
           onChange={updateFormData}
         />
