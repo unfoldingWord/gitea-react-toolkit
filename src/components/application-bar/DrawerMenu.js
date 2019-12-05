@@ -75,7 +75,7 @@ const areEqual = (prevProps, nextProps) => {
   const keys = ['blob', 'repository', 'config'];
   const checks = keys.map(key => (JSON.stringify(prevProps[key]) === JSON.stringify(nextProps[key])));
   const equal = !checks.includes(false);
-  console.log('DrawerMenuComponent', keys, checks, equal);
+  // console.log('DrawerMenuComponent', keys, checks, equal);
   return equal;
 };
 
