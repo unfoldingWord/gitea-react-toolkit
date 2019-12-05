@@ -1,6 +1,6 @@
 {
   "name": "gitea-react-toolkit",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "license": "MIT",
   "description": "A Gitea API React Toolkit Component Library",
   "homepage": "https://gitea-react-toolkit.netlify.com/",
@@ -24,7 +24,7 @@
     "docz:build": "docz build && npm run docz:netlify",
     "docz:netlify": "npx ./scripts/docz-netlify.js",
     "predeploy": "npm run docz:build",
-    "prepublishOnly": "rm -fr ./dist & babel ./src --out-dir ./dist -s inline",
+    "prepublishOnly": "rm -fr ./dist & babel ./src --out-dir ./dist -s inline --extensions \".ts,.js\"",
     "cypress:run": "cypress run",
     "test:e2e": "NODE_ENV=test start-test 3000 cypress:run && nyc report --reporter=json-summary",
     "test:unit": "NODE_ENV=test jest ./src/core --coverage && cat ./coverage/lcov.info | coveralls",
