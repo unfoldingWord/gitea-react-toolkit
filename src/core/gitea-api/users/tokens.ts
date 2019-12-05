@@ -51,7 +51,7 @@ export const createToken: CreateToken = async ({ username, config }) => {
       url, payload, config,
     });
   } catch {
-    token = [];
+    token = undefined;
   }
   return token;
 };
