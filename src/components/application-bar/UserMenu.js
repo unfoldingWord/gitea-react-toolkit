@@ -1,7 +1,7 @@
 import React, {
   useState, useEffect, useCallback,
 } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import {
   IconButton,
@@ -81,7 +81,31 @@ function UserMenuComponent({
   );
 }
 
-UserMenuComponent.propTypes = { ...Authentication.propTypes };
+UserMenuComponent.propTypes = {
+  /** Pass a previously returned authentication object to bypass login. */
+  authentication: PropTypes.shape({
+    user: PropTypes.object.isRequired,
+    token: PropTypes.object.isRequired,
+    config: PropTypes.object.isRequired,
+    remember: PropTypes.bool,
+  }),
+  /** Callback function to propogate the user/token used for API Authentication. */
+  onAuthentication: PropTypes.func.isRequired,
+  /** Override the default text and errors. Must override all or none. */
+  messages: PropTypes.shape({
+    actionText: PropTypes.string.isRequired,
+    genericError: PropTypes.string.isRequired,
+    usernameError: PropTypes.string.isRequired,
+    passwordError: PropTypes.string.isRequired,
+  }),
+  /** Configuration for authentication to work, server and tokenid are required. */
+  authenticationConfig: PropTypes.shape({
+    /** The Gitea server to use when authenticating. */
+    server: PropTypes.string.isRequired,
+    /** The id of the token to create/retrieve that is used for the app. */
+    tokenid: PropTypes.string.isRequired,
+  }).isRequired,
+};
 
 const styles = (theme) => ({
   avatar: {
