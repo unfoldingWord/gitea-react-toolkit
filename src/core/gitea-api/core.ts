@@ -41,7 +41,7 @@ export interface ExtendConfig {
 }
 
 export const extendConfig = (config: ExtendConfig): APIConfig => {
-  let headers = (config && config.headers) ? {...config.headers} : {};
+  let headers = {...config.headers};
   if (config && config.token) {
     const authHeaders = authorizationHeaders({ token: config.token });
     headers = { ...config.headers, ...authHeaders };
@@ -62,7 +62,7 @@ interface Get {
 export const get = async ({
   url, params = {}, config, noCache,
 }: Get): Promise<any> => {
-  const _config = extendConfig(config);
+  const _config = config ? extendConfig(config) : {};
   let response;
 
   if (noCache) {
