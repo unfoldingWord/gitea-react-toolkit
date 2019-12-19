@@ -1,4 +1,6 @@
 import path from 'path';
+import base64 from 'base-64';
+import utf8 from 'utf8';
 
 import { apiPath, get } from '../../';
 
@@ -23,15 +25,24 @@ export const getFullTree = async ({
     const options = { recursive, per_page, page };
     const data = await fetchTree({owner, repository, sha, config, ...options});
     const _tree = data.tree.map(blob => {
-      const getBlob = () => get({url: blob.url, config});
-      const _blob = {...blob, getBlob};
-      return _blob;
+      const getBlob = async () => {
+        const _blob = await get({url: blob.url, config});
+        const decoded = (_blob.encoding === 'base64') ? decodeBase64ToUtf8(_blob.content) : undefined;
+        return {..._blob, decoded};
+      };
+      return  {...blob, getBlob};
     });
     tree = tree.concat(_tree);
     moreData = data.truncated;
     if (moreData) page ++;
   }
   return tree;
+};
+
+export const decodeBase64ToUtf8 = (encoded) => {
+  const bytes = base64.decode(encoded);
+  const text = utf8.decode(bytes);
+  return text;
 };
 
 // http://git.door43.org/api/v1/repos/unfoldingword/en_ugl/git/trees/master
