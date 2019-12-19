@@ -23,8 +23,8 @@ export const getFullTree = async ({
     const options = { recursive, per_page, page };
     const data = await fetchTree({owner, repository, sha, config, ...options});
     const _tree = data.tree.map(blob => {
-      let getBlob = () => get({url: blob.url, config});
-      let _blob = {...blob, getBlob};
+      const getBlob = () => get({url: blob.url, config});
+      const _blob = {...blob, getBlob};
       return _blob;
     });
     tree = tree.concat(_tree);
