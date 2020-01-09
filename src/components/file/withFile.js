@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from 'prop-types';
 
-import { getContent, saveContent, ensureFile, deleteFile } from './helpers';
+import { getContentFromFile, saveContent, ensureFile, deleteFile } from './helpers';
 
 function withFileComponent(Component) {
   function FileComponent (props) {
@@ -38,12 +38,11 @@ function withFileComponent(Component) {
       const __file = await ensureFile(
         {filepath, defaultContent, authentication, config: fileConfig, repository}
       );
-      const _content = await getContent({file: __file});
       __file.close = () => {
         updateFile()
         if (fileConfig.updateBlob) fileConfig.updateBlob();
       };
-      __file.content = _content;
+      __file.content = await getContentFromFile(__file);
       __file.filepath = __file.path;
       if (repository.permissions.push) {
         __file.saveContent = async (content) => {

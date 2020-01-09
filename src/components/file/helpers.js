@@ -1,6 +1,6 @@
 import base64 from 'base-64';
 import utf8 from 'utf8';
-import { get, updateContent, ensureFile as _ensureFile, removeFile } from '../../core';
+import { get, updateContent, ensureFile as _ensureFile, removeFile, decodeBase64ToUtf8 } from '../../core';
 
 export const ensureFile = async ({
   filepath, defaultContent, message, authentication, repository, config, branch
@@ -39,9 +39,20 @@ export const deleteFile = async (
   return deleted;
 };
 
-export const getContent = async ({file}) => {
-  const content = await get({url: file.download_url, noCache: true});
-  return content;
+export const getContentFromFile = async (file) => {
+  const {content, encoding, download_url, git_url} = file;
+  let _content;
+  if (content && encoding === 'base64') {
+    _content = decodeBase64ToUtf8(content);
+  } else if (!content && download_url) {
+    _content = await get({url: download_url, noCache: true});
+  } else if (!content && git_url) {
+    const blobObject = await get({url: git_url, noCache: true});
+    if (blobObject.content && blobObject.encoding === 'base64') {
+      _content = decodeBase64ToUtf8(blobObject.content);
+    }
+  }
+  return _content;
 };
 
 export const payload = ({content, message, authentication, repository, file, branch}) => ({
