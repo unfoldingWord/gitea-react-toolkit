@@ -41,11 +41,13 @@ export interface ExtendConfig {
 }
 
 export const extendConfig = (config: ExtendConfig): APIConfig => {
-  let headers = {...config.headers};
+  let headers = { ...config.headers };
+
   if (config && config.token) {
     const authHeaders = authorizationHeaders({ token: config.token });
     headers = { ...config.headers, ...authHeaders };
   }
+
   const _config = {
     baseURL: config.server, ...config, headers,
   };

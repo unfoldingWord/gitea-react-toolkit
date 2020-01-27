@@ -72,7 +72,12 @@ function Authentication({
             }
           }
         }
-      } catch {
+      } catch (e) {
+        const errorMessage = e && e.message ? e.message : '';
+        
+        if (errorMessage.match(/ERR_INTERNET_DISCONNECTED/ig)) {
+          return setError('There is an issue with your network connection. Please try again.');
+        }
         setError(genericError);
       }
     }

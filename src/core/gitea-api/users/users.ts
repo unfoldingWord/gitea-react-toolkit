@@ -5,14 +5,21 @@ import { apiPath, get } from '../core';
 export const getUser = async ({ username, config }: {
   username: string;
   config: APIConfig;
-}): Promise<{ id: object } | null> => {
+}): Promise<{ id: object; } | null> => {
   let user;
   const url = Path.join(apiPath, 'users', username);
 
   try {
     user = await get({ url, config });
-  } catch {
-    user = null;
+  } catch (e) {
+    const errorMessage = e && e.message ? e.message : '';
+    const errorResponse = e && e.response;
+
+    if (!errorResponse && errorMessage.match(/network/ig) && !navigator.onLine) {
+      throw new Error('ERR_INTERNET_DISCONNECTED');
+    } else {
+      user = null;
+    }
   }
   return user;
 };
