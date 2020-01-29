@@ -13,6 +13,7 @@ function Authentication({
     genericError,
     usernameError,
     passwordError,
+    networkError
   },
   authentication,
   onAuthentication,
@@ -76,7 +77,7 @@ function Authentication({
         const errorMessage = e && e.message ? e.message : '';
         
         if (errorMessage.match(/ERR_INTERNET_DISCONNECTED/ig)) {
-          return setError('There is an issue with your network connection. Please try again.');
+          return setError(networkError);
         }
         setError(genericError);
       }
@@ -126,6 +127,7 @@ Authentication.defaultProps = {
     genericError: 'Something went wrong, please try again.',
     usernameError: 'Username does not exist.',
     passwordError: 'Password is invalid.',
+    networkError: 'There is an issue with your network connection. Please try again.',
   },
 };
 

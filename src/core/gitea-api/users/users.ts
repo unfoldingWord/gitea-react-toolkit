@@ -12,10 +12,9 @@ export const getUser = async ({ username, config }: {
   try {
     user = await get({ url, config });
   } catch (e) {
-    const errorMessage = e && e.message ? e.message : '';
     const errorResponse = e && e.response;
 
-    if (!errorResponse && errorMessage.match(/network/ig) && !navigator.onLine) {
+    if (!errorResponse || !navigator.onLine) {
       throw new Error('ERR_INTERNET_DISCONNECTED');
     } else {
       user = null;
