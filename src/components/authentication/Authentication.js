@@ -75,7 +75,11 @@ function Authentication({
         }
       } catch (e) {
         const errorMessage = e && e.message ? e.message : '';
-        
+
+        if (errorMessage.match(/ERR_SERVER_UNREACHABLE/ig)) {
+          return setError('There is an issue with the server please try again.');
+        }
+
         if (errorMessage.match(/ERR_INTERNET_DISCONNECTED/ig)) {
           return setError(networkError);
         }

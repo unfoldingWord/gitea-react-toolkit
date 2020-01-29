@@ -6,20 +6,9 @@ export const getUser = async ({ username, config }: {
   username: string;
   config: APIConfig;
 }): Promise<{ id: object; } | null> => {
-  let user;
+  let user = null;
   const url = Path.join(apiPath, 'users', username);
-
-  try {
-    user = await get({ url, config });
-  } catch (e) {
-    const errorResponse = e && e.response;
-
-    if (!errorResponse || !navigator.onLine) {
-      throw new Error('ERR_INTERNET_DISCONNECTED');
-    } else {
-      user = null;
-    }
-  }
+  user = await get({ url, config });
   return user;
 };
 
