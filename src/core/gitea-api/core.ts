@@ -6,8 +6,8 @@ import { APIConfig } from './core.d';
 export const apiPath = 'api/v1';
 const DEFAULT_MAX_AGE = 1000;
 const SERVER_ONLINE_STATUS = 200;
-const ERROR_UNREACHABLE = 'ERR_SERVER_UNREACHABLE';
-const ERROR_DISCONNECTED = 'ERR_NETWORK_DISCONNECTED';
+export const ERROR_SERVER_UNREACHABLE = 'ERR_SERVER_UNREACHABLE';
+export const ERROR_NETWORK_DISCONNECTED = 'ERR_NETWORK_DISCONNECTED';
 
 const cacheStore = localforage.createInstance({
   driver: [localforage.INDEXEDDB],
@@ -65,14 +65,14 @@ interface Get {
 
 export const checkIfServerOnline = async (serverUrl): Promise<void> => {
   if (!navigator.onLine) {
-    throw new Error(ERROR_DISCONNECTED);
+    throw new Error(ERROR_NETWORK_DISCONNECTED);
   }
 
   const response = await axios.get(`${serverUrl}/${apiPath}/version`);
   const serverIsResponding = response.status == SERVER_ONLINE_STATUS;
 
   if (!serverIsResponding) {
-    throw new Error(ERROR_UNREACHABLE);
+    throw new Error(ERROR_SERVER_UNREACHABLE);
   }
 };
 

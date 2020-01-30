@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 
-import { authenticate } from '../../core';
+import { authenticate, ERROR_SERVER_UNREACHABLE, ERROR_NETWORK_DISCONNECTED } from '../../core';
 import { LoginForm } from './LoginForm';
 import { getAuth, saveAuth } from './helpers';
 
@@ -13,7 +13,8 @@ function Authentication({
     genericError,
     usernameError,
     passwordError,
-    networkError
+    networkError,
+    serverError
   },
   authentication,
   onAuthentication,
@@ -76,11 +77,11 @@ function Authentication({
       } catch (e) {
         const errorMessage = e && e.message ? e.message : '';
 
-        if (errorMessage.match(/ERR_SERVER_UNREACHABLE/ig)) {
-          return setError('There is an issue with the server please try again.');
+        if (errorMessage.match(ERROR_SERVER_UNREACHABLE)) {
+          return setError(serverError);
         }
 
-        if (errorMessage.match(/ERR_INTERNET_DISCONNECTED/ig)) {
+        if (errorMessage.match(ERROR_NETWORK_DISCONNECTED)) {
           return setError(networkError);
         }
         setError(genericError);
@@ -132,6 +133,7 @@ Authentication.defaultProps = {
     usernameError: 'Username does not exist.',
     passwordError: 'Password is invalid.',
     networkError: 'There is an issue with your network connection. Please try again.',
+    serverError: 'There is an issue with the server please try again.',
   },
 };
 

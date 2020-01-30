@@ -1,6 +1,6 @@
 import Path from 'path';
 import { APIConfig } from '../core.d';
-import { apiPath, get } from '../core';
+import { apiPath, get, ERROR_SERVER_UNREACHABLE, ERROR_NETWORK_DISCONNECTED } from '../core';
 
 export const getUser = async ({ username, config }: {
   username: string;
@@ -8,7 +8,14 @@ export const getUser = async ({ username, config }: {
 }): Promise<{ id: object; } | null> => {
   let user = null;
   const url = Path.join(apiPath, 'users', username);
-  user = await get({ url, config });
+  try {
+    user = await get({ url, config });
+  } catch (e) {
+    const errorMessage = e && e.message ? e.message : '';
+    if (errorMessage.match(ERROR_SERVER_UNREACHABLE) || errorMessage.match(ERROR_NETWORK_DISCONNECTED)) {
+      throw e;
+    }
+  }
   return user;
 };
 
