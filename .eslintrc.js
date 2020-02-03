@@ -5,8 +5,7 @@ module.exports = {
     "eslint:recommended",
     "plugin:react/recommended",
     "@unfoldingword",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:import/typescript"
+    "plugin:@typescript-eslint/recommended"
   ],
   "plugins": [
     "react",
