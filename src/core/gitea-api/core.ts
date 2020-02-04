@@ -68,11 +68,21 @@ export const checkIfServerOnline = async (serverUrl): Promise<void> => {
     throw new Error(ERROR_NETWORK_DISCONNECTED);
   }
 
-  const response = await axios.get(`${serverUrl}/${apiPath}/version`);
-  const serverIsResponding = response.status == SERVER_ONLINE_STATUS;
+  try {
+    const response = await axios.get(`${serverUrl}/${apiPath}/version`);
+    const serverIsResponding = response.status == SERVER_ONLINE_STATUS;
 
-  if (!serverIsResponding) {
-    throw new Error(ERROR_SERVER_UNREACHABLE);
+    if (!serverIsResponding) {
+      throw new Error(ERROR_SERVER_UNREACHABLE);
+    }
+  } catch (e) {
+    const errorMessage = e && e.message ? e.message : '';
+
+    if (errorMessage.match(/network error/ig)) {
+      throw new Error(ERROR_SERVER_UNREACHABLE);
+    } else {
+      throw e;
+    }
   }
 };
 
