@@ -47,6 +47,7 @@ function RepositoryComponent({
     full_name,
     description,
     html_url,
+    avatar_url
   } = repo;
 
   return (
@@ -60,7 +61,7 @@ function RepositoryComponent({
       <ListItemAvatar>
         <Avatar
           alt={owner.fullname}
-          src={owner.avatar_url}
+          src={avatar_url || owner.avatar_url}
           className={classes.avatar}
         />
       </ListItemAvatar>
@@ -98,6 +99,7 @@ RepositoryComponent.propTypes = {
     html_url: PropTypes.string.isRequired,
     website: PropTypes.string.isRequired,
     tree_url: PropTypes.string,
+    avatar_url: PropTypes.string,
   }),
   /** Configuration required if paths are provided as URL. */
   config: PropTypes.shape({
