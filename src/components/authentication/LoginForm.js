@@ -31,7 +31,7 @@ function LoginFormComponent({
     const {
       type, name, value, checked,
     } = event.target;
-    let _formData = { ...formData };
+    const _formData = { ...formData };
 
     if (type === 'checkbox') {
       _formData[value] = checked;
@@ -87,7 +87,7 @@ function LoginFormComponent({
               id={'remember-' + Math.random()} onChange={updateFormData} />
           }
         />
-        <Button data-test="submit-button" type="button" fullWidth variant="contained"
+        <Button data-test={user ? 'logout-button' : 'submit-button'} type="button" fullWidth variant="contained"
           color={(user) ? 'secondary' : 'primary'}
           className={classes.submit}
           onClick={() => {

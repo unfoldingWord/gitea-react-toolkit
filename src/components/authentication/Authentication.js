@@ -3,16 +3,18 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 
-import { authenticate } from '../../core';
+import { authenticate, ERROR_SERVER_UNREACHABLE, ERROR_NETWORK_DISCONNECTED } from '../../core';
 import { LoginForm } from './LoginForm';
 import { getAuth, saveAuth } from './helpers';
 
 function Authentication({
   messages: {
-    actionText,
-    genericError,
-    usernameError,
-    passwordError,
+    actionText = 'Login',
+    genericError = 'Something went wrong, please try again.',
+    usernameError = 'Username does not exist.',
+    passwordError = 'Password is invalid.',
+    networkError = 'There is an issue with your network connection. Please try again.',
+    serverError = 'There is an issue with the server please try again.',
   },
   authentication,
   onAuthentication,
@@ -72,7 +74,16 @@ function Authentication({
             }
           }
         }
-      } catch {
+      } catch (e) {
+        const errorMessage = e && e.message ? e.message : '';
+
+        if (errorMessage.match(ERROR_SERVER_UNREACHABLE)) {
+          return setError(serverError);
+        }
+
+        if (errorMessage.match(ERROR_NETWORK_DISCONNECTED)) {
+          return setError(networkError);
+        }
         setError(genericError);
       }
     }
@@ -113,15 +124,6 @@ Authentication.propTypes = {
     /** The id of the token to create/retrieve that is used for the app. */
     tokenid: PropTypes.string.isRequired,
   }).isRequired,
-};
-
-Authentication.defaultProps = {
-  messages: {
-    actionText: 'Login',
-    genericError: 'Something went wrong, please try again.',
-    usernameError: 'Username does not exist.',
-    passwordError: 'Password is invalid.',
-  },
 };
 
 export default Authentication;

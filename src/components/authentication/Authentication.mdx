@@ -39,7 +39,7 @@ If not already authenticated, it will render the Authenticaiton component.
         <CardActions>
           <IconButton onClick={()=> alert(`Now get out your decoder ring, ${user.full_name}, and get to work!`)}><Favorite /></IconButton>
           <IconButton onClick={()=> alert("Alright Elon, let's not tweet about our missions.")}><Share /></IconButton>
-          <IconButton data-test="logout-button" onClick={()=> authentication.logout()}><ExitToApp /></IconButton>
+          <IconButton onClick={()=> authentication.logout()}><ExitToApp /></IconButton>
         </CardActions>
       </Card>
     )
@@ -63,6 +63,8 @@ If not already authenticated, it will render the Authenticaiton component.
             genericError: "Nothing to see here, carry on.",
             usernameError: "Your no agent, did you forget your name?",
             passwordError: "Are you sure you are who you think you are?",
+            networkError: 'There is an issue with your network connection. Please try again.',
+            serverError: 'There is an issue with the server please try again.',
           },
         }}
         /** Pass a previously returned authentication object to skip authentication form.
@@ -96,6 +98,8 @@ The Authentication component wraps the LoginForm component.
           genericError: "Something happened!",
           usernameError: "No user found?",
           passwordError: "Did you fat finger your password?",
+          networkError: 'There is an issue with your network connection. Please try again.',
+          serverError: 'There is an issue with the server please try again.',
         }}
         config={{
           server: "https://bg.door43.org",
