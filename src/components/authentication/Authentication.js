@@ -15,7 +15,7 @@ function Authentication({
     passwordError = 'Password is invalid.',
     networkError = 'There is an issue with your network connection. Please try again.',
     serverError = 'There is an issue with the server please try again.',
-  },
+  } = {},
   authentication,
   onAuthentication,
   config,
