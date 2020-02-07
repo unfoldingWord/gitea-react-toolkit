@@ -67,6 +67,7 @@ export const checkIfServerOnline = async (serverUrl): Promise<void> => {
   if (!navigator.onLine) {
     throw new Error(ERROR_NETWORK_DISCONNECTED);
   }
+
   try {
     const response = await axios.get(`${serverUrl}/${apiPath}/version`);
     const serverIsResponding = response.status == SERVER_ONLINE_STATUS;
@@ -101,6 +102,7 @@ export const get = async ({
   } catch {
     await checkIfServerOnline(config.server);
   }
+
   const data = response ? response.data : null;
   return data;
 };
