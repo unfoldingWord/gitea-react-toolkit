@@ -13,9 +13,7 @@ export const getUser = async ({ username, config }: {
 
   try {
     user = await get({ url, config });
-    debugger;
   } catch (e) {
-    debugger;
     const errorMessage = e && e.message ? e.message : '';
 
     if (errorMessage.match(ERROR_SERVER_UNREACHABLE) || errorMessage.match(ERROR_NETWORK_DISCONNECTED)) {
