@@ -37,5 +37,13 @@ describe('Authentication', function () {
     cy.get('[data-test=submit-button]').eq(APPLICATION_FORMS.AUTHENTICATION);
     cy.get('[data-test=login-error-text]').contains('No user found?');
   });
+
+  it.only('should open editor and change text', function () {
+    cy.get('[title="Show editor"]').eq(APPLICATION_FORMS.AUTHENTICATION).click();
+    cy.contains('bg.door43.org').then(($el) => {
+      $el.focus().select().type();
+      debugger;
+    });
+  });
 });
 
