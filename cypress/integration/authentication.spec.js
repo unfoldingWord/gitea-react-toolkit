@@ -38,7 +38,7 @@ describe('Authentication', function () {
     cy.get('[data-test=login-error-text]').contains('No user found?');
   });
 
-  it('should open editor and change text', function () {
+  it('should fail on invalid server url', function () {
     cy.get('[title="Show editor"]').eq(APPLICATION_FORMS.AUTHENTICATION).click();
     cy.contains('bg.door43.org').click({ force: true }).focused().type('hello', { force: true });
     cy.get('[data-test=username-input] input').eq(APPLICATION_FORMS.AUTHENTICATION).type(Cypress.env('TEST_USERNAME'));
