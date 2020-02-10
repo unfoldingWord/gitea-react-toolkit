@@ -8,18 +8,21 @@ import { LoginForm } from './LoginForm';
 import { getAuth, saveAuth } from './helpers';
 
 function Authentication({
-  messages: {
+  messages = {},
+  authentication,
+  onAuthentication,
+  config,
+}) {
+  const [error, setError] = useState();
+
+  const {
     actionText = 'Login',
     genericError = 'Something went wrong, please try again.',
     usernameError = 'Username does not exist.',
     passwordError = 'Password is invalid.',
     networkError = 'There is an issue with your network connection. Please try again.',
     serverError = 'There is an issue with the server please try again.',
-  } = {},
-  authentication,
-  onAuthentication,
-  config,
-}) {
+  } = messages;
   const [error, setError] = useState();
 
   const logout = useCallback(() => {
