@@ -37,5 +37,15 @@ describe('Authentication', function () {
     cy.get('[data-test=submit-button]').eq(APPLICATION_FORMS.AUTHENTICATION);
     cy.get('[data-test=login-error-text]').contains('No user found?');
   });
+
+  it('should fail on invalid server url', function () {
+    cy.get('[title="Show editor"]').eq(APPLICATION_FORMS.AUTHENTICATION).click();
+    cy.contains('bg.door43.org').click({ force: true }).focused().type('hello', { force: true });
+    cy.get('[data-test=username-input] input').eq(APPLICATION_FORMS.AUTHENTICATION).type(Cypress.env('TEST_USERNAME'));
+    cy.get('[data-test=password-input] input').eq(APPLICATION_FORMS.AUTHENTICATION).type(Cypress.env('TEST_PASSWORD'));
+    cy.get('[data-test=remember-checkbox]').eq(APPLICATION_FORMS.AUTHENTICATION).click();
+    cy.get('[data-test=submit-button]').eq(APPLICATION_FORMS.AUTHENTICATION).click();
+    cy.get('[data-test=login-error-text]').contains('There is an issue with the server please try again.');
+  });
 });
 
