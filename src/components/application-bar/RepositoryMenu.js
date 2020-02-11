@@ -8,7 +8,7 @@ import {
   Paper,
   Chip,
 } from '@material-ui/core';
-import { FolderShared, } from '@material-ui/icons';
+import { FolderShared } from '@material-ui/icons';
 
 import { withRepository } from '../repository';
 
@@ -33,10 +33,12 @@ function RepositoryMenuComponent({
   let button;
 
   if (repository && repository.owner) {
+    const avatarUrl = repository.avatar_url || repository.owner.avatar_url;
+
     button = (
       <Chip
         data-test="repository-item-icon"
-        avatar={<Avatar src={repository.owner.avatar_url} />}
+        avatar={<Avatar src={avatarUrl} />}
         label={repository.name}
         onDelete={handleClose}
         color="primary"
