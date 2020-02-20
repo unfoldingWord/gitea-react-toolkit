@@ -1,22 +1,42 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   Avatar,
   ListItem,
   ListItemAvatar,
   ListItemSecondaryAction,
   IconButton,
-  TextField
+  TextField,
 } from '@material-ui/core';
-import {
-  AddCircle,
-} from '@material-ui/icons';
+import { AddCircle } from '@material-ui/icons';
 
 import { createRepository, extendRepository } from '../helpers';
 
-function RepositoryQuickCreateComponent({
-  classes,
+const useStyles = makeStyles(theme => ({
+  listItemAvatar: {
+    marginRight: '16px',
+    marginTop: '20px',
+  },
+  avatar: {
+    borderRadius: '20%',
+  },
+  root: {
+    borderRadius: theme.shape.borderRadius,
+    marginLeft: 0,
+    width: '100%',
+  },
+  form: {
+    width: '100%',
+  },
+  input: {
+    width: '40%',
+    display: 'inline-block',
+    marginRight: '1em',
+  }
+}));
+
+function RepositoryQuickCreate({
   authentication,
   authentication: {
     user: {
@@ -27,19 +47,20 @@ function RepositoryQuickCreateComponent({
   },
   onRepository,
 }) {
+  const classes = useStyles();
   const [repo, setRepo] = useState();
 
   const updateRepository = (_repo) => {
     if (_repo) {
       _repo = extendRepository({
-        repository: _repo, authentication, updateRepository, config
+        repository: _repo, authentication, updateRepository, config,
       });
     }
     onRepository(_repo);
   }
 
   const handleCreate = async () => {
-    const repository = await createRepository({repo, config});
+    const repository = await createRepository({ repo, config });
     updateRepository(repository);
   }
 
@@ -68,7 +89,7 @@ function RepositoryQuickCreateComponent({
           <TextField
             id='repo' label='Repository' type='text' required
             variant="outlined" margin="normal" fullWidth
-            defaultValue="" autoFocus autoComplete={undefined}
+            defaultValue="" autoComplete={undefined}
             onChange={(event) => {setRepo(event.target.value)}}
           />
         </div>
@@ -85,8 +106,7 @@ function RepositoryQuickCreateComponent({
   );
 }
 
-RepositoryQuickCreateComponent.propTypes = {
-  classes: PropTypes.object.isRequired,
+RepositoryQuickCreate.propTypes = {
   /** Function to call when repository is selected. */
   onRepository: PropTypes.func.isRequired,
   /** A passed authentication object from login. */
@@ -102,27 +122,4 @@ RepositoryQuickCreateComponent.propTypes = {
   }),
 };
 
-const styles = (theme) => ({
-  listItemAvatar: {
-    marginRight: '16px',
-    marginTop: '20px',
-  },
-  avatar: {
-    borderRadius: '20%',
-  },
-  root: {
-    borderRadius: theme.shape.borderRadius,
-    marginLeft: 0,
-    width: '100%',
-  },
-  form: {
-    width: '100%',
-  },
-  input: {
-    width: '40%',
-    display: 'inline-block',
-    marginRight: '1em',
-  }
-});
-
-export const RepositoryQuickCreate = withStyles(styles)(RepositoryQuickCreateComponent);
+export default RepositoryQuickCreate;

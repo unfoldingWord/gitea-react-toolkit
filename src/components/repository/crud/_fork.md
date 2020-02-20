@@ -1,5 +1,8 @@
-This example for Delete also includes the ability to fork.
+This example for Fork also includes the ability to delete.
 That way you can fork a repository first then delete your fork.
+
+Search for another repository to fork since you cannot fork your own.
+Once you have forked a repository, search for your repository under your username.
 
 ```js
 import { Paper, Card, CardContent, CardHeader, CardActions, IconButton, Avatar } from '@material-ui/core';

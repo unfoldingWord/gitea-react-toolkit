@@ -73,7 +73,7 @@ export const removeFile = async ({
 }: ModifyContentOptions): Promise<object> => {
   const url = Path.join(apiPath, 'repos', owner, repo, 'contents', filepath);
   let response;
-
+debugger
   try {
     response = await del({
       url, payload, config,

@@ -135,7 +135,7 @@ export const del = async ({
   url, payload, config,
 }: RestAPI): Promise<object> => {
   const _config = extendConfig(config);
-  config.data = payload;
+  _config.data = payload;
   const { data } = await axios.delete(url, _config);
   return data;
 };

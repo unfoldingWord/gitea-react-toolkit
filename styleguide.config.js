@@ -78,6 +78,39 @@ const sections = [
       path.join(pathComponents, 'repository', `${componentName}.js`)
     ),
   },
+  {
+    name: 'Repository CRUFD ',
+    content: path.join(pathComponents, 'repository/crud', '_readme.md'),
+    sections: [
+      {
+        name: 'Create',
+        content: path.join(pathComponents, 'repository/crud', '_create.md'),
+      },
+      {
+        name: 'Read',
+        content: path.join(pathComponents, 'repository/crud', '_read.md'),
+      },
+      {
+        name: 'Update',
+        content: path.join(pathComponents, 'repository/crud', '_update.md'),
+      },
+      {
+        name: 'Fork',
+        content: path.join(pathComponents, 'repository/crud', '_fork.md'),
+      },
+      {
+        name: 'Delete',
+        content: path.join(pathComponents, 'repository/crud', '_delete.md'),
+      },
+    ],
+    components: [
+      'RepositoryForm',
+      'RepositoryFormMenu',
+      'FormCheckBox',
+    ].map(componentName =>
+      path.join(pathComponents, 'repository/crud', `${componentName}.js`)
+    ),
+  },
 ];
 
 module.exports = {

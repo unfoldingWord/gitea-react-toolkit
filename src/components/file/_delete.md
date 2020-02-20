@@ -5,9 +5,6 @@ In order to delete a file the authenticated user has to have write access to the
 
 This example expects any file file to be selected and will allow you to delete a file after you view it.
 
-# TODO: Find out why this example is not working
-all props are sent properly, CORS error happening, works through proxy.
-
 ```js
 import { Paper, Card, CardContent, CardHeader, CardActions, Avatar, IconButton } from '@material-ui/core';
 import { DeleteForever } from '@material-ui/icons';
