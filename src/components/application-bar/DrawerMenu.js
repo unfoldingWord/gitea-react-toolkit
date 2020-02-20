@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import {
   IconButton,
@@ -11,18 +10,17 @@ import {
   ChevronLeft,
 } from '@material-ui/icons';
 
-import { Tree } from '../';
-import styles from './styles';
+import { useStyles } from './useStyles';
+import { Tree } from '..';
 
-
-function DrawerMenuComponent({
-  classes,
+function DrawerMenu({
   drawerMenu,
   blob,
   onBlob,
   repository,
   config,
 }) {
+  const classes = useStyles();
   const [openDrawer, setOpenDrawer] = useState(false);
 
   const toggleDrawer = () => {
@@ -66,17 +64,36 @@ function DrawerMenuComponent({
   );
 }
 
-DrawerMenuComponent.propTypes = {
+DrawerMenu.propTypes = {
   /** Component to render inside of the drawer menu. */
   drawerMenu: PropTypes.element,
+  /** Blob data to render, if url not provided. */
+  blob: PropTypes.shape({
+    /** The filepath in the Git Tree Blob Object */
+    path: PropTypes.string.isRequired,
+    /** The url in the Git Tree Blob Object */
+    url: PropTypes.string,
+    /** The content size of the Git Tree Blob Object */
+    size: PropTypes.number,
+  }),
+  /** Function to propogate when the Blob is selected. */
+  onBlob: PropTypes.func,
+  /** Repository data to render, if url not provided. */
+  repository: PropTypes.shape({
+    id: PropTypes.number,
+    owner: PropTypes.object.isRequired,
+    name: PropTypes.string.isRequired,
+    full_name: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    html_url: PropTypes.string.isRequired,
+    website: PropTypes.string.isRequired,
+    tree_url: PropTypes.string,
+    avatar_url: PropTypes.string,
+  }),
+  /** Configuration */
+  config: PropTypes.shape({
+    server: PropTypes.string.isRequired,
+  }),
 };
 
-const areEqual = (prevProps, nextProps) => {
-  const keys = ['blob', 'repository', 'config'];
-  const checks = keys.map(key => (JSON.stringify(prevProps[key]) === JSON.stringify(nextProps[key])));
-  const equal = !checks.includes(false);
-  // console.log('DrawerMenuComponent', keys, checks, equal);
-  return equal;
-};
-
-export const DrawerMenu = React.memo(withStyles(styles)(DrawerMenuComponent), areEqual);
+export default DrawerMenu;

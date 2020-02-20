@@ -46,12 +46,15 @@ export const repositorySearch = async ({
   let repositories = [];
   const params: { q: string; limit: number; uid?: string; exclusive?: boolean } = { q: _query, limit: 50 };
 
-  if (owner) {
-    params.uid = await getUID({ username: owner, config });
-    params.exclusive = true;
-  }
+  let url: string;
 
-  const url = path.join(apiPath, 'repos', 'search');
+  if (owner) {
+    // params.uid = await getUID({ username: owner, config });
+    // params.exclusive = true;
+    url = path.join(apiPath, 'users', owner, 'repos');
+  } else {
+    url = path.join(apiPath, 'repos', 'search');
+  }
 
   try {
     repositories = await get({
@@ -61,5 +64,7 @@ export const repositorySearch = async ({
   } catch {
     repositories = [];
   }
-  return repositories;
+
+  const _repositories = repositories.filter(repo => repo.name.match(query));
+  return _repositories;
 };

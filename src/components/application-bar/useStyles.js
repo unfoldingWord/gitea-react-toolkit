@@ -1,6 +1,8 @@
+import { makeStyles } from '@material-ui/core/styles';
+
 const drawerWidth = 360;
 
-const styles = (theme) => ({
+export const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
   },
@@ -31,6 +33,17 @@ const styles = (theme) => ({
     ...theme.mixins.toolbar,
     justifyContent: 'flex-end',
   },
-});
-
-export default styles;
+  // RepositoryMenu and UserMenu
+  avatar: {
+    width: '35px',
+    height: '35px',
+  },
+  modal: {
+    position: 'absolute',
+    top: '10%',
+    left: '10%',
+    right: '10%',
+    maxHeight: '80%',
+    overflow: 'scroll',
+  },
+}));

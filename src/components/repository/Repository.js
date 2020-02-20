@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   Avatar,
   ListItem,
@@ -9,19 +9,21 @@ import {
   ListItemSecondaryAction,
   IconButton,
 } from '@material-ui/core';
-import {
-  Code,
-} from '@material-ui/icons';
+import { Code } from '@material-ui/icons';
 
 import { get, repoTreeUrl } from '../../core';
 
-function RepositoryComponent({
-  classes,
+const useStyles = makeStyles(theme => ({
+  avatar: { borderRadius: '20%' },
+}));
+
+function Repository({
   url,
   repository,
   onRepository,
   config,
 }) {
+  const classes = useStyles();
   const [repo, setRepo] = useState(repository || { owner: {} });
 
   const getData = async () => {
@@ -47,7 +49,7 @@ function RepositoryComponent({
     full_name,
     description,
     html_url,
-    avatar_url
+    avatar_url,
   } = repo;
 
   return (
@@ -81,10 +83,9 @@ function RepositoryComponent({
       </ListItemSecondaryAction>
     </ListItem>
   );
-}
+};
 
-RepositoryComponent.propTypes = {
-  classes: PropTypes.object.isRequired,
+Repository.propTypes = {
   /** Function to call when repository is selected. */
   onRepository: PropTypes.func.isRequired,
   /** Url to get repository data, if repository data is not provided. */
@@ -107,10 +108,4 @@ RepositoryComponent.propTypes = {
   }),
 };
 
-const styles = {
-  avatar: {
-    borderRadius: '20%',
-  },
-};
-
-export const Repository = withStyles(styles)(RepositoryComponent);
+export default Repository;

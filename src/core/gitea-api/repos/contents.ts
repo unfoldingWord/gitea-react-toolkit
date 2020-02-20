@@ -11,11 +11,12 @@ interface ModifyContentOptions {
   filepath: string;
   payload: object;
   config: ExtendConfig;
+  ref: string;
 }
 
 // POST /api/v1/repos/{owner}/{repo}/contents/{filepath}
 export const createContent = async ({
-  owner, repo, filepath, payload, config,
+  owner, repo, filepath, payload, config, ref,
 }: ModifyContentOptions): Promise<any> => {
   const url = Path.join(apiPath, 'repos', owner, repo, 'contents', filepath);
   const response = await post({
@@ -29,18 +30,19 @@ interface GetContentOptions {
   repo: string;
   filepath: string;
   config: ExtendConfig;
-}
+  ref: string;
+};
 
 // GET /api/v1/repos/{owner}/{repo}/contents/{filepath}?ref={branch}
 export const readContent = async ({
-  owner, repo, filepath, config,
+  owner, repo, filepath, config, ref,
 }: GetContentOptions): Promise<object> => {
   const url = Path.join(apiPath, 'repos', owner, repo, 'contents', filepath);
   let response;
 
   try {
     response = await get({
-      url, config, noCache: true,
+      url, config, params: { ref }, noCache: true,
     });
   } catch (error) {
     response = null;
@@ -83,15 +85,15 @@ export const removeFile = async ({
 };
 
 export const ensureFile = async ({
-  owner, repo, filepath, payload, config,
+  owner, repo, filepath, payload, config, ref,
 }: ModifyContentOptions): Promise<object> => {
   let file = await readContent({
-    owner, repo, filepath, config,
+    owner, repo, filepath, config, ref,
   });
 
   if (!file) {
     const { content } = await createContent({
-      owner, repo, filepath, payload, config,
+      owner, repo, filepath, payload, config, ref,
     });
     file = content;
   }

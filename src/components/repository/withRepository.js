@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-import { Repositories, Search } from '../';
-import { Repository } from './Repository';
-
 import { extendRepository } from './helpers';
+import { Repository } from '.';
+import { Repositories, Search } from '..';
 
 function withRepositoryComponent(Component) {
   return function RepositoryComponent({
@@ -16,34 +15,45 @@ function withRepositoryComponent(Component) {
 
     const { authentication } = props;
     let repositoryConfig = {};
+
     if (props.repositoryConfig) {
-      const { repositories, urls, defaultOwner, defaultQuery, ...config } = props.repositoryConfig;
-      repositoryConfig = { repositories, urls, defaultOwner, defaultQuery, config };
+      const {
+        repositories, urls, defaultOwner, defaultQuery, ...config
+      } = props.repositoryConfig;
+
+      repositoryConfig = {
+        repositories, urls, defaultOwner, defaultQuery, config,
+      };
     }
+
     if (authentication && authentication.config) {
       repositoryConfig.config = { ...repositoryConfig.config, ...authentication.config };
     }
+
     const {
       repositories,
       urls,
       defaultOwner,
       defaultQuery,
-      config
+      config,
     } = repositoryConfig;
 
     const hasRepository = () => (repo && repo.name && repo.owner && repo.permissions);
 
     const updateRepository = (_repo) => {
       let __repo;
+
       if (_repo) {
         __repo = { ..._repo };
         __repo = extendRepository({ repository: __repo, authentication, updateRepository, config });
       }
+
       if (onRepository) onRepository(__repo);
       else setRepo(__repo);
     };
 
     let component = <div />;
+
     if (!hasRepository() && (urls || repositories)) {
       component = (
         <Repositories
@@ -55,6 +65,7 @@ function withRepositoryComponent(Component) {
       );
     } else if (!hasRepository() && config) {
       let username;
+
       if (authentication) username = authentication.user.username;
       component = (
         <Search
@@ -71,8 +82,8 @@ function withRepositoryComponent(Component) {
     }
 
     return component;
-  }
-}
+  };
+};
 
 withRepositoryComponent.propTypes = {
   /** Configuration to pass through to the Search/Repositories component. */

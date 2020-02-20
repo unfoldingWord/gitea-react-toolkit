@@ -1,11 +1,11 @@
-import React, {useState} from "react";
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-import { Authentication } from './';
-import {isAuthenticated} from './helpers';
+import { isAuthenticated } from './helpers';
+import { Authentication } from '.';
 
-function withAuthenticationComponent(Component) {
-  return function AuthenticatedComponent ({
+function withAuthentication(Component) {
+  return function AuthenticatedComponent({
     authentication,
     onAuthentication,
     authenticationConfig: {
@@ -15,13 +15,14 @@ function withAuthenticationComponent(Component) {
     ...props
   }) {
     const [auth, setAuth] = useState(authentication);
-  
+
     const updateAuthentication = (_auth) => {
       if (onAuthentication) onAuthentication(_auth);
       else setAuth(_auth);
     };
 
     let component = <div />;
+
     if (!isAuthenticated(auth) && config) {
       component = (
         <Authentication
@@ -37,11 +38,11 @@ function withAuthenticationComponent(Component) {
       component = <Component {...props} authentication={auth} />;
     }
 
-    return  component;
-  }
-}
+    return component;
+  };
+};
 
-withAuthenticationComponent.propTypes = {
+withAuthentication.propTypes = {
   /** Pass a previously returned authentication object to bypass login. */
   authentication: PropTypes.shape({
     user: PropTypes.object.isRequired,
@@ -67,4 +68,4 @@ withAuthenticationComponent.propTypes = {
   }).isRequired,
 };
 
-export const withAuthentication = withAuthenticationComponent;
+export default withAuthentication;

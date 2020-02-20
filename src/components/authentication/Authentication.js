@@ -3,9 +3,11 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 
-import { authenticate, ERROR_SERVER_UNREACHABLE, ERROR_NETWORK_DISCONNECTED } from '../../core';
-import { LoginForm } from './LoginForm';
+import {
+  authenticate, ERROR_SERVER_UNREACHABLE, ERROR_NETWORK_DISCONNECTED,
+} from '../../core';
 import { getAuth, saveAuth } from './helpers';
+import { LoginForm } from '.';
 
 function Authentication({
   messages:{
@@ -24,7 +26,7 @@ function Authentication({
 
   const logout = useCallback(() => {
     saveAuth();
-  });
+  }, []);
 
   const updateAuthentication = useCallback((_auth) => {
     if (_auth) {
@@ -34,7 +36,7 @@ function Authentication({
       _auth.logout = () => {
         logout();
         updateAuthentication();
-      }
+      };
     }
     onAuthentication(_auth);
   }, [logout, onAuthentication]);

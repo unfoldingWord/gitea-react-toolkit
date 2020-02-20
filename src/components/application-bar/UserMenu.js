@@ -2,7 +2,6 @@ import React, {
   useState, useEffect, useCallback,
 } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
 import {
   IconButton,
   Avatar,
@@ -11,26 +10,27 @@ import {
 } from '@material-ui/core';
 import { AccountCircle } from '@material-ui/icons';
 
-import { Authentication } from '../authentication';
 import { getAuth, saveAuth } from '../authentication/helpers';
+import { useStyles } from './useStyles';
+import { Authentication } from '..';
 
-function UserMenuComponent({
-  classes,
+function UserMenu({
   authentication,
   onAuthentication,
   authenticationConfig,
 }) {
+  const classes = useStyles();
   const [modal, setModal] = useState(false);
   const closeModal = () => setModal(false);
   const openModal = () => setModal(true);
 
-  const updateAuthentication = useCallback((_auth) => {
+  const updateAuthentication = useCallback(async (_auth) => {
     if (_auth) {
       if (_auth.remember) {
-        saveAuth(_auth);
+        await saveAuth(_auth);
       }
-      _auth.logout = () => {
-        saveAuth();
+      _auth.logout = async () => {
+        await saveAuth();
         updateAuthentication();
       };
     }
@@ -43,29 +43,21 @@ function UserMenuComponent({
     }
   }, [authentication, updateAuthentication]);
 
-  let avatar;
+  const avatar = !(authentication && authentication.user) ? <AccountCircle fontSize="large" /> : (
+    <Avatar className={classes.avatar} src={authentication.user.avatar_url} />
+  );
 
-  if (authentication && authentication.user) {
-    avatar = <Avatar className={classes.avatar} src={authentication.user.avatar_url} />;
-  } else {
-    avatar = <AccountCircle fontSize="large" />;
-  }
-
-  let authenticationModal = <div />;
-
-  if (modal) {
-    authenticationModal = (
-      <Modal open={true} onClose={closeModal}>
-        <Paper className={classes.modal}>
-          <Authentication
-            authentication={authentication}
-            onAuthentication={onAuthentication}
-            config={authenticationConfig}
-          />
-        </Paper>
-      </Modal>
-    );
-  }
+  const authenticationModal = (!modal) ? <div /> : (
+    <Modal open={true} onClose={closeModal}>
+      <Paper className={classes.modal}>
+        <Authentication
+          authentication={authentication}
+          onAuthentication={onAuthentication}
+          config={authenticationConfig}
+        />
+      </Paper>
+    </Modal>
+  );
 
   return (
     <div>
@@ -79,9 +71,9 @@ function UserMenuComponent({
       {authenticationModal}
     </div>
   );
-}
+};
 
-UserMenuComponent.propTypes = {
+UserMenu.propTypes = {
   /** Pass a previously returned authentication object to bypass login. */
   authentication: PropTypes.shape({
     user: PropTypes.object.isRequired,
@@ -91,13 +83,6 @@ UserMenuComponent.propTypes = {
   }),
   /** Callback function to propogate the user/token used for API Authentication. */
   onAuthentication: PropTypes.func.isRequired,
-  /** Override the default text and errors. Must override all or none. */
-  messages: PropTypes.shape({
-    actionText: PropTypes.string.isRequired,
-    genericError: PropTypes.string.isRequired,
-    usernameError: PropTypes.string.isRequired,
-    passwordError: PropTypes.string.isRequired,
-  }),
   /** Configuration for authentication to work, server and tokenid are required. */
   authenticationConfig: PropTypes.shape({
     /** The Gitea server to use when authenticating. */
@@ -107,17 +92,4 @@ UserMenuComponent.propTypes = {
   }).isRequired,
 };
 
-const styles = (theme) => ({
-  avatar: {
-    width: '35px',
-    height: '35px',
-  },
-  modal: {
-    position: 'absolute',
-    top: '10%',
-    left: '10%',
-    right: '10%',
-  },
-});
-
-export const UserMenu = withStyles(styles, { withTheme: true })(UserMenuComponent);
+export default UserMenu;

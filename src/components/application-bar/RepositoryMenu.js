@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
 import {
   IconButton,
   Avatar,
@@ -10,15 +9,16 @@ import {
 } from '@material-ui/core';
 import { FolderShared } from '@material-ui/icons';
 
-import { withRepository } from '../repository';
+import { useStyles } from './useStyles';
+import { withRepository } from '..';
 
-function RepositoryMenuComponent({
-  classes,
+function RepositoryMenu({
   authentication,
   repository,
   onRepository,
   repositoryConfig,
 }) {
+  const classes = useStyles();
   const [modal, setModal] = useState(false);
 
   const handleClose = () => {
@@ -82,23 +82,35 @@ function RepositoryMenuComponent({
   );
 }
 
-if (withRepository && withRepository.propTypes) {
-  RepositoryMenuComponent.propTypes = { ...withRepository.propTypes, };
+// if (withRepository && withRepository.propTypes) {
+//   RepositoryMenuComponent.propTypes = { ...withRepository.propTypes, };
+// }
+RepositoryMenu.propTypes = {
+  /** Pass a previously returned authentication object to bypass login. */
+  authentication: PropTypes.shape({
+    user: PropTypes.object.isRequired,
+    token: PropTypes.object.isRequired,
+    config: PropTypes.object.isRequired,
+    remember: PropTypes.bool,
+  }),
+  /** Function to call when repository is selected. */
+  onRepository: PropTypes.func.isRequired,
+  /** Repository data to render, if url not provided. */
+  repository: PropTypes.shape({
+    id: PropTypes.number,
+    owner: PropTypes.object.isRequired,
+    name: PropTypes.string.isRequired,
+    full_name: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    html_url: PropTypes.string.isRequired,
+    website: PropTypes.string.isRequired,
+    tree_url: PropTypes.string,
+    avatar_url: PropTypes.string,
+  }),
+  /** Configuration required if paths are provided as URL. */
+  repositoryConfig: PropTypes.shape({
+    server: PropTypes.string.isRequired,
+  }),
 }
 
-const styles = (theme) => ({
-  avatar: {
-    width: '35px',
-    height: '35px',
-  },
-  modal: {
-    position: 'absolute',
-    top: '10%',
-    left: '10%',
-    right: '10%',
-    maxHeight: '80%',
-    overflow: 'scroll',
-  },
-});
-
-export const RepositoryMenu = withStyles(styles, { withTheme: true })(RepositoryMenuComponent);
+export default RepositoryMenu;

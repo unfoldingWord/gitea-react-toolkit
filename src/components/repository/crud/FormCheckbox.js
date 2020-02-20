@@ -1,12 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import withStyles from '@material-ui/core/styles/withStyles';
 import {
   FormControlLabel,
   Checkbox,
 } from '@material-ui/core';
 
-function FormCheckboxComponent ({
+function FormCheckbox({
   name,
   label,
   checked,
@@ -17,15 +16,21 @@ function FormCheckboxComponent ({
     <FormControlLabel
       label={label}
       control={
-        <Checkbox color="primary" value="private"
-          defaultChecked={checked} disabled={disabled} name={name}
-          id={name + Math.random()} onChange={onChange} />
+        <Checkbox
+          color="primary"
+          value="private"
+          defaultChecked={checked}
+          disabled={disabled}
+          name={name}
+          id={name + Math.random()}
+          onChange={onChange}
+        />
       }
     />
   );
 }
 
-FormCheckboxComponent.propTypes = {
+FormCheckbox.propTypes = {
   classes: PropTypes.object.isRequired,
   /** The name/id of the field, must be unique. */
   name: PropTypes.string.isRequired,
@@ -41,11 +46,4 @@ FormCheckboxComponent.propTypes = {
   disabled: PropTypes.bool,
 };
 
-FormCheckboxComponent.defaultProps = {
-}
-
-const styles = theme => ({
-  root: {},
-});
-
-export const FormCheckbox = withStyles(styles)(FormCheckboxComponent);
+export default FormCheckbox;

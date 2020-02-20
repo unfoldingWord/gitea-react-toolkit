@@ -25,14 +25,14 @@ export const deleteFile = async (
   { file, message, authentication, repository, branch }
 ) => {
   const { config } = authentication;
-  const { owner: {username}, name } = repository;
-  const { filepath } = file;
-  const _message = message || `Deleted '${filepath}' using '${authentication.token.name}'`;
-  const _payload = payload({message: _message, authentication, repository, file, branch});
+  const { owner: { username }, name } = repository;
+  const { path } = file;
+  const _message = message || `Deleted '${path}' using '${authentication.token.name}'`;
+  const _payload = payload({ message: _message, authentication, repository, file, branch });
   const deleted = await removeFile({
     owner: username,
     repo: name,
-    filepath,
+    filepath: path,
     payload: _payload,
     config,
   });

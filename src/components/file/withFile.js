@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+/* eslint-disable @typescript-eslint/typedef */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { getContentFromFile, saveContent, ensureFile, deleteFile } from './helpers';
 
 function withFileComponent(Component) {
-  function FileComponent (props) {
+  function FileComponent(props) {
     const {
       authentication,
       repository,
@@ -25,48 +27,66 @@ function withFileComponent(Component) {
       filepath = fileConfig.filepath;
       defaultContent = fileConfig.defaultContent;
     }
+
     if (blob) {
       filepath = blob.filepath;
     }
 
     const updateFile = (__file) => {
-      if (onFile) onFile(__file);
-      else setFile(__file);
-    }
+      if (onFile) { onFile(__file) }
+      else { setFile(__file) }
+    };
 
     const populateFile = async () => {
-      const __file = await ensureFile(
-        {filepath, defaultContent, authentication, config: fileConfig, repository}
-      );
-      __file.close = () => {
-        updateFile()
-        if (fileConfig.updateBlob) fileConfig.updateBlob();
-      };
-      __file.content = await getContentFromFile(__file);
-      __file.filepath = __file.path;
-      if (repository.permissions.push) {
-        __file.saveContent = async (content) => {
-          await saveContent(
-            {content, authentication, repository, file: __file}
-          );
-          populateFile();
-        };
-        __file.dangerouslyDelete = async () => {
-          const _deleted = await deleteFile({authentication, repository, file: __file});
+      const ref = null;
+      const _ensureFile = await ensureFile({
+        filepath, defaultContent, authentication, config: fileConfig, repository, ref,
+      });
+      const { push: writeable } = repository.permissions;
+
+      const _populateFile = {
+        ..._ensureFile,
+        close: () => {
+          updateFile();
+
+          if (fileConfig.updateBlob) {
+            fileConfig.updateBlob();
+          }
+        },
+        content: await getContentFromFile(_ensureFile),
+        filepath: _ensureFile.path,
+        saveContent: !writeable ? null : async (content) => {
+          await saveContent({
+            content, authentication, repository, file: _ensureFile,
+          });
+          await populateFile();
+        },
+        dangerouslyDelete: !writeable ? null : async () => {
+          const _deleted = await deleteFile({
+            authentication, repository, file: _ensureFile,
+          });
+
           if (_deleted) {
             setDeleted(true);
             updateFile();
-            if (fileConfig.updateBlob) fileConfig.updateBlob();
+
+            if (fileConfig.updateBlob) {
+              fileConfig.updateBlob();
+            }
           }
           return deleted;
-        }
-      }
-      updateFile(__file);
+        },
+      };
+
+      updateFile(_populateFile);
     };
 
-    if (!hasFile() && filepath && !deleted) populateFile();
+    if (!hasFile() && filepath && !deleted) {
+      populateFile();
+    }
 
     let component = <div />;
+
     if (hasFile()) {
       component = <Component {...props} file={_file} />;
     }

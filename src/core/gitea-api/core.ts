@@ -70,7 +70,7 @@ export const checkIfServerOnline = async (serverUrl): Promise<void> => {
 
   try {
     const response = await axios.get(`${serverUrl}/${apiPath}/version`);
-    const serverIsResponding = response.status == SERVER_ONLINE_STATUS;
+    const serverIsResponding = response.status === SERVER_ONLINE_STATUS;
 
     if (!serverIsResponding) {
       throw new Error(ERROR_SERVER_UNREACHABLE);

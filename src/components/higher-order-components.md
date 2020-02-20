@@ -66,7 +66,7 @@ It is highly recommended to manage state in the application, which is shown in t
     <Paper>
       <WrappedComponent
         authenticationConfig={{
-          server: "https://git.door43.org/",
+          server: "https://bg.door43.org/",
           tokenid: "PlaygroundTesting",
         }}
         //** Pass any props as you normally would. */
@@ -125,7 +125,7 @@ This example shows how the state can be managed external to the HOCs.
       <WrappedComponent
         //** Pass any props as you normally would. */
         authenticationConfig={{
-          server: "https://git.door43.org/",
+          server: "https://bg.door43.org/",
           tokenid: "PlaygroundTesting",
         }}
         /** Use application state to manage authentication/repository/blob objects. */

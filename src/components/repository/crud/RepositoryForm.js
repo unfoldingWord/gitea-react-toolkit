@@ -11,8 +11,8 @@ import {
   FolderShared,
 } from '@material-ui/icons';
 
-import { FormCheckbox } from '../../';
-import { createRepository, updateRepositorySettings } from '../helpers';
+import { createRepository } from '../helpers';
+import { FormCheckbox } from '.';
 
 function RepositoryFormComponent({
   classes,
