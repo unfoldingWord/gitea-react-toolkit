@@ -1,21 +1,25 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   List,
   Collapse,
 } from '@material-ui/core';
 
-import { BlobObject } from './BlobObject';
-import { TreeObject } from './TreeObject';
-
 import { fetchTree } from './helpers';
+import { BlobObject, TreeObject } from '.';
+
+const useStyles = makeStyles(theme => ({
+  list: {
+    paddingTop: 0,
+    paddingBottom: 0,
+  },
+}));
 
 /**
  * A Listing Component to render an array of Git Tree objects.
  */
-function TreeComponent({
-  classes,
+function Tree({
   tree,
   url,
   config,
@@ -25,11 +29,14 @@ function TreeComponent({
   depth,
   filepath,
 }) {
+  const classes = useStyles();
   const [_tree, setTree] = useState(tree || []);
   let _selectedPath;
+
   if (blob) {
     _selectedPath = blob.filepath.split('/')[depth - 2];
   }
+
   const [selectedPath, setSelectedPath] = useState(_selectedPath);
 
   const updateTree = async () => {
@@ -38,15 +45,18 @@ function TreeComponent({
   };
 
   const emptyTree = (!_tree || _tree.length === 0);
+
   if (selected && emptyTree) {
     updateTree();
   }
 
   let components = [];
+
   if (_tree) {
     components = _tree.map((object, index) => {
       const _selected = (object.path === selectedPath);
       let component;
+
       if (object.type === 'tree') {
         component = (
           <TreeObject
@@ -68,7 +78,9 @@ function TreeComponent({
           />
         );
       }
+
       const onSelectedPath = () => setSelectedPath(object.path);
+
       return (
         <div
           key={index}
@@ -89,9 +101,7 @@ function TreeComponent({
   );
 }
 
-TreeComponent.propTypes = {
-  /** @ignore */
-  classes: PropTypes.object.isRequired,
+Tree.propTypes = {
   /** An array of paths from the Gitea file tree api. */
   tree: PropTypes.arrayOf(PropTypes.shape({
     path: PropTypes.string.isRequired,
@@ -111,18 +121,20 @@ TreeComponent.propTypes = {
   depth: PropTypes.number,
   /** The nested filepath that will concatenate. */
   filepath: PropTypes.string,
-}
+  /** Blob data to render, if url not provided. */
+  blob: PropTypes.shape({
+    /** The filepath in the Git Tree Blob Object */
+    path: PropTypes.string.isRequired,
+    /** The url in the Git Tree Blob Object */
+    url: PropTypes.string,
+    /** The content size of the Git Tree Blob Object */
+    size: PropTypes.number,
+  }),
+};
 
-TreeComponent.defaultProps = {
+Tree.defaultProps = {
   selected: false,
   depth: 1,
-}
+};
 
-const styles = theme => ({
-  list: {
-    paddingTop: 0,
-    paddingBottom: 0,
-  },
-});
-
-export const Tree = withStyles(styles)(TreeComponent);
+export default Tree;

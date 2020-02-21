@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-import { Tree } from './Tree';
+import { Tree } from '.';
 
-export function withBlob(Component) {
-  return function BlobComponent ({
+function withBlob(Component) {
+  return function BlobComponent({
     blob,
     onBlob,
     ...props
@@ -14,16 +14,20 @@ export function withBlob(Component) {
     const hasBlob = () => (!!_blob);
 
     let blobConfig = {};
+
     if (props.blobConfig) {
-      let {url, tree, ...config} = props.blobConfig;
-      blobConfig = {url, tree, config};
+      let { url, tree, ...config } = props.blobConfig;
+      blobConfig = { url, tree, config };
     }
+
     if (props.repository && !blobConfig.url) {
       blobConfig.url = props.repository.tree_url;
     }
+
     if (props.authentication) {
       blobConfig.config = props.authentication.config;
     }
+
     const {
       url,
       tree,
@@ -32,12 +36,15 @@ export function withBlob(Component) {
 
     const updateBlob = (__blob) => {
       if (__blob) __blob.close = () => { updateBlob(); };
+
       if (onBlob) onBlob(__blob);
       else setBlob(__blob);
     };
-    const _config = {...config, updateBlob}
+
+    const _config = { ...config, updateBlob }
 
     let component = <div />;
+
     if (!hasBlob() && (tree || url)) {
       component = (
         <Tree
@@ -52,7 +59,7 @@ export function withBlob(Component) {
     }
 
     if (hasBlob()) {
-      const fileConfig = {...config, ...props.fileConfig};
+      const fileConfig = { ...config, ...props.fileConfig };
       component = <Component {...props} blob={_blob} fileConfig={fileConfig} />;
     }
 
@@ -89,3 +96,5 @@ withBlob.propTypes = {
     tree_url: PropTypes.string.isRequired,
   }),
 };
+
+export default withBlob;

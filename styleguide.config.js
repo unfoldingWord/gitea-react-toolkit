@@ -111,6 +111,18 @@ const sections = [
       path.join(pathComponents, 'repository/crud', `${componentName}.js`)
     ),
   },
+  {
+    name: 'Tree/Blob ',
+    content: path.join(pathComponents, 'tree-blob', '_readme.md'),
+    components: [
+      'Tree',
+      'TreeObject',
+      'BlobObject',
+      'withBlob',
+    ].map(componentName =>
+      path.join(pathComponents, 'tree-blob', `${componentName}.js`)
+    ),
+  },
 ];
 
 module.exports = {

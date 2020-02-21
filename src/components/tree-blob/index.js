@@ -1,4 +1,4 @@
-export { withBlob } from './withBlob';
-export { Tree } from './Tree';
-export { TreeObject } from './TreeObject';
-export { BlobObject } from './BlobObject';
+export { default as BlobObject } from './BlobObject';
+export { default as withBlob } from './withBlob';
+export { default as Tree } from './Tree';
+export { default as TreeObject } from './TreeObject';
