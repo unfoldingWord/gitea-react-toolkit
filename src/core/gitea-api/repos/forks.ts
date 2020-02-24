@@ -3,8 +3,8 @@ import Path from 'path';
 import {
   apiPath, get, post,
 } from '../';
-import { APIConfig } from '../core.d';
-import { ExtendConfig } from '../core';
+import { APIConfig } from '../http.d';
+import { ExtendConfig } from '../http';
 
 interface ReadForksOptions {
   owner: string;

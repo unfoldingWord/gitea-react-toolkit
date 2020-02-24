@@ -7,6 +7,7 @@ const {
 const { styles, theme } = require('./styleguide.styles');
 
 const pathComponents = path.join(__dirname, 'src/components/');
+const pathCore = path.join(__dirname, 'src/core/gitea-api');
 const sections = [
   {
     name: 'README',
@@ -122,6 +123,39 @@ const sections = [
     ].map(componentName =>
       path.join(pathComponents, 'tree-blob', `${componentName}.js`)
     ),
+  },
+  {
+    name: 'Core ',
+    content: path.join(pathCore, '_readme.md'),
+    components: [
+      'Core',
+    ].map(componentName =>
+      path.join(pathComponents, 'core', `${componentName}.js`)
+    ),
+    sections: [
+      {
+        name: 'Http',
+        content: path.join(pathCore, 'http', '_readme.md'),
+        sections: [
+          {
+            name: 'GET',
+            content: path.join(pathCore, 'http', '_get.md'),
+          },
+          {
+            name: 'POST',
+            content: path.join(pathCore, 'http', '_post.md'),
+          },
+          {
+            name: 'PUT',
+            content: path.join(pathCore, 'http', '_put.md'),
+          },
+          {
+            name: 'DEL',
+            content: path.join(pathCore, 'http', '_del.md'),
+          },
+        ],
+      },
+    ],
   },
 ];
 

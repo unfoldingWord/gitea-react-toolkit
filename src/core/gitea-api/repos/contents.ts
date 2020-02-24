@@ -3,7 +3,7 @@ import Path from 'path';
 import {
   apiPath, get, post, put, del,
 } from '../';
-import { ExtendConfig } from '../core';
+import { ExtendConfig } from '../http';
 
 interface ModifyContentOptions {
   owner: string;
@@ -73,7 +73,7 @@ export const removeFile = async ({
 }: ModifyContentOptions): Promise<object> => {
   const url = Path.join(apiPath, 'repos', owner, repo, 'contents', filepath);
   let response;
-debugger
+
   try {
     response = await del({
       url, payload, config,

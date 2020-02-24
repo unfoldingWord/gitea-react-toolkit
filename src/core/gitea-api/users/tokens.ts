@@ -2,7 +2,7 @@ import Path from 'path';
 
 import {
   apiPath, get, post, del,
-} from '../core';
+} from '../http';
 import { AuthToken } from '../index.d';
 
 interface TokenConfig {

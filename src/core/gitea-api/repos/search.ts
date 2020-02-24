@@ -3,7 +3,7 @@ import path from 'path';
 import {
   apiPath, get, getUID,
 } from '../';
-import { APIConfig } from '../core.d';
+import { APIConfig } from '../http.d';
 
 interface RepositoryExistsOptions {
   owner: string;

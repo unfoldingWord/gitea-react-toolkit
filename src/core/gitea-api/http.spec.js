@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 /// <reference types="jest" />
-import * as helpers from './core';
+import * as http from './http';
 jest.mock('axios');
 jest.mock('axios-cache-adapter');
 
@@ -29,7 +29,7 @@ describe('extendConfig', () => {
       },
       tokenid: config.tokenid,
     });
-    const res = helpers.extendConfig(config);
+    const res = http.extendConfig(config);
     expect(res).toEqual(expected);
   });
 });
@@ -41,7 +41,7 @@ describe('get', () => {
       noCache: true,
       url: 'https://passing.com',
     };
-    const res = await helpers.get(params);
+    const res = await http.get(params);
     return expect(res).toEqual('OK');
   });
 
@@ -50,7 +50,7 @@ describe('get', () => {
       config,
       url: 'https://passing.com',
     };
-    const res = await helpers.get(params);
+    const res = await http.get(params);
     return expect(res).toEqual('OK');
   });
 
@@ -61,7 +61,7 @@ describe('get', () => {
       url: 'https://failing.com',
     };
 
-    return expect(helpers.get(params)).rejects.toEqual('Request failed with status code 404');
+    return expect(http.get(params)).rejects.toEqual('Request failed with status code 404');
   });
 });
 
@@ -73,7 +73,7 @@ describe('post-like methods', () => {
       payload,
       config,
     };
-    const res = await helpers.post(params);
+    const res = await http.post(params);
     expect(res).toEqual('OK');
   });
   it('should perform PUT method', async () => {
@@ -83,7 +83,7 @@ describe('post-like methods', () => {
       payload,
       config,
     };
-    const res = await helpers.put(params);
+    const res = await http.put(params);
     return expect(res).toEqual('OK');
   });
   it('should perform PATCH method', async () => {
@@ -93,7 +93,7 @@ describe('post-like methods', () => {
       payload,
       config,
     };
-    const res = await helpers.patch(params);
+    const res = await http.patch(params);
     return expect(res).toEqual('OK');
   });
 });
@@ -105,7 +105,7 @@ describe('delete', () => {
       noCache: true,
       url: 'https://passing.com',
     };
-    const res = await helpers.get(params);
+    const res = await http.get(params);
     return expect(res).toEqual('OK');
   });
 });
