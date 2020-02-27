@@ -166,6 +166,10 @@ const sections = [
         name: 'Delete Content',
         content: path.join(pathCore, 'repos/contents', 'deleteContent.md'),
       },
+      {
+        name: 'Ensure Content',
+        content: path.join(pathCore, 'repos/contents', 'ensureContent.md'),
+      },
     ],
   },
   {
