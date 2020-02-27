@@ -25,17 +25,22 @@ interface Author {
 };
 
 interface PayloadOptions {
-  branch?: string,
-  new_branch?: string,
-  content?: string,
-  message: string,
-  author: Author,
-  sha?: string,
+  branch?: string;
+  new_branch?: string;
+  content?: string;
+  message: string;
+  author: Author;
+  sha?: string;
 };
+
+interface ContentObject {
+  path: string;
+  sha: string;
+}
 
 export const payload = ({
   branch, new_branch, content, message, author: { email, username }, sha,
-}: PayloadOptions) => ({
+}: PayloadOptions): object => ({
   branch,
   new_branch,
   content: base64.encode(utf8.encode(content || '')),
@@ -50,31 +55,33 @@ export const payload = ({
 // POST /api/v1/repos/{owner}/{repo}/contents/{filepath}
 export const createContent = async ({
   config, owner, repo, branch, filepath, content, message, author,
-}: ModifyContentOptions): Promise<any> => {
+}: ModifyContentOptions): Promise<ContentObject> => {
   const url = Path.join(apiPath, 'repos', owner, repo, 'contents', filepath);
-  let response: object;
-  
+  let contentObject: ContentObject;
+
   try {
     // TODO: Check to see if branch exists to set branch or new_branch in payload
     try {
-      let _payload = payload({
+      const _payload = payload({
         branch, content, message, author,
       });
-      response = await post({
+      const response = await post({
         url, payload: _payload, config,
       });
+      contentObject = response.content;
     } catch {
-      let _payload = payload({
+      const _payload = payload({
         new_branch: branch, content, message, author,
       });
-      response = await post({
+      const response = await post({
         url, payload: _payload, config,
       });
+      contentObject = response.content;
     }
   } catch (error) {
     throw new Error('Error creating file.');
-  }
-  return response;
+  };
+  return contentObject;
 };
 
 interface GetContentOptions {
@@ -82,32 +89,32 @@ interface GetContentOptions {
   repo: string;
   filepath: string;
   config: ExtendConfig;
-  ref: string;
+  ref?: string;
 };
 
 // GET /api/v1/repos/{owner}/{repo}/contents/{filepath}?ref={branch}
 export const readContent = async ({
-  owner, repo, filepath, config, ref,
-}: GetContentOptions): Promise<object> => {
+  owner, repo, ref, filepath, config,
+}: GetContentOptions): Promise<ContentObject> => {
   const url = Path.join(apiPath, 'repos', owner, repo, 'contents', filepath);
-  let response: object;
+  let contentObject: ContentObject;
 
   try {
-    response = await get({
+    contentObject = await get({
       url, config, params: { ref }, noCache: true,
     });
   } catch (error) {
     throw new Error('Error reading file.');
-  }
-  return response;
+  };
+  return contentObject;
 };
 
 // PUT /api/v1/repos/{owner}/{repo}/contents/{filepath}
 export const updateContent = async ({
   config, owner, repo, branch, filepath, content, message, author, sha,
-}: ModifyContentOptions): Promise<object> => {
+}: ModifyContentOptions): Promise<ContentObject> => {
   const url = Path.join(apiPath, 'repos', owner, repo, 'contents', filepath);
-  let response: object;
+  let contentObject: ContentObject;
 
   try {
     // TODO: Check to see if branch exists to set branch or new_branch in payload
@@ -115,34 +122,35 @@ export const updateContent = async ({
       const _payload = payload({
         branch, content, message, author, sha,
       });
-      response = await put({
+      const response = await put({
         url, payload: _payload, config,
       });
+      contentObject = response.content;
     } catch {
       const _payload = payload({
         new_branch: branch, content, message, author, sha,
       });
-      response = await put({
+      const response = await put({
         url, payload: _payload, config,
       });
-    }
+      contentObject = response.content;
+    };
   } catch (error) {
     throw new Error('Error updating file.');
-  }
-  return response;
+  };
+  return contentObject;
 };
 
 // DELETE /api/v1/repos/{owner}/{repo}/contents/{filepath}?ref={branch}
 export const deleteContent = async ({
-  config, owner, repo, branch, filepath, message, author, sha
+  config, owner, repo, branch, filepath, message, author, sha,
 }: ModifyContentOptions): Promise<object> => {
+  let response: object;
   const url = Path.join(apiPath, 'repos', owner, repo, 'contents', filepath);
 
-  let _payload = payload({
+  const _payload = payload({
     branch, message, author, sha,
   });
-
-  let response: object;
 
   try {
     response = await del({
@@ -150,22 +158,36 @@ export const deleteContent = async ({
     });
   } catch (error) {
     throw new Error('Error deleting file.');
-  }
+  };
   return response;
 };
 
 export const ensureContent = async ({
   config, owner, repo, branch, filepath, content, message, author,
-}: ModifyContentOptions): Promise<object> => {
-  let file = await readContent({
-    owner, repo, filepath, config, ref: branch,
-  });
+}: ModifyContentOptions): Promise<ContentObject> => {
+  let contentObject: ContentObject;
 
-  if (!file) {
-    const { content: _content } = await createContent({
-      config, owner, repo, branch, filepath, content, message, author,
+  try { // try to read the file
+    contentObject = await readContent({
+      owner, repo, ref: branch, filepath, config,
     });
-    file = _content;
-  }
-  return file;
+
+    if (!contentObject) throw new Error('File does not exist in branch');
+  } catch {
+    try { // try to update the file in case it is in the default branch
+      const _contentObject = await readContent({
+        owner, repo, filepath, config,
+      });
+
+      contentObject = await updateContent({
+        config, owner, repo, branch, filepath, content, message, author, sha: _contentObject.sha,
+      });
+    } catch { // try to create the file if it doesn't exist in default or new branch
+      contentObject = await createContent({
+        config, owner, repo, branch, filepath, content, message, author,
+      });
+    };
+  };
+
+  return contentObject;
 };

@@ -3,7 +3,7 @@ import {
 } from '../..';
 
 export const ensureFile = async ({
-  filepath, defaultContent, message, authentication, repository, config, branch,
+  config, authentication, repository, branch, filepath, defaultContent, message,
 }) => {
   const _config = (authentication) ? authentication.config : { ...config };
   const { owner: { username: owner }, name: repo } = repository;

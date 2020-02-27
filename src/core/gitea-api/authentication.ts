@@ -3,10 +3,11 @@ import utf8 from 'utf8';
 import { AuthObject, AuthToken } from './index.d';
 import { getUser, ensureToken } from './users';
 import { APIConfig } from './http/http.d';
+import { ExtendConfig } from '..';
 
 interface EncodeAuthentication {
-  (args: { username: string; password: string; token?: AuthToken | string; }): string;
-  (args: { username?: string; password?: string; token: AuthToken | string; }): string;
+  (args: { username: string; password: string; token?: AuthToken | string }): string;
+  (args: { username?: string; password?: string; token: AuthToken | string }): string;
 }
 
 export const encodeAuthentication: EncodeAuthentication = ({
@@ -30,8 +31,8 @@ interface AuthorizationHeadersObject {
 }
 
 interface AuthorizationHeaders {
-  (args: { username: string; password: string; token?: string | AuthToken; }): AuthorizationHeadersObject;
-  (args: { username?: string; password?: string; token: string | AuthToken; }): AuthorizationHeadersObject;
+  (args: { username: string; password: string; token?: string | AuthToken }): AuthorizationHeadersObject;
+  (args: { username?: string; password?: string; token: string | AuthToken }): AuthorizationHeadersObject;
 }
 
 export const authorizationHeaders: AuthorizationHeaders = ({
@@ -55,8 +56,8 @@ export const authorizationHeaders: AuthorizationHeaders = ({
 };
 
 interface Authenticate {
-  (args: { username: string; password: string; config: APIConfig; }): Promise<AuthObject>;
-}
+  (args: { username: string; password: string; config: APIConfig | ExtendConfig }): Promise<AuthObject>;
+};
 
 export const authenticate: Authenticate = async ({
   username, password, config,

@@ -1,3 +1,6 @@
+`updateContent` will allow updating/saving of content to a filepath to an existing branch or a new_branch.
+`updateContent` will allow creation of a new_branch but only of an existing file in the default branch.
+
 ```js
 import { Core, readContent, updateContent } from 'gitea-react-toolkit';
 
@@ -34,6 +37,5 @@ const promise = async (props) => {
   props={updateProps}
   promise={promise}
   authenticate
-  confirm
 />
 ```

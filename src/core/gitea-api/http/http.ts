@@ -57,40 +57,33 @@ export const extendConfig = (config: ExtendConfig): APIConfig => {
 };
 
 interface Get {
-  config: ExtendConfig;
+  config: APIConfig | ExtendConfig;
   url: string;
   params?: object;
   noCache?: number | boolean;
 }
 
 export const checkIfServerOnline = async (serverUrl): Promise<void> => {
-  if (!navigator.onLine) {
-    throw new Error(ERROR_NETWORK_DISCONNECTED);
-  }
+  if (!navigator.onLine) throw new Error(ERROR_NETWORK_DISCONNECTED);
 
   try {
     const response = await axios.get(`${serverUrl}/${apiPath}/version`);
     const serverIsResponding = response.status === SERVER_ONLINE_STATUS;
 
-    if (!serverIsResponding) {
-      throw new Error(ERROR_SERVER_UNREACHABLE);
-    }
+    if (!serverIsResponding) throw new Error(ERROR_SERVER_UNREACHABLE);
   } catch (e) {
     const errorMessage = e && e.message ? e.message : '';
 
-    if (errorMessage.match(/network error/ig)) {
-      throw new Error(ERROR_SERVER_UNREACHABLE);
-    } else {
-      throw e;
-    }
-  }
+    if (errorMessage.match(/network error/ig)) throw new Error(ERROR_SERVER_UNREACHABLE);
+    else throw e;
+  };
 };
 
 export const get = async ({
   url, params, config, noCache,
 }: Get): Promise<any> => {
   const _config = config ? extendConfig(config) : {};
-  let response;
+  let response: any;
 
   try {
     if (noCache) {
@@ -109,7 +102,7 @@ export const get = async ({
 
 export const post = async ({
   url, payload, config,
-}: RestAPI): Promise<object> => {
+}: RestAPI): Promise<any> => {
   const _config = extendConfig(config);
   const { data } = await axios.post(url, payload, _config);
   return data;
@@ -117,7 +110,7 @@ export const post = async ({
 
 export const put = async ({
   url, payload, config,
-}: RestAPI): Promise<object> => {
+}: RestAPI): Promise<any> => {
   const _config = extendConfig(config);
   const { data } = await axios.put(url, payload, _config);
   return data;
@@ -125,7 +118,7 @@ export const put = async ({
 
 export const patch = async ({
   url, payload, config,
-}: RestAPI): Promise<object> => {
+}: RestAPI): Promise<any> => {
   const _config = extendConfig(config);
   const { data } = await axios.patch(url, payload, _config);
   return data;
@@ -133,7 +126,7 @@ export const patch = async ({
 
 export const del = async ({
   url, payload, config,
-}: RestAPI): Promise<object> => {
+}: RestAPI): Promise<any> => {
   const _config = extendConfig(config);
   _config.data = payload;
   const { data } = await axios.delete(url, _config);

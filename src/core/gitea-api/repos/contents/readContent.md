@@ -2,14 +2,14 @@
 import { Core, readContent } from 'gitea-react-toolkit';
 
 const props = {
-  owner: 'klappy',
-  repo: 'blank',
-  filepath: 'README.md',
   config: {
     server: 'https://bg.door43.org',
     tokenid: 'PlaygroundTesting',
   },
-  ref: 'klappy-patch-1',
+  owner: 'klappy',
+  repo: 'blank',
+  ref: 'testing',
+  filepath: 'README.md',
 };
 
 <Core

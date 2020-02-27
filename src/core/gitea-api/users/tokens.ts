@@ -11,7 +11,7 @@ interface TokenConfig {
   tokenid: string;
 }
 
-interface TokenConfigWithHeaders {
+export interface TokenConfigWithHeaders {
   headers: object;
   server?: string;
   token: AuthToken;

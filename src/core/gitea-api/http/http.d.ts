@@ -1,10 +1,12 @@
+import { TokenConfigWithHeaders } from '..';
+
 export interface APIConfig {
   server?: string;
   baseURL?: string;
   data?: object;
   tokenid?: string;
   headers?: object;
-  token?: string;
+  token?: string | TokenConfigWithHeaders;
 }
 
 export interface CoreOptions {

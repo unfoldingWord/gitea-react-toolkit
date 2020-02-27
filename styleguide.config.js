@@ -125,23 +125,23 @@ const sections = [
     ),
   },
   {
-    name: 'Core/Http',
+    name: 'core/http',
     content: path.join(pathCore, 'http', '_readme.md'),
     sections: [
       {
-        name: 'GET',
+        name: 'get',
         content: path.join(pathCore, 'http', 'get.md'),
       },
       {
-        name: 'POST',
+        name: 'post',
         content: path.join(pathCore, 'http', 'post.md'),
       },
       {
-        name: 'PUT',
+        name: 'put',
         content: path.join(pathCore, 'http', 'put.md'),
       },
       {
-        name: 'DEL',
+        name: 'del',
         content: path.join(pathCore, 'http', 'del.md'),
       },
     ],

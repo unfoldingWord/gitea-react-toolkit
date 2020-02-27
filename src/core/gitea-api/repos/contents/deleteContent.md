@@ -33,6 +33,5 @@ const promise = async (props) => {
   props={deleteProps}
   promise={promise}
   authenticate
-  confirm
 />
 ```

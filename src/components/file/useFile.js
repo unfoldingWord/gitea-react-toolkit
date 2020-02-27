@@ -10,10 +10,11 @@ import {
 function useFile({
   authentication,
   repository,
+  branch,
   blob,
   file,
   onFile,
-  fileConfig,
+  config,
 }) {
   const [_file, setFile] = useState(file);
   const [deleted, setDeleted] = useState();
@@ -24,9 +25,9 @@ function useFile({
 
   let filepath, defaultContent;
 
-  if (fileConfig) {
-    filepath = fileConfig.filepath;
-    defaultContent = fileConfig.defaultContent;
+  if (config) {
+    filepath = config.filepath;
+    defaultContent = config.defaultContent;
   }
 
   if (blob) filepath = blob.filepath;
@@ -37,30 +38,32 @@ function useFile({
   };
 
   const populateFile = async () => {
-    const ref = null;
     const _ensureFile = await ensureFile({
-      filepath, defaultContent, authentication, config: fileConfig, repository, ref,
+      filepath, defaultContent, authentication, config, repository, branch,
     });
     const { push: writeable } = repository.permissions;
 
-    const _populateFile = {
-      ..._ensureFile,
-      close: () => {
-        updateFile();
+    const close = async () => {
+      await updateFile();
 
-        if (fileConfig.updateBlob) fileConfig.updateBlob();
-      },
-      content: await getContentFromFile(_ensureFile),
-      filepath: _ensureFile.path,
-      saveContent: !writeable ? null : async (content) => {
+      if (fileConfig.updateBlob) await fileConfig.updateBlob();
+    };
+
+    const content = await getContentFromFile(_ensureFile);
+
+    const saveContent = async (content) => {
+      if (writeable) {
         await saveFile({
-          content, authentication, repository, file: _ensureFile,
+          content, authentication, repository, file: _ensureFile, branch,
         });
         await populateFile();
-      },
-      dangerouslyDelete: !writeable ? null : async () => {
+      }
+    };
+
+    const dangerouslyDelete = async () => {
+      if (writeable) {
         const _deleted = await deleteFile({
-          authentication, repository, file: _ensureFile,
+          authentication, repository, file: _ensureFile, branch,
         });
 
         if (_deleted) {
@@ -70,7 +73,17 @@ function useFile({
           if (fileConfig.updateBlob) fileConfig.updateBlob();
         }
         return deleted;
-      },
+      }
+    };
+
+    const _populateFile = {
+      ..._ensureFile,
+      branch,
+      close,
+      content,
+      filepath: _ensureFile.path,
+      saveContent,
+      dangerouslyDelete,
     };
 
     updateFile(_populateFile);
@@ -78,7 +91,11 @@ function useFile({
 
   if (!hasFile() && filepath && !deleted) populateFile();
 
-  return { file: _file };
+  return {
+    state: { file: _file },
+    actions: {},
+    component: ( <></> ),
+  };
 };
 
 useFile.propTypes = {

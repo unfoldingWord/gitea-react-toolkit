@@ -1,3 +1,6 @@
+`createContent` will allow saving of content to a filepath to an existing branch or a new_branch.
+`createContent` will allow creation of a new_branch but only of a non-existing file in the default branch.
+
 ```js
 import { Core, createContent } from 'gitea-react-toolkit';
 
@@ -22,6 +25,5 @@ const props = {
   props={props}
   promise={createContent}
   authenticate
-  confirm
 />
 ```
