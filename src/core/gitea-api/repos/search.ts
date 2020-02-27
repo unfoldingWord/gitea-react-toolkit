@@ -3,7 +3,7 @@ import path from 'path';
 import {
   apiPath, get, getUID,
 } from '../';
-import { APIConfig } from '../http.d';
+import { APIConfig } from '../http/http.d';
 
 interface RepositoryExistsOptions {
   owner: string;
@@ -21,7 +21,7 @@ export const repositoryExists = async ({
     url, params, config,
   });
 
-  const repo = repos.filter(repo => repo.name === repository)[0];
+  const repo = repos.filter(_repo => _repo.name === repository)[0];
   return !!repo;
 };
 
@@ -48,19 +48,14 @@ export const repositorySearch = async ({
 
   let url: string;
 
-  if (owner) {
-    // params.uid = await getUID({ username: owner, config });
-    // params.exclusive = true;
-    url = path.join(apiPath, 'users', owner, 'repos');
-  } else {
-    url = path.join(apiPath, 'repos', 'search');
-  }
+  if (owner) url = path.join(apiPath, 'users', owner, 'repos');
+  else url = path.join(apiPath, 'repos', 'search');
 
   try {
-    repositories = await get({
+    const response = await get({
       url, params, config,
     });
-    repositories = repositories.data || repositories;
+    repositories = response.data || response;
   } catch {
     repositories = [];
   }

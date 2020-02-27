@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/typedef */
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-import { getContentFromFile, saveContent, ensureFile, deleteFile } from './helpers';
+import {
+  getContentFromFile, saveFile, ensureFile, deleteFile,
+} from './helpers';
 
 function withFileComponent(Component) {
   function FileComponent(props) {
@@ -28,13 +28,11 @@ function withFileComponent(Component) {
       defaultContent = fileConfig.defaultContent;
     }
 
-    if (blob) {
-      filepath = blob.filepath;
-    }
+    if (blob) filepath = blob.filepath;
 
     const updateFile = (__file) => {
-      if (onFile) { onFile(__file) }
-      else { setFile(__file) }
+      if (onFile) onFile(__file);
+      else setFile(__file);
     };
 
     const populateFile = async () => {
@@ -49,14 +47,12 @@ function withFileComponent(Component) {
         close: () => {
           updateFile();
 
-          if (fileConfig.updateBlob) {
-            fileConfig.updateBlob();
-          }
+          if (fileConfig.updateBlob) fileConfig.updateBlob();
         },
         content: await getContentFromFile(_ensureFile),
         filepath: _ensureFile.path,
         saveContent: !writeable ? null : async (content) => {
-          await saveContent({
+          await saveFile({
             content, authentication, repository, file: _ensureFile,
           });
           await populateFile();
@@ -70,9 +66,7 @@ function withFileComponent(Component) {
             setDeleted(true);
             updateFile();
 
-            if (fileConfig.updateBlob) {
-              fileConfig.updateBlob();
-            }
+            if (fileConfig.updateBlob) fileConfig.updateBlob();
           }
           return deleted;
         },
@@ -81,15 +75,13 @@ function withFileComponent(Component) {
       updateFile(_populateFile);
     };
 
-    if (!hasFile() && filepath && !deleted) {
-      populateFile();
-    }
+    const needToPopulateFile = !hasFile() && filepath && !deleted;
+
+    if (needToPopulateFile) populateFile();
 
     let component = <div />;
 
-    if (hasFile()) {
-      component = <Component {...props} file={_file} />;
-    }
+    if (hasFile()) component = <Component {...props} file={_file} />;
 
     return component;
   }

@@ -7,7 +7,6 @@ export interface APIConfig {
   token?: string;
 }
 
-
 export interface CoreOptions {
   url: string;
   params?: object;

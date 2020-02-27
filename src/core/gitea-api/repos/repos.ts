@@ -1,8 +1,7 @@
 import Path from 'path';
 import {
-  apiPath, get, post, patch, del,
-} from '../';
-import { ExtendConfig } from '../http';
+  apiPath, get, post, patch, del, ExtendConfig,
+} from '..';
 
 interface CreateRepoOptions {
   repo: string;

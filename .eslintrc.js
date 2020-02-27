@@ -61,6 +61,7 @@ module.exports = {
     }
   ],
   "rules": {
+    "curly": ["error", "multi", "consistent"],
     "no-unused-vars": "warn",
     "no-unused-expressions": 0,
     "chai-friendly/no-unused-expressions": 2,

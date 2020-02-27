@@ -125,37 +125,54 @@ const sections = [
     ),
   },
   {
+    name: 'Core/Http',
+    content: path.join(pathCore, 'http', '_readme.md'),
+    sections: [
+      {
+        name: 'GET',
+        content: path.join(pathCore, 'http', 'get.md'),
+      },
+      {
+        name: 'POST',
+        content: path.join(pathCore, 'http', 'post.md'),
+      },
+      {
+        name: 'PUT',
+        content: path.join(pathCore, 'http', 'put.md'),
+      },
+      {
+        name: 'DEL',
+        content: path.join(pathCore, 'http', 'del.md'),
+      },
+    ],
+  },
+  {
+    name: 'Core/Repo/Contents',
+    content: path.join(pathCore, 'repos/contents', '_readme.md'),
+    sections: [
+      {
+        name: 'Create Contents',
+        content: path.join(pathCore, 'repos/contents', 'createContent.md'),
+      },
+      {
+        name: 'Read Contents',
+        content: path.join(pathCore, 'repos/contents', 'readContent.md'),
+      },
+      {
+        name: 'Update Contents',
+        content: path.join(pathCore, 'repos/contents', 'updateContent.md'),
+      },
+    ],
+  },
+  {
     name: 'Core ',
-    content: path.join(pathCore, '_readme.md'),
+    content: path.join(pathComponents, 'core', '_readme.md'),
     components: [
       'Core',
+      'CoreWithAuth',
     ].map(componentName =>
       path.join(pathComponents, 'core', `${componentName}.js`)
     ),
-    sections: [
-      {
-        name: 'Http',
-        content: path.join(pathCore, 'http', '_readme.md'),
-        sections: [
-          {
-            name: 'GET',
-            content: path.join(pathCore, 'http', '_get.md'),
-          },
-          {
-            name: 'POST',
-            content: path.join(pathCore, 'http', '_post.md'),
-          },
-          {
-            name: 'PUT',
-            content: path.join(pathCore, 'http', '_put.md'),
-          },
-          {
-            name: 'DEL',
-            content: path.join(pathCore, 'http', '_del.md'),
-          },
-        ],
-      },
-    ],
   },
 ];
 

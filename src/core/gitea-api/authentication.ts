@@ -2,7 +2,7 @@ import base64 from 'base-64';
 import utf8 from 'utf8';
 import { AuthObject, AuthToken } from './index.d';
 import { getUser, ensureToken } from './users';
-import { APIConfig } from './http.d';
+import { APIConfig } from './http/http.d';
 
 interface EncodeAuthentication {
   (args: { username: string; password: string; token?: AuthToken | string; }): string;

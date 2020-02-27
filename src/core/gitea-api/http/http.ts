@@ -1,7 +1,7 @@
 import localforage from 'localforage';
 import axios from 'axios';
 import { setup } from 'axios-cache-adapter';
-import { authorizationHeaders } from './authentication';
+import { authorizationHeaders } from '../authentication';
 import { APIConfig } from './http.d';
 export const apiPath = 'api/v1';
 const DEFAULT_MAX_AGE = 1000;
