@@ -109,14 +109,23 @@ export const updateContent = async ({
   const url = Path.join(apiPath, 'repos', owner, repo, 'contents', filepath);
   let response: object;
 
-  const _payload = payload({
-    branch, content, message, author, sha,
-  });
-
   try {
-    response = await put({
-      url, payload: _payload, config,
-    });
+    // TODO: Check to see if branch exists to set branch or new_branch in payload
+    try {
+      const _payload = payload({
+        branch, content, message, author, sha,
+      });
+      response = await put({
+        url, payload: _payload, config,
+      });
+    } catch {
+      const _payload = payload({
+        new_branch: branch, content, message, author, sha,
+      });
+      response = await put({
+        url, payload: _payload, config,
+      });
+    }
   } catch (error) {
     throw new Error('Error updating file.');
   }

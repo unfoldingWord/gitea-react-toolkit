@@ -14,11 +14,15 @@ function Core({
   const [response, setResponse] = useState();
   const [propsMemo, setPropsMemo] = useState();
   const [confirmed, setConfirmed] = useState(!confirm);
-  const { authentication, authenticationComponent } = useAuthentication({
+  const { state: { authentication }, component: authenticationComponent } = useAuthentication({
     authenticationConfig: props.config,
   });
 
   const needsAuthentication = (authenticate && !authentication && authenticationComponent);
+
+  useEffect(() => {
+    setConfirmed(!confirm);
+  },[props, confirm]);
 
   useEffect(() => {
     let _props = { ...props };

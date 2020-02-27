@@ -147,20 +147,24 @@ const sections = [
     ],
   },
   {
-    name: 'Core/Repo/Contents',
+    name: 'core/repo/contents',
     content: path.join(pathCore, 'repos/contents', '_readme.md'),
     sections: [
       {
-        name: 'Create Contents',
+        name: 'Create Content',
         content: path.join(pathCore, 'repos/contents', 'createContent.md'),
       },
       {
-        name: 'Read Contents',
+        name: 'Read Content',
         content: path.join(pathCore, 'repos/contents', 'readContent.md'),
       },
       {
-        name: 'Update Contents',
+        name: 'Update Content',
         content: path.join(pathCore, 'repos/contents', 'updateContent.md'),
+      },
+      {
+        name: 'Delete Content',
+        content: path.join(pathCore, 'repos/contents', 'deleteContent.md'),
       },
     ],
   },

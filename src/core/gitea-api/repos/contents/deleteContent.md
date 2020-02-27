@@ -1,5 +1,5 @@
 ```js
-import { Core, readContent, updateContent } from 'gitea-react-toolkit';
+import { Core, readContent, deleteContent } from 'gitea-react-toolkit';
 
 const readProps = {
   config: {
@@ -8,15 +8,14 @@ const readProps = {
   },
   owner: 'klappy',
   repo: 'blank',
-  ref: 'master',
+  ref: 'testing',
   filepath: 'README.md',
 };
 
-const updateProps = {
+const deleteProps = {
   ...readProps,
   branch: 'testing',
-  content: 'Testing updateContent',
-  message: 'Testing updateContent via Gitea-React-Toolkit',
+  message: 'Testing deleteContent via Gitea-React-Toolkit',
   author: {
     email: "user@example.com",
     username: "user",
@@ -26,12 +25,12 @@ const updateProps = {
 const promise = async (props) => {
   const file = await readContent(readProps);
   const _props = { ...props, sha: file.sha };
-  const response = await updateContent(_props);
+  const response = await deleteContent(_props);
   return response;
 };
 
 <Core
-  props={updateProps}
+  props={deleteProps}
   promise={promise}
   authenticate
   confirm

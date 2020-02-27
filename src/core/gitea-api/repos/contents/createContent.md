@@ -9,7 +9,7 @@ const props = {
   owner: 'klappy',
   repo: 'blank',
   branch: 'testing',
-  filepath: 'new_file.md',
+  filepath: 'README.md',
   content: 'Testing createContent',
   message: 'Testing createContent via Gitea-React-Toolkit',
   author: {
