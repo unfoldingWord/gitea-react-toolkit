@@ -1,7 +1,5 @@
 In order to update a file the authenticated user has to have write access to the repo.
 
-```withAuthentication(withRepository(withBlob(withFile(Component))))```
-
 This example expects a markdown file to be selected and uses MarkdownTranslatable's BlockEditable component.
 
 # TODO: FIX Persistence
@@ -9,50 +7,30 @@ For some reason toggling between md/html preview modes is losing edits.
 
 ```js
 import { useState } from 'react';
+import { Paper } from '@material-ui/core';
 import {
-  Paper, Card, CardContent, CardHeader, CardActions, Avatar, IconButton, Button,
-} from '@material-ui/core';
-import { Code, Save, SaveOutlined } from '@material-ui/icons';
-import { BlockEditable } from "markdown-translatable";
-import { withAuthentication, withRepository, withBlob, withFile } from 'gitea-react-toolkit';
+  withAuthentication, withRepository, withBlob, useFile, FileCard,
+} from 'gitea-react-toolkit';
 
 // Define your React component and optionally access blob in props.
 function Component({
+  authentication,
   repository,
-  file,
+  blob: {
+    filepath,
+  },
+  branch,
+  fileConfig: config
 }) {
-  const [preview, setPreview] = useState();
-  const [markdown, setMarkdown] = useState(file.content);
-  const changed = (markdown !== file.content);
+  const { state: file, actions } = useFile({ authentication, repository, branch, filepath, config });
   return (
-    <Card>
-      <CardHeader
-        avatar={<Avatar src={repository.owner.avatar_url} />}
-        title={<strong>{file.path}</strong>}
-        subheader={repository.full_name}
-      />
-      <CardContent>
-        <Paper>
-          <BlockEditable
-            preview={preview}
-            markdown={markdown}
-            onEdit={setMarkdown}
-          />
-        </Paper>
-      </CardContent>
-      <CardActions>
-        <IconButton onClick={()=> setPreview(!preview)}><Code /></IconButton>
-        <IconButton onClick={()=> { if (changed) file.saveContent(markdown); }}>
-          { changed ? <Save /> : <SaveOutlined /> }
-        </IconButton>
-      </CardActions>
-    </Card>
-  );
-};
+    <FileCard authentication={authentication} repository={repository} file={file} actions={actions} />
+  )
+}
 /** Usually you would wrap it during export at the bottom of your component's file.
  *  export default withAuthentication(withRepository(withBlob(Component)));
  */
-const WrappedComponent = withAuthentication(withRepository(withBlob(withFile(Component))));
+const WrappedComponent = withAuthentication(withRepository(withBlob(Component)));
 // Then you can use your blob wrapped component.
 <Paper>
   <WrappedComponent

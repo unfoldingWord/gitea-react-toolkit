@@ -1,6 +1,4 @@
-Reading files only requires a `repository` and either a `blob` or a `filepath`.
-
-```withRepository(withBlob(withFile(Component)))```
+Reading files only requires a `repository`, a `config`, and a `filepath`.
 
 ```js
 import { Paper } from '@material-ui/core';

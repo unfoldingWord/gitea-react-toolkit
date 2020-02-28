@@ -1,21 +1,27 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Paper, Card, CardContent, CardHeader, Avatar,
+  Paper, Card, CardContent, CardHeader, CardActions, Avatar, IconButton,
 } from '@material-ui/core';
+import {
+  Code, Save, SaveOutlined,
+} from '@material-ui/icons';
+import { BlockEditable } from 'markdown-translatable';
 
 function FileCard({
+  authentication,
   repository,
   file,
+  actions,
 }) {
-  const style = { maxHeight: '200px', overflow: 'scroll' };
-
-  let content;
-
-  if (file) content = (typeof file.content === 'string') ?
-    file.content : JSON.stringify(file.content, null, 2);
-
+  const [preview, setPreview] = useState();
+  const [markdown, setMarkdown] = useState(file ? file.content : '');
+  const changed = (markdown !== (file && file.content));
   const avatarUrl = repository.avatar_url || repository.owner.avatar_url;
+
+  useEffect(() => {
+    setMarkdown(file && file.content);
+  }, [file]);
 
   return (
     <Card>
@@ -26,11 +32,22 @@ function FileCard({
       />
       <CardContent>
         <Paper>
-          <pre style={style}>
-            {content}
-          </pre>
+          <BlockEditable
+            preview={preview}
+            markdown={markdown}
+            onEdit={setMarkdown}
+            editable={!!authentication}
+          />
         </Paper>
       </CardContent>
+      <CardActions>
+        <IconButton onClick={()=> setPreview(!preview)}><Code /></IconButton>
+        <IconButton disabled={!authentication} onClick={()=> {
+          if (changed) actions.save(markdown);
+        }}>
+          { changed ? <Save /> : <SaveOutlined /> }
+        </IconButton>
+      </CardActions>
     </Card>
   );
 };
