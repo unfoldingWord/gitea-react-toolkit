@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/typedef */
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-import React, { useState, useCallback } from 'react';
+import React, {
+  useState, useCallback, useEffect,
+} from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -11,89 +11,78 @@ function useFile({
   authentication,
   repository,
   branch,
-  blob,
-  file,
+  filepath,
+  defaultContent,
+  file: __file,
   onFile,
   config,
 }) {
-  const [_file, setFile] = useState(file);
+  const [file, setFile] = useState(__file);
   const [deleted, setDeleted] = useState();
 
+  const { push: writeable } = repository.permissions;
+
   const hasFile = useCallback(() => (
-    !!_file
-  ), [_file]);
+    !!file
+  ), [file]);
 
-  let filepath, defaultContent;
+  const updateFile = useCallback((_file) => {
+    if (onFile) onFile(_file);
+    setFile(_file);
+  }, [onFile]);
 
-  if (config) {
-    filepath = config.filepath;
-    defaultContent = config.defaultContent;
-  }
+  const close = useCallback(() => {
+    updateFile();
+  }, [updateFile]);
 
-  if (blob) filepath = blob.filepath;
-
-  const updateFile = (__file) => {
-    if (onFile) onFile(__file);
-    else setFile(__file);
-  };
-
-  const populateFile = async () => {
-    const _ensureFile = await ensureFile({
+  const refreshFile = useCallback(async () => {
+    const _file = await ensureFile({
       filepath, defaultContent, authentication, config, repository, branch,
     });
-    const { push: writeable } = repository.permissions;
+    const content = await getContentFromFile(_file);
 
-    const close = async () => {
-      await updateFile();
-
-      if (fileConfig.updateBlob) await fileConfig.updateBlob();
-    };
-
-    const content = await getContentFromFile(_ensureFile);
-
-    const saveContent = async (content) => {
-      if (writeable) {
-        await saveFile({
-          content, authentication, repository, file: _ensureFile, branch,
-        });
-        await populateFile();
-      }
-    };
-
-    const dangerouslyDelete = async () => {
-      if (writeable) {
-        const _deleted = await deleteFile({
-          authentication, repository, file: _ensureFile, branch,
-        });
-
-        if (_deleted) {
-          setDeleted(true);
-          updateFile();
-
-          if (fileConfig.updateBlob) fileConfig.updateBlob();
-        }
-        return deleted;
-      }
-    };
-
-    const _populateFile = {
-      ..._ensureFile,
+    updateFile({
+      ..._file,
       branch,
-      close,
       content,
-      filepath: _ensureFile.path,
-      saveContent,
-      dangerouslyDelete,
-    };
+      filepath: _file.path,
+    });
+  }, [authentication, branch, config, defaultContent, filepath, repository, updateFile]);
 
-    updateFile(_populateFile);
-  };
+  useEffect(() => {
+    if (!hasFile() && filepath && !deleted) refreshFile();
+  }, [deleted, filepath, hasFile, refreshFile]);
 
-  if (!hasFile() && filepath && !deleted) populateFile();
+  const save = useCallback(async (content) => {
+    if (writeable) {
+      await saveFile({
+        authentication, repository, branch, file, content,
+      });
+      await refreshFile();
+    }
+  }, [writeable, authentication, repository, branch, file, refreshFile]);
+
+  const dangerouslyDelete = useCallback(async () => {
+    if (writeable) {
+      const _deleted = await deleteFile({
+        authentication, repository, file, branch,
+      });
+
+      if (_deleted) {
+        setDeleted(true);
+        updateFile();
+      }
+      return _deleted;
+    }
+  }, [file, authentication, branch, repository, updateFile, writeable]);
 
   return {
-    state: { file: _file },
-    actions: {},
+    state: file,
+    actions: {
+      save,
+      close,
+      dangerouslyDelete,
+    },
     component: ( <></> ),
   };
 };
@@ -106,18 +95,12 @@ useFile.propTypes = {
     name: PropTypes.string.isRequired,
     path: PropTypes.string.isRequired,
     sha: PropTypes.string.isRequired,
-    download_url: PropTypes.string.isRequired,
-    content: PropTypes.string.isRequired,
+    content: PropTypes.string,
+    branch: PropTypes.string,
+    filepath: PropTypes.string,
   }),
   /** Function to propogate when the Blob is selected. */
   onFile: PropTypes.func,
-  /** Pass a blob object. */
-  blob: PropTypes.shape({
-    /** The full filepath generated in the Tree/Blob Object */
-    filepath: PropTypes.string.isRequired,
-  }),
-  /** Function to propogate when the Blob is selected. */
-  onEdit: PropTypes.func,
   /** Authentication object returned from a successful withAuthentication login. */
   authentication: PropTypes.shape({
     config: PropTypes.shape({

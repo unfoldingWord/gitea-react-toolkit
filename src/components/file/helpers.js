@@ -24,7 +24,7 @@ export const ensureFile = async ({
 };
 
 export const deleteFile = async ({
-  file, message, authentication, repository, branch,
+  authentication, repository, branch, file, message,
 }) => {
   const {
     user: author, config, token: { name: tokenid },
@@ -59,7 +59,7 @@ export const getContentFromFile = async (file) => {
 };
 
 export const saveFile = async ({
-  content, message, authentication, repository, file, branch,
+  authentication, repository, branch, file, content, message,
 }) => {
   const {
     user: author, config, token: { name: tokenid },
@@ -74,48 +74,3 @@ export const saveFile = async ({
   });
   return response;
 };
-
-// export const extendFile = async ({
-//   file, fileConfig, onFile, repository,
-// }) => {
-//   const { push: writeable } = repository.permissions;
-//   const content = await getContentFromFile(file);
-//   const filepath = file.path;
-
-//   const close = () => {
-//     onFile();
-
-//     if (fileConfig.updateBlob) {
-//       fileConfig.updateBlob();
-//     }
-//   };
-
-//   const save = !writeable ? null : async (content) => {
-//     await saveContent({
-//       content, authentication, repository, file,
-//     });
-//     await populateFile();
-//   };
-
-//   const dangerouslyDelete = !writeable ? null : async () => {
-//     const _deleted = await deleteFile({
-//       authentication, repository, file,
-//     });
-
-//     if (_deleted) {
-//       setDeleted(true);
-//       onFile();
-
-//       if (fileConfig.updateBlob) {
-//         fileConfig.updateBlob();
-//       }
-//     }
-//     return deleted;
-//   };
-
-
-//   const _file = {
-//     ...file, close, content, filepath, save, dangerouslyDelete,
-//   };
-//   return _file;
-// };
