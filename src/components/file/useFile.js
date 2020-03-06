@@ -2,65 +2,87 @@ import React, {
   useState, useCallback, useEffect,
 } from 'react';
 import PropTypes from 'prop-types';
+import deepFreeze from 'deep-freeze';
 
 import {
   getContentFromFile, saveFile, ensureFile, deleteFile,
 } from './helpers';
+import {
+  FileCard, FileForm, useBlob,
+} from '..';
 
 function useFile({
   authentication,
   repository,
-  branch,
-  filepath,
-  defaultContent,
-  file: __file,
-  onFile,
-  config,
+  filepath: _filepath,
+  defaultContent: _defaultContent,
+  config: _config,
+  browse=true,
 }) {
-  const [file, setFile] = useState(__file);
+  const [{ filepath, defaultContent }, setFileProps] = useState({
+    filepath: _filepath, defaultContent: _defaultContent,
+  });
+  const branch = repository.branch || repository.default_branch;
+  const [state, setState] = useState();
   const [deleted, setDeleted] = useState();
+  const config = _config || (authentication && authentication.config);
+  const {
+    state: blobState, actions: blobActions, component: blobComponent,
+  } = useBlob({
+    config, authentication, repository, filepath,
+  });
+  const file = state && deepFreeze(state);
 
-  const { push: writeable } = repository.permissions;
-
-  const hasFile = useCallback(() => (
-    !!file
-  ), [file]);
+  const { push: writeable } = (repository && repository.permissions) ? repository.permissions : {};
 
   const updateFile = useCallback((_file) => {
-    if (onFile) onFile(_file);
-    setFile(_file);
-  }, [onFile]);
+    console.log('useFile.updateFile');
+    setState(_file);
+  }, []);
 
-  const close = useCallback(() => {
-    updateFile();
-  }, [updateFile]);
+  const load = useCallback(async () => {
+    console.log('useFile.load');
 
-  const refreshFile = useCallback(async () => {
-    const _file = await ensureFile({
-      filepath, defaultContent, authentication, config, repository, branch,
-    });
-    const content = await getContentFromFile(_file);
+    if (config && repository && filepath) {
+      const _file = await ensureFile({
+        filepath, defaultContent, authentication, config, repository, branch,
+      });
+      const content = await getContentFromFile(_file);
 
-    updateFile({
-      ..._file,
-      branch,
-      content,
-      filepath: _file.path,
-    });
+      updateFile({
+        ..._file, branch, content, filepath: _file.path,
+      });
+    }
   }, [authentication, branch, config, defaultContent, filepath, repository, updateFile]);
 
   useEffect(() => {
-    if (!hasFile() && filepath && !deleted) refreshFile();
-  }, [deleted, filepath, hasFile, refreshFile]);
+    if (!state && filepath && !deleted) load();
+  }, [deleted, filepath, load, state]);
+
+  const blobFilepath = blobState && blobState.filepath;
+
+  useEffect(() => {
+    if (blobFilepath) {
+      const _fileProps = {
+        branch, filepath: blobFilepath, defaultContent,
+      };
+      setFileProps(_fileProps);
+    };
+  }, [blobFilepath, branch, defaultContent]);
+
+  const close = useCallback(() => {
+    if (blobActions && blobActions.close) blobActions.close();
+    updateFile();
+  }, [updateFile, blobActions]);
 
   const save = useCallback(async (content) => {
     if (writeable) {
       await saveFile({
         authentication, repository, branch, file, content,
       });
-      await refreshFile();
+      await load();
     }
-  }, [writeable, authentication, repository, branch, file, refreshFile]);
+  }, [writeable, authentication, repository, branch, file, load]);
 
   const dangerouslyDelete = useCallback(async () => {
     if (writeable) {
@@ -76,31 +98,43 @@ function useFile({
     }
   }, [file, authentication, branch, repository, updateFile, writeable]);
 
+  const actions = {
+    onFile: updateFile,
+    load,
+    save,
+    close,
+    dangerouslyDelete,
+  };
+
+  const components = {
+    create: FileForm({ onSubmit: setFileProps }),
+    browse: blobComponent,
+    read: FileCard({
+      authentication, repository, file: { ...state, ...actions },
+    }),
+  };
+
+  let component = <></>;
+
+  if (state) component = components.read;
+  else if (!filepath) {
+    if (browse) component = components.browse;
+    else component = components.create;
+  }
+
   return {
     state: file,
-    actions: {
-      save,
-      close,
-      dangerouslyDelete,
-    },
-    component: ( <></> ),
+    actions,
+    component,
+    components,
   };
 };
 
 useFile.propTypes = {
   /** The full filepath for the file. */
   filepath: PropTypes.string,
-  /** Pass a previously returned file object to bypass the selection. */
-  file: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    path: PropTypes.string.isRequired,
-    sha: PropTypes.string.isRequired,
-    content: PropTypes.string,
-    branch: PropTypes.string,
-    filepath: PropTypes.string,
-  }),
-  /** Function to propogate when the Blob is selected. */
-  onFile: PropTypes.func,
+  /** The branch to use for the file */
+  branch: PropTypes.string,
   /** Authentication object returned from a successful withAuthentication login. */
   authentication: PropTypes.shape({
     config: PropTypes.shape({

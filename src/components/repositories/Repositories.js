@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { List } from '@material-ui/core';
 
 import { Repository } from '../';
-import { extendRepository } from '../repository/helpers';
 
 function Repositories({
   urls,
@@ -11,15 +10,9 @@ function Repositories({
   onRepository,
   config,
 }) {
-  const updateRepository = (_repo) => {
-    let __repo;
-
-    if (_repo) {
-      __repo = { ..._repo };
-      __repo = extendRepository({ repository: __repo, updateRepository, config });
-    }
-    onRepository(__repo);
-  };
+  const updateRepository = useCallback((repo) => {
+    onRepository(repo);
+  }, [onRepository]);
 
   let components = [];
 
@@ -50,7 +43,6 @@ function Repositories({
 }
 
 Repositories.propTypes = {
-  classes: PropTypes.object.isRequired,
   /** Urls array to get repository data, if repository data is not provided. */
   urls: PropTypes.array,
   /** Repositories data array to render, if urls not provided. */

@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Paper, Card, CardContent, CardHeader, CardActions, Avatar, IconButton,
+  Paper, Card, CardContent, CardHeader, CardActions, Avatar,
 } from '@material-ui/core';
-import {
-  Code, Save, SaveOutlined,
-} from '@material-ui/icons';
-import { BlockEditable } from 'markdown-translatable';
+import { BlockEditable, Actions } from 'markdown-translatable';
 
 function FileCard({
   authentication,
   repository,
   file,
-  actions,
 }) {
   const [preview, setPreview] = useState();
   const [markdown, setMarkdown] = useState(file ? file.content : '');
@@ -23,12 +19,14 @@ function FileCard({
     setMarkdown(file && file.content);
   }, [file]);
 
+  const branch = (file && file.branch) ? file.branch : repository.default_branch;
+
   return (
     <Card>
       <CardHeader
         avatar={<Avatar src={avatarUrl} />}
         title={<strong>{file && file.path}</strong>}
-        subheader={repository.full_name}
+        subheader={repository.full_name + '/' + branch}
       />
       <CardContent>
         <Paper>
@@ -41,12 +39,16 @@ function FileCard({
         </Paper>
       </CardContent>
       <CardActions>
-        <IconButton onClick={()=> setPreview(!preview)}><Code /></IconButton>
-        <IconButton disabled={!authentication} onClick={()=> {
-          if (changed) actions.save(markdown);
-        }}>
-          { changed ? <Save /> : <SaveOutlined /> }
-        </IconButton>
+        <Actions
+          onSectionable={()=>{}}
+          onBlockable={()=>{}}
+          preview={preview}
+          onPreview={setPreview}
+          changed={changed}
+          onSave={() => {
+            if (changed) file.save(markdown);
+          }}
+        />
       </CardActions>
     </Card>
   );
@@ -70,6 +72,12 @@ FileCard.propTypes = {
     content: PropTypes.string,
     branch: PropTypes.string,
     filepath: PropTypes.string,
+  }),
+  /** Pass a previously returned authentication object to bypass login. */
+  authentication: PropTypes.shape({
+    user: PropTypes.object.isRequired,
+    token: PropTypes.object.isRequired,
+    config: PropTypes.object.isRequired,
   }),
 };
 

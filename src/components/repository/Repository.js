@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 import { Code } from '@material-ui/icons';
 
-import { get, repoTreeUrl } from '../../core';
+import { get } from '../../core';
 
 const useStyles = makeStyles(theme => ({
   avatar: { borderRadius: '20%' },
@@ -26,22 +26,18 @@ function Repository({
   const classes = useStyles();
   const [repo, setRepo] = useState(repository || { owner: {} });
 
-  const getData = async () => {
+  const getData = useCallback(async () => {
     const data = await get({ url, config });
     setRepo(data);
-  };
+  }, [config, url]);
 
-  if (Object.keys(repo.owner).length === 0) {
-    getData();
-  }
+  useEffect(() => {
+    if (Object.keys(repo.owner).length === 0) getData();
+  }, [getData, repo.owner]);
 
-  const _onRepository = () => {
-    if (repo && repo.full_name && (repo.branch || repo.default_branch)) {
-      const tree_url = repoTreeUrl(repo);
-      const _repo = { tree_url, ...repo };
-      onRepository(_repo);
-    }
-  };
+  const _onRepository = useCallback(() => {
+    onRepository(repo);
+  }, [repo, onRepository]);
 
   const {
     owner,
@@ -101,6 +97,7 @@ Repository.propTypes = {
     website: PropTypes.string.isRequired,
     tree_url: PropTypes.string,
     avatar_url: PropTypes.string,
+    branch: PropTypes.string,
   }),
   /** Configuration required if paths are provided as URL. */
   config: PropTypes.shape({

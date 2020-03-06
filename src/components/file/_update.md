@@ -22,11 +22,11 @@ function Component({
   branch,
   fileConfig: config
 }) {
-  const { state: file, actions } = useFile({ authentication, repository, branch, filepath, config });
+  const { state, actions } = useFile({ authentication, repository, branch, filepath, config });
   return (
-    <FileCard authentication={authentication} repository={repository} file={file} actions={actions} />
+    <FileCard authentication={authentication} repository={repository} file={{ ...state, ...actions }} />
   )
-}
+};
 /** Usually you would wrap it during export at the bottom of your component's file.
  *  export default withAuthentication(withRepository(withBlob(Component)));
  */

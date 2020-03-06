@@ -20,13 +20,9 @@ function withBlob(Component) {
       blobConfig = { url, tree, config };
     }
 
-    if (props.repository && !blobConfig.url) {
-      blobConfig.url = props.repository.tree_url;
-    }
+    if (props.repository && !blobConfig.url) blobConfig.url = props.repository.tree_url;
 
-    if (props.authentication) {
-      blobConfig.config = props.authentication.config;
-    }
+    if (props.authentication) blobConfig.config = props.authentication.config;
 
     const {
       url,

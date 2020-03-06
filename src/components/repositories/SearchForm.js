@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -41,27 +41,31 @@ function SearchForm({
   const [query, setQuery] = useState(defaultQuery);
   const [initialSearch, setInitialSearch] = useState(false);
 
-  const updateRepositories = async (owner, query) => {
+  const updateRepositories = useCallback(async (owner, query) => {
     const repositories = await repositorySearchDebounced({
       owner, query, config,
     });
     onRepositories(repositories);
-  };
+  }, [config, onRepositories]);
 
-  if (!initialSearch) {
-    updateRepositories(owner, query)
-      .then(() => setInitialSearch(true));
-  }
+  useEffect(() => {
+    const _updateRepositories = async () => {
+      await updateRepositories(owner, query);
+      setInitialSearch(true);
+    };
 
-  const onOwner = (_owner) => {
+    if (!initialSearch) _updateRepositories();
+  }, [initialSearch, owner, query, updateRepositories]);
+
+  const onOwner = useCallback((_owner) => {
     setOwner(_owner);
     updateRepositories(_owner, query);
-  };
+  }, [query, updateRepositories]);
 
-  const onQuery = (_query) => {
+  const onQuery = useCallback((_query) => {
     setQuery(_query);
     updateRepositories(owner, _query);
-  };
+  }, [owner, updateRepositories]);
 
   return (
     <ListItem
