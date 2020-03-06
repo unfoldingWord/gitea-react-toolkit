@@ -49,12 +49,8 @@ const sections = [
         content: path.join(pathComponents, 'file', '_read.md'),
       },
       {
-        name: 'Update',
-        content: path.join(pathComponents, 'file', '_update.md'),
-      },
-      {
-        name: 'Delete',
-        content: path.join(pathComponents, 'file', '_delete.md'),
+        name: 'Update/Delete',
+        content: path.join(pathComponents, 'file', '_update-delete.md'),
       },
     ],
   },

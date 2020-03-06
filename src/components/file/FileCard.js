@@ -5,7 +5,7 @@ import {
   Paper, Card, CardContent, CardHeader, CardActions, Avatar, IconButton,
 } from '@material-ui/core';
 import {
-  Save, SaveOutlined, Pageview, PageviewOutlined, DeleteSweep,
+  Save, SaveOutlined, Pageview, PageviewOutlined, DeleteSweepOutlined, CancelOutlined,
 } from '@material-ui/icons';
 import { BlockEditable } from 'markdown-translatable';
 
@@ -13,6 +13,7 @@ const useStyles = makeStyles(theme => ({
   actions: {
     textAlign: 'right',
     paddingRight: `${theme.spacing(1.5)}px`,
+    width: '100%',
   },
   action: {
     marginLeft: `0px`,
@@ -81,7 +82,13 @@ function FileCard({
               if (confirmation) file.dangerouslyDelete();
             }}
           >
-            <DeleteSweep />
+            <DeleteSweepOutlined />
+          </IconButton>
+          <IconButton
+            title="Close Repository"
+            onClick={file.close}
+          >
+            <CancelOutlined />
           </IconButton>
         </div>
       </CardActions>
