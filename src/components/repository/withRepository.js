@@ -9,6 +9,7 @@ function withRepositoryComponent(Component) {
   return function RepositoryComponent({
     repository,
     onRepository,
+    branch,
     ...props
   }) {
     const [repo, setRepo] = useState(repository);
@@ -45,7 +46,7 @@ function withRepositoryComponent(Component) {
 
       if (_repo) {
         __repo = { ..._repo };
-        __repo = extendRepository({ repository: __repo, authentication, updateRepository, config });
+        __repo = extendRepository({ repository: __repo, branch, authentication, updateRepository, config });
       }
 
       if (onRepository) onRepository(__repo);

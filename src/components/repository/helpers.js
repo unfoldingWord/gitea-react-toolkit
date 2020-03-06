@@ -9,9 +9,10 @@ import {
 } from '../..';
 
 export const extendRepository = ({
-  repository, authentication, updateRepository, config,
+  repository, authentication, updateRepository, config, branch,
 }) => {
   const user = (authentication && authentication.user) ? authentication.user : undefined;
+  repository.branch = branch;
 
   if (user && user.username === repository.owner.username) {
     repository.dangerouslyDelete = () => {

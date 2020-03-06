@@ -15,12 +15,11 @@ function FileComponent({
   config,
   authentication,
   repository,
-  branch,
   filepath,
   defaultContent,
 }) {
   const { state, actions, component } = useFile({
-    config, authentication, repository, branch, filepath, defaultContent,
+    config, authentication, repository, filepath, defaultContent,
   });
 
   return component;
