@@ -19,12 +19,13 @@ function Component({
   filepath,
   config,
 }) {
-  const { state: repository, actions, component } = useRepository({ branch, config });
+  const { state: repository, actions, component: repoComponent } = useRepository({ branch, config });
 
-  const _component = useMemo(() => (
-    (!repository) ? component : FileComponent({ repository, branch, filepath, config })
-  ), [repository, branch, filepath, config]);
-  return _component;
+  const component = (!repository) ? repoComponent : (
+    <FileComponent repository={repository} branch={branch} filepath={filepath} config={config} />
+  );
+
+  return component;
 };
 
 const branch = 'master';
