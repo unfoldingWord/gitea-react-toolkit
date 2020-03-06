@@ -73,6 +73,7 @@ function useFile({
   const close = useCallback(() => {
     if (blobActions && blobActions.close) blobActions.close();
     updateFile();
+    setFileProps({});
   }, [updateFile, blobActions]);
 
   const save = useCallback(async (content) => {
@@ -90,13 +91,16 @@ function useFile({
         authentication, repository, file, branch,
       });
 
-      if (_deleted) {
-        setDeleted(true);
-        updateFile();
-      }
-      return _deleted;
-    }
-  }, [file, authentication, branch, repository, updateFile, writeable]);
+      if (_deleted) setDeleted(true);
+    };
+  }, [file, authentication, branch, repository, writeable]);
+
+  useEffect(() => {
+    if (deleted) {
+      close();
+      setDeleted(false);
+    };
+  }, [deleted, close]);
 
   const actions = {
     onFile: updateFile,
@@ -107,16 +111,20 @@ function useFile({
   };
 
   const components = {
-    create: FileForm({ onSubmit: setFileProps }),
+    create: <FileForm onSubmit={setFileProps} />,
     browse: blobComponent,
-    read: FileCard({
-      authentication, repository, file: { ...state, ...actions },
-    }),
+    fileCard: (
+      <FileCard
+        authentication={authentication}
+        repository={repository}
+        file={{ ...state, ...actions }}
+      />
+    ),
   };
 
   let component = <></>;
 
-  if (state) component = components.read;
+  if (state) component = components.fileCard;
   else if (!filepath) {
     if (browse) component = components.browse;
     else component = components.create;

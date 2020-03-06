@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -11,7 +11,8 @@ import {
 } from '@material-ui/core';
 import { AddCircle } from '@material-ui/icons';
 
-import { createRepository, extendRepository } from '../helpers';
+import { createRepository } from '../helpers';
+import { useRepository } from '..';
 
 const useStyles = makeStyles(theme => ({
   listItemAvatar: {
@@ -49,20 +50,28 @@ function RepositoryQuickCreate({
 }) {
   const classes = useStyles();
   const [repo, setRepo] = useState();
+  const [updated, setUpdated] = useState(false);
+  const { state, actions } = useRepository({ authentication, config });
 
-  const updateRepository = (_repo) => {
-    if (_repo) {
-      _repo = extendRepository({
-        repository: _repo, authentication, updateRepository, config,
-      });
+  const _update = useCallback((_repository) => {
+    actions.update(_repository);
+  }, [actions]);
+
+  const _onRepository = useCallback(() => {
+    if (onRepository && state && actions) onRepository({ ...state, ...actions });
+  }, [onRepository, state, actions]);
+
+  useEffect(() => {
+    if (!updated && state) {
+      _onRepository();
+      setUpdated(true);
     }
-    onRepository(_repo);
-  }
+  }, [_onRepository, state, updated]);
 
-  const handleCreate = async () => {
-    const repository = await createRepository({ repo, config });
-    updateRepository(repository);
-  }
+  const handleCreate = useCallback(async () => {
+    const _repository = await createRepository({ repo, config });
+    _update(_repository);
+  }, [config, repo, _update]);
 
   return (
     <ListItem
@@ -90,7 +99,9 @@ function RepositoryQuickCreate({
             id='repo' label='Repository' type='text' required
             variant="outlined" margin="normal" fullWidth
             defaultValue="" autoComplete={undefined}
-            onChange={(event) => {setRepo(event.target.value)}}
+            onChange={(event) => {
+              setRepo(event.target.value);
+            }}
           />
         </div>
       </form>

@@ -1,106 +1,72 @@
-import React, { useState } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
-import { extendRepository } from './helpers';
-import { Repository } from '.';
-import { Repositories, Search } from '..';
+import { Repository, useRepository } from '..';
 
-function withRepositoryComponent(Component) {
-  return function RepositoryComponent({
-    repository,
-    onRepository,
-    branch,
-    ...props
-  }) {
-    const [repo, setRepo] = useState(repository);
-
-    const { authentication } = props;
-    let repositoryConfig = {};
-
-    if (props.repositoryConfig) {
-      const {
-        repositories, urls, defaultOwner, defaultQuery, ...config
-      } = props.repositoryConfig;
-
-      repositoryConfig = {
-        repositories, urls, defaultOwner, defaultQuery, config,
-      };
-    }
-
-    if (authentication && authentication.config) {
-      repositoryConfig.config = { ...repositoryConfig.config, ...authentication.config };
-    }
-
-    const {
-      repositories,
+function withRepository(Component) {
+  function RepositoryComponent({
+    repositoryConfig: {
       urls,
+      repositories,
       defaultOwner,
       defaultQuery,
-      config,
-    } = repositoryConfig;
+    }={},
+    config,
+    authentication,
+    branch,
+    repository: incomingRepository,
+    onRepository,
+    ...props
+  }) {
+    const { state, actions, component } = useRepository({
+      authentication, repositories, urls, defaultOwner, defaultQuery, config, branch, repository: incomingRepository,
+    });
+    const _incoming = incomingRepository && JSON.stringify(incomingRepository);
+    const _state = state && actions && JSON.stringify({ ...state, ...actions });
 
-    const hasRepository = () => (repo && repo.name && repo.owner && repo.permissions);
+    const _onRepository = useCallback(() => {
+      if (onRepository && state && actions) onRepository({ ...state, ...actions });
+    }, [onRepository, state, actions]);
 
-    const updateRepository = (_repo) => {
-      let __repo;
+    const _update = useCallback(() => {
+      actions.update(incomingRepository);
+    }, [actions, incomingRepository]);
 
-      if (_repo) {
-        __repo = { ..._repo };
-        __repo = extendRepository({ repository: __repo, branch, authentication, updateRepository, config });
-      }
+    useEffect(() => {
+      if (_incoming !== _state) _onRepository();
+    }, [_onRepository, _incoming, _state]);
 
-      if (onRepository) onRepository(__repo);
-      else setRepo(__repo);
-    };
+    useEffect(() => {
+      if (_incoming && _incoming !== _state) _update();
+    }, [_update, _incoming, _state]);
 
-    let component = <div />;
+    const repository = incomingRepository || (state && { ...state, ...actions });
 
-    if (!hasRepository() && (urls || repositories)) {
-      component = (
-        <Repositories
-          urls={urls}
-          repositories={repositories}
-          onRepository={updateRepository}
-          config={config}
-        />
-      );
-    } else if (!hasRepository() && config) {
-      let username;
+    const _props = { ...props, authentication, config, repository };
 
-      if (authentication) username = authentication.user.username;
-      component = (
-        <Search
-          defaultOwner={defaultOwner || username}
-          defaultQuery={defaultQuery}
-          onRepository={updateRepository}
-          config={config}
-        />
-      );
-    }
+    console.log('withRepository');
 
-    if (hasRepository()) {
-      component = <Component {...props} repository={repo} blobConfig={config} />;
-    }
-
-    return component;
+    return (!repository) ? component : <Component {..._props} />;
   };
+
+  RepositoryComponent.propTypes = {
+    /** Configuration to pass through to the Search/Repositories component. */
+    repositoryConfig: PropTypes.shape({
+      /** Urls array to get repository data, if repository data is not provided. */
+      urls: PropTypes.array,
+      /** Repositories data array to render, if urls not provided. */
+      repositories: PropTypes.array,
+      /** Prefill the owner search field. */
+      defaultOwner: PropTypes.string,
+      /** Prefill the query search field. */
+      defaultQuery: PropTypes.string,
+      /** Configuration required for Search or Repositories if paths are provided as URL. */
+      server: PropTypes.string,
+    }).isRequired,
+    ...Repository.propTypes,
+  };
+
+  return RepositoryComponent;
 };
 
-withRepositoryComponent.propTypes = {
-  /** Configuration to pass through to the Search/Repositories component. */
-  repositoryConfig: PropTypes.shape({
-    /** Urls array to get repository data, if repository data is not provided. */
-    urls: PropTypes.array,
-    /** Repositories data array to render, if urls not provided. */
-    repositories: PropTypes.array,
-    /** Prefill the owner search field. */
-    defaultOwner: PropTypes.string,
-    /** Prefill the query search field. */
-    defaultQuery: PropTypes.string,
-    /** Configuration required for Search or Repositories if paths are provided as URL. */
-    server: PropTypes.string,
-  }).isRequired,
-  ...Repository.propTypes,
-};
-
-export const withRepository = withRepositoryComponent;
+export default withRepository;

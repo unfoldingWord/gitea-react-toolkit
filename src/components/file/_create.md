@@ -42,7 +42,9 @@ const defaultContent = 'This is a new file...';
     tokenid: 'PlaygroundTesting',
   }}
   authentication={authentication}
+  // onAuthentication={setAuthentication}
   repository={repository}
+  // onRepository={setRepository}
   config={config}
   branch={branch}
   filepath={filepath}

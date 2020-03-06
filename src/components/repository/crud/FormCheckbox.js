@@ -31,7 +31,6 @@ function FormCheckbox({
 }
 
 FormCheckbox.propTypes = {
-  classes: PropTypes.object.isRequired,
   /** The name/id of the field, must be unique. */
   name: PropTypes.string.isRequired,
   /** The label of the field. */

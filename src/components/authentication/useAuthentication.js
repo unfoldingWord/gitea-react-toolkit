@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import deepFreeze from 'deep-freeze';
 
@@ -6,39 +6,36 @@ import { isAuthenticated } from './helpers';
 import { Authentication } from '.';
 
 function useAuthentication({
-  authentication,
+  authentication: _authentication,
   onAuthentication,
   authenticationConfig: {
     messages,
     ...config
   },
 }) {
-  const [auth, setAuth] = useState(authentication);
+  const [state, setState] = useState(_authentication);
+  const authentication = state && deepFreeze(state);
 
-  const updateAuthentication = (_auth) => {
+  const update = useCallback((_auth) => {
     if (onAuthentication) onAuthentication(_auth);
-    else setAuth(_auth);
-  };
+    else setState(_auth);
+  }, [onAuthentication]);
 
-  let authenticationComponent;
-
-  if (!isAuthenticated(auth) && config) {
-    authenticationComponent = (
+  const component = useMemo(() => (
+    (!isAuthenticated(authentication) && config) && (
       <Authentication
         messages={messages}
         config={config}
-        authentication={auth}
-        onAuthentication={updateAuthentication}
+        authentication={authentication}
+        onAuthentication={update}
       />
-    );
-  }
+    )
+  ), [authentication, config, messages, update]);
 
   const response = {
-    state: deepFreeze({
-      authentication: auth,
-    }),
-    actions: {},
-    component: authenticationComponent,
+    state: authentication,
+    actions: { update },
+    component,
   };
 
   return response;

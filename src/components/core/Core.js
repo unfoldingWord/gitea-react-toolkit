@@ -16,7 +16,7 @@ function Core({
   const [propsMemo, setPropsMemo] = useState();
   const [confirmed, setConfirmed] = useState(false);
   const {
-    state: { authentication }, component: authenticationComponent,
+    state: authentication, component: authenticationComponent,
   } = useAuthentication({
     authenticationConfig: props.config,
   });

@@ -32,7 +32,7 @@ function Component({
             title="Delete Repository"
             disabled={username !== repository.owner.username}
             onClick={() => {
-              const confirmation = confirm(`Are you sure you want to Delete ${repository.full_name}?`);
+              const confirmation = window.confirm(`Are you sure you want to Delete ${repository.full_name}?`);
               if (confirmation) repository.dangerouslyDelete();
             }}
           >

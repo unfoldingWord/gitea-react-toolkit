@@ -8,40 +8,6 @@ import {
   deleteRepo,
 } from '../..';
 
-export const extendRepository = ({
-  repository, authentication, updateRepository, config, branch,
-}) => {
-  const user = (authentication && authentication.user) ? authentication.user : undefined;
-  repository.branch = branch;
-
-  if (user && user.username === repository.owner.username) {
-    repository.dangerouslyDelete = () => {
-      deleteRepository({ repository, config });
-      window.setTimeout(updateRepository, 500);
-    };
-  } else {
-    repository.fork = () => {
-      forkRepository({ repository, config });
-      updateRepository();
-    };
-  };
-
-  if (repository.permissions.admin) {
-    repository.save = async (settings) => {
-      const _repository = await saveRepository({ repository, settings, config });
-      updateRepository(_repository);
-      return _repository;
-    };
-  }
-  repository.forks = () => {
-    repositoryForks({ repository, config });
-  };
-  repository.close = () => {
-    updateRepository();
-  };
-  return repository;
-};
-
 export const forkRepository = async ({ repository, config }) => {
   const { owner: { username }, name } = repository;
   const response = await createFork({ owner: username, repo: name, config });

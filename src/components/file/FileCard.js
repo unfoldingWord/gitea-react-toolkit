@@ -1,19 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { makeStyles } from '@material-ui/core/styles';
 import {
-  Paper, Card, CardContent, CardHeader, CardActions, Avatar,
+  Paper, Card, CardContent, CardHeader, CardActions, Avatar, IconButton,
 } from '@material-ui/core';
-import { BlockEditable, Actions } from 'markdown-translatable';
+import {
+  Save, SaveOutlined, Pageview, PageviewOutlined, DeleteSweep,
+} from '@material-ui/icons';
+import { BlockEditable } from 'markdown-translatable';
+
+const useStyles = makeStyles(theme => ({
+  actions: {
+    textAlign: 'right',
+    paddingRight: `${theme.spacing(1.5)}px`,
+  },
+  action: {
+    marginLeft: `0px`,
+  },
+}));
 
 function FileCard({
   authentication,
   repository,
   file,
 }) {
-  const [preview, setPreview] = useState();
+  const classes = useStyles();
+  const [preview, setPreview] = useState(true);
   const [markdown, setMarkdown] = useState(file ? file.content : '');
   const changed = (markdown !== (file && file.content));
   const avatarUrl = repository.avatar_url || repository.owner.avatar_url;
+  const access = repository.permissions.push;
 
   useEffect(() => {
     setMarkdown(file && file.content);
@@ -39,16 +55,35 @@ function FileCard({
         </Paper>
       </CardContent>
       <CardActions>
-        <Actions
-          onSectionable={()=>{}}
-          onBlockable={()=>{}}
-          preview={preview}
-          onPreview={setPreview}
-          changed={changed}
-          onSave={() => {
-            if (changed) file.save(markdown);
-          }}
-        />
+        <div className={classes.actions}>
+          <IconButton className={classes.action} aria-label="Preview" onClick={() => setPreview(!preview) }>
+            {!preview ? <Pageview /> : <PageviewOutlined />}
+          </IconButton>
+          <IconButton
+            className={classes.action}
+            aria-label="Save"
+            disabled={!access}
+            onClick={() => {
+              if (changed) file.save(markdown);
+            }}
+          >
+            {changed ? <Save /> : <SaveOutlined />}
+          </IconButton>
+          <IconButton
+            className={classes.action}
+            aria-label="Delete"
+            disabled={!access}
+            onClick={() => {
+              const confirmation = window.confirm(
+                `Are you sure you want to Delete ${file.filepath}?`
+              );
+
+              if (confirmation) file.dangerouslyDelete();
+            }}
+          >
+            <DeleteSweep />
+          </IconButton>
+        </div>
       </CardActions>
     </Card>
   );

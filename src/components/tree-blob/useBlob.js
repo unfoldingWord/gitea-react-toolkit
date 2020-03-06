@@ -19,7 +19,9 @@ function useBlob({
   const url = _url || (repository && repository.tree_url);
 
   const updateBlob = useCallback((_blob) => {
-    const __blob = (_blob.filepath) ? _blob : { ..._blob, filepath: _blob.path };
+    let __blob;
+
+    if (_blob) __blob = (_blob.filepath) ? _blob : { ..._blob, filepath: _blob.path };
     setState(__blob);
   }, []);
 
