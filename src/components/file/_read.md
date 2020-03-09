@@ -22,7 +22,7 @@ function Component({
   const { state: repository, actions, component: repoComponent } = useRepository({ branch, config });
 
   const component = (!repository) ? repoComponent : (
-    <FileComponent repository={repository} branch={branch} filepath={filepath} config={config} />
+    <FileComponent repository={repository} filepath={filepath} config={config} />
   );
 
   return component;
