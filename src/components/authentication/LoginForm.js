@@ -88,7 +88,7 @@ function LoginForm({
           }
         />
         <Button data-test={user ? 'logout-button' : 'submit-button'} type="button" fullWidth variant="contained"
-          color={(user) ? 'secondary' : 'primary'}
+          color='primary'
           className={classes.submit}
           onClick={() => {
             onSubmit(formData);
