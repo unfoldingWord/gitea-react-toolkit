@@ -1,8 +1,13 @@
 
 In order to create a file the authenticated user has to have write access to the repo.
 
-### Example
-This example expects a `branch`, `filepath`, and `defaultContent` to be given, and creates it if it doesn't already exist.
+This example expects a `branch`, `filepath`, and `defaultContent` to be given, and creates the file if it doesn't already exist.
+
+### Branch
+
+Supplying a branch when creating a file, will use `ensureFile` and will handle branch and file creation behind the scenes.
+
+See [ensureFile](/#/core%2Frepo%2Fcontents?id=section-ensure-content) for more information.
 
 If `filepath` is not provided, a form will be provided as the `component` so that it can be provided.
 
