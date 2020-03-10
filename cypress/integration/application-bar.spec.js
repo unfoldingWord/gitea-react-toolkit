@@ -4,7 +4,7 @@ describe('Application Bar', function () {
     cy.clearLocalStorage();
   });
   beforeEach(() => {
-    cy.visit('/application-bar');
+    cy.visit('/#/Application%20Bar%20');
   })
 
   it('should test basic functionality of application bar with repository selection', function () {

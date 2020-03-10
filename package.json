@@ -1,6 +1,6 @@
 {
   "name": "gitea-react-toolkit",
-  "version": "0.7.0",
+  "version": "1.0.0-alpha.0",
   "license": "MIT",
   "description": "A Gitea API React Toolkit Component Library",
   "homepage": "https://gitea-react-toolkit.netlify.com/",
@@ -24,7 +24,7 @@
     "build": "styleguidist build",
     "prepublishOnly": "rm -fr ./dist & babel ./src --out-dir ./dist -s inline --extensions \".ts,.js\"",
     "cypress:run": "cypress run",
-    "test:e2e": "NODE_ENV=test start-test 3000 cypress:run && nyc report --reporter=json-summary",
+    "test:e2e": "NODE_ENV=test start-test 6060 cypress:run && nyc report --reporter=json-summary",
     "test:unit": "NODE_ENV=test jest ./src/core --coverage && cat ./coverage/lcov.info | coveralls",
     "test": "nyc --exclude-after-remap=false npm run test:e2e",
     "create-coverage-badge": "bash scripts/create-badge-json.sh"
