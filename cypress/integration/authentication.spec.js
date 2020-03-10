@@ -10,7 +10,7 @@ describe('Authentication', function () {
     cy.clearLocalStorage();
   });
   beforeEach(() => {
-    cy.visit('/authentication');
+    cy.visit('/#/Authentication%20');
   });
   it('should login with correct password', function () {
     cy.get('[data-test=username-input] input').eq(APPLICATION_FORMS.AUTHENTICATION).type(Cypress.env('TEST_USERNAME'));

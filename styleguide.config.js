@@ -201,8 +201,9 @@ module.exports = {
   components: 'src/components/**/[A-Z]*.js',
   moduleAliases: { 'gitea-react-toolkit': path.resolve(__dirname, 'src') },
   version,
+  // webpackConfig: require( 'react-scripts/config/webpack.config' ),
   webpackConfig: {
-    devtool: 'cheap-module-eval-source-map',
+    devtool: 'source-map',
     module: {
       rules: [
         {
@@ -227,4 +228,3 @@ module.exports = {
     },
   },
 };
-

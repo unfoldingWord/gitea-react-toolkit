@@ -14,12 +14,13 @@ function FileComponent({
   return component;
 };
 
-function Component({
+function RepositoryFileComponent({
+  defaultOwner,
   branch,
   filepath,
   config,
 }) {
-  const { state: repository, actions, component: repoComponent } = useRepository({ branch, config });
+  const { state: repository, actions, component: repoComponent } = useRepository({ branch, config, defaultOwner });
 
   const component = (!repository) ? repoComponent : (
     <FileComponent repository={repository} filepath={filepath} config={config} />
@@ -28,14 +29,16 @@ function Component({
   return component;
 };
 
+const defaultOwner = 'unfoldingWord';
 const branch = 'master';
-const filepath = 'README.md';
+// const filepath = 'README.md';
 const config = {
   server: "https://bg.door43.org/",
 };
 
-<Component
+<RepositoryFileComponent
   //** Pass any props as you normally would. */
+  defaultOwner={defaultOwner}
   branch={branch}
   // filepath={filepath}
   config={config}
