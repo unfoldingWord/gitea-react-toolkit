@@ -1,4 +1,6 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, {
+  useState, useCallback, useMemo,
+} from 'react';
 import PropTypes from 'prop-types';
 import deepFreeze from 'deep-freeze';
 

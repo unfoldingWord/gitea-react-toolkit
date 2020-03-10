@@ -23,9 +23,7 @@ function LoginForm({
 
   let user;
 
-  if (authentication) {
-    user = authentication.user;
-  }
+  if (authentication) user = authentication.user;
 
   const updateFormData = (event) => {
     const {
@@ -33,11 +31,9 @@ function LoginForm({
     } = event.target;
     const _formData = { ...formData };
 
-    if (type === 'checkbox') {
-      _formData[value] = checked;
-    } else {
-      _formData[name] = value;
-    }
+    if (type === 'checkbox') _formData[value] = checked;
+    else _formData[name] = value;
+
     setFormData(_formData);
   };
 
