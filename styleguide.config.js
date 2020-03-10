@@ -201,25 +201,33 @@ module.exports = {
   components: 'src/components/**/[A-Z]*.js',
   moduleAliases: { 'gitea-react-toolkit': path.resolve(__dirname, 'src') },
   version,
-  webpackConfig: require( 'react-scripts/config/webpack.config' ),
-  // webpackConfig: {
-  //   devtool: 'source-map',
-  //   module: {
-  //     rules: [
-  //       {
-  //         test: /\.js$/,
-  //         exclude: /node_modules/,
-  //         loader: 'babel-loader',
-  //       },
-  //       {
-  //         test: /\.css$/,
-  //         loader: 'style-loader!css-loader',
-  //       },
-  //     ],
-  //   },
-  // },
-  // propsParser: require('react-docgen-typescript').withCustomConfig(
-  //   './tsconfig.json'
-  // ).parse,
+  // webpackConfig: require( 'react-scripts/config/webpack.config' ),
+  webpackConfig: {
+    devtool: 'source-map',
+    module: {
+      rules: [
+        {
+          test: /\.js$/,
+          exclude: /node_modules/,
+          loader: 'babel-loader',
+        },
+        {
+          test: /\.css$/,
+          loader: 'style-loader!css-loader',
+        },
+        {
+          test: /\.tsx?$/,
+          use: [
+            {
+              loader: 'ts-loader',
+              options: { transpileOnly: true },
+            },
+          ],
+        },
+      ],
+    },
+  },
+  propsParser: require('react-docgen-typescript').withCustomConfig(
+    './tsconfig.json'
+  ).parse,
 };
-
