@@ -47,7 +47,7 @@ function UserMenu({
     <Avatar className={classes.avatar} src={authentication.user.avatar_url} />
   );
 
-  const authenticationModal = (!modal) ? <div /> : (
+  const authenticationModal = (!modal) ? <></> : (
     <Modal open={true} onClose={closeModal}>
       <Paper className={classes.modal}>
         <Authentication

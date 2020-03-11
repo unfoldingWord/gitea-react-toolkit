@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+/* eslint-disable camelcase */
+import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   IconButton,
@@ -10,69 +11,80 @@ import {
 import { FolderShared } from '@material-ui/icons';
 
 import { useStyles } from './useStyles';
-import { withRepository } from '..';
+import { useRepository } from '..';
 
 function RepositoryMenu({
+  repositories,
+  urls,
+  defaultOwner,
+  defaultQuery,
+  config,
+  branch,
   authentication,
-  repository,
+  repository: _repository,
   onRepository,
-  repositoryConfig,
 }) {
   const classes = useStyles();
   const [modal, setModal] = useState(false);
+  const {
+    state: repository,
+    actions: { update, close },
+    component: repositoryComponent,
+  } = useRepository({
+    authentication, repositories, urls, defaultOwner, defaultQuery, branch, config, repository: _repository,
+  });
 
-  const handleClose = () => {
-    repository.close();
+  const {
+    name,
+    avatar_url,
+    owner,
+    full_name,
+  } = repository || {};
+
+  useEffect(() => {
+    if (_repository && _repository.full_name !== full_name) update(repository);
+
+    if (repository && repository.full_name !== full_name) onRepository(repository);
     setModal(false);
-  };
+  }, [_repository, full_name, onRepository, repository, update]);
 
-  const handleOpen = () => {
+  const handleOpen = useCallback(() => {
     setModal(true);
-  };
+  }, []);
 
   let button;
 
-  if (repository && repository.owner) {
-    const avatarUrl = repository.avatar_url || repository.owner.avatar_url;
+  if (name && owner) {
+    const avatarComponent = <Avatar src={avatar_url || owner.avatar_url} />;
 
     button = (
       <Chip
         data-test="repository-item-icon"
-        avatar={<Avatar src={avatarUrl} />}
-        label={repository.name}
-        onDelete={handleClose}
+        avatar={avatarComponent}
+        label={name}
+        onDelete={close}
         color="primary"
       />
     );
   } else {
     button = (
-      <IconButton
-        onClick={handleOpen}
-        color="inherit"
-      >
+      <IconButton onClick={handleOpen} color="inherit">
         <FolderShared />
       </IconButton>
     );
-  }
+  };
 
-  let modalComponent = <div />;
+  let modalComponent = <></>;
 
-  if (modal && !repository) {
-    const RepositoryComponent = withRepository(<div />);
-
+  if (modal && !full_name) {
     modalComponent = (
       <Modal data-test="repository-menu-modal" open={true} onClose={() => setModal(false)}>
         <Paper className={classes.modal}>
-          <RepositoryComponent
-            authentication={authentication}
-            repository={repository}
-            onRepository={onRepository}
-            repositoryConfig={repositoryConfig}
-          />
+          {repositoryComponent}
         </Paper>
       </Modal>
     );
-  }
+  };
 
   return (
     <div data-test="repository-menu">
@@ -80,12 +92,17 @@ function RepositoryMenu({
       {modalComponent}
     </div>
   );
-}
+};
 
-// if (withRepository && withRepository.propTypes) {
-//   RepositoryMenuComponent.propTypes = { ...withRepository.propTypes, };
-// }
 RepositoryMenu.propTypes = {
+  /** Urls array to get repository data, if repository data is not provided. */
+  urls: PropTypes.array,
+  /** Repositories data array to render, if urls not provided. */
+  repositories: PropTypes.array,
+  /** Prefill the owner search field. */
+  defaultOwner: PropTypes.string,
+  /** Prefill the query search field. */
+  defaultQuery: PropTypes.string,
   /** Pass a previously returned authentication object to bypass login. */
   authentication: PropTypes.shape({
     user: PropTypes.object.isRequired,
@@ -108,9 +125,9 @@ RepositoryMenu.propTypes = {
     avatar_url: PropTypes.string,
   }),
   /** Configuration required if paths are provided as URL. */
-  repositoryConfig: PropTypes.shape({
+  config: PropTypes.shape({
     server: PropTypes.string.isRequired,
   }),
-}
+};
 
 export default RepositoryMenu;

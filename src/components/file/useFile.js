@@ -22,7 +22,7 @@ function useFile({
   const [{ filepath, defaultContent }, setFileProps] = useState({
     filepath: _filepath, defaultContent: _defaultContent,
   });
-  const branch = repository.branch || repository.default_branch;
+  const branch = repository && (repository.branch || repository.default_branch);
   const [state, setState] = useState();
   const [deleted, setDeleted] = useState();
   const config = _config || (authentication && authentication.config);

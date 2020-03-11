@@ -10,14 +10,16 @@ function withRepository(Component) {
       repositories,
       defaultOwner,
       defaultQuery,
+      ...repositoryConfig
     }={},
-    config,
+    config: _config,
     authentication,
     branch,
     repository: incomingRepository,
     onRepository,
     ...props
   }) {
+    const config = _config || repositoryConfig;
     const { state, actions, component } = useRepository({
       authentication, repositories, urls, defaultOwner, defaultQuery, config, branch, repository: incomingRepository,
     });

@@ -10,7 +10,7 @@ const [repository, setRepository] = React.useState();
   <RepositoryMenu
     repository={repository}
     onRepository={setRepository}
-    repositoryConfig={{
+    config={{
       server: "https://bg.door43.org",
     }}
   />
@@ -29,12 +29,10 @@ const [repository, setRepository] = React.useState();
   <RepositoryMenu
     repository={repository}
     onRepository={setRepository}
-    repositoryConfig={{
-      urls: [
-        "https://bg.door43.org/api/v1/repos/door43-catalog/en_ta",
-        "https://bg.door43.org/api/v1/repos/door43-catalog/en_tw",
-      ]
-    }}
+    urls={[
+      "https://bg.door43.org/api/v1/repos/door43-catalog/en_ta",
+      "https://bg.door43.org/api/v1/repos/door43-catalog/en_tw",
+    ]}
   />
 </Paper>
 ```

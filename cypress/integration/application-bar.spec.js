@@ -5,7 +5,7 @@ describe('Application Bar', function () {
   });
   beforeEach(() => {
     cy.visit('/#/Application%20Bar%20');
-  })
+  });
 
   it('should test basic functionality of application bar with repository selection', function () {
     cy.get('[data-test=application-bar]').should('not.contain.text', 'en_ta');
@@ -30,7 +30,7 @@ describe('Application Bar', function () {
     cy.get('[data-test=remember-checkbox]').eq(0).click();
     cy.get('[data-test=submit-button]').eq(0).click();
     cy.contains('Logout');
-    cy.get('body').click('top')
+    cy.get('body').click('top');
     cy.get('[data-test=user-menu-icon] img').should('exist');
   });
 });

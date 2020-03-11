@@ -11,31 +11,27 @@ import {
 } from '@material-ui/icons';
 
 import { useStyles } from './useStyles';
-import { Tree } from '..';
+import { useFile } from '..';
 
 function DrawerMenu({
   drawerMenu,
-  blob,
-  onBlob,
+  file: _file,
+  onFile,
   repository,
+  authentication,
   config,
 }) {
   const classes = useStyles();
   const [openDrawer, setOpenDrawer] = useState(false);
+  const {
+    state: file, actions, component: fileComponent,
+  } = useFile({
+    authentication, repository, file: _file, onFile, config,
+  });
 
   const toggleDrawer = () => {
     setOpenDrawer(!openDrawer);
   };
-
-  const fileTree = (!repository) ? <></> : (
-    <Tree
-      url={repository.tree_url}
-      blob={blob}
-      onBlob={onBlob}
-      config={config}
-      selected={true}
-    />
-  );
 
   const drawerClasses = { paper: classes.drawerPaper };
   return (
@@ -57,7 +53,7 @@ function DrawerMenu({
         <Divider />
         {drawerMenu}
         <Divider />
-        {fileTree}
+        {fileComponent}
         <Divider />
       </Drawer>
     </div>
@@ -67,8 +63,8 @@ function DrawerMenu({
 DrawerMenu.propTypes = {
   /** Component to render inside of the drawer menu. */
   drawerMenu: PropTypes.element,
-  /** Blob data to render, if url not provided. */
-  blob: PropTypes.shape({
+  /** File data to render, if url not provided. */
+  file: PropTypes.shape({
     /** The filepath in the Git Tree Blob Object */
     path: PropTypes.string.isRequired,
     /** The url in the Git Tree Blob Object */
@@ -76,8 +72,8 @@ DrawerMenu.propTypes = {
     /** The content size of the Git Tree Blob Object */
     size: PropTypes.number,
   }),
-  /** Function to propogate when the Blob is selected. */
-  onBlob: PropTypes.func,
+  /** Function to propogate when the File is selected. */
+  onFile: PropTypes.func,
   /** Repository data to render, if url not provided. */
   repository: PropTypes.shape({
     id: PropTypes.number,

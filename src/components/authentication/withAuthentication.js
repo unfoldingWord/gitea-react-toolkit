@@ -21,7 +21,7 @@ function withAuthentication(Component) {
       else setAuth(_auth);
     };
 
-    let component = <div />;
+    let component = <></>;
 
     if (!isAuthenticated(auth) && config) {
       component = (

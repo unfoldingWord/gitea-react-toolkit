@@ -37,7 +37,7 @@ function RepositoryFormMenu({
     </IconButton>
   );
 
-  let modalComponent = <div />;
+  let modalComponent = <></>;
 
   if (modal) {
     modalComponent = (

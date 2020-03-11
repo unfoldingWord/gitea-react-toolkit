@@ -39,7 +39,7 @@ function withBlob(Component) {
 
     const _config = { ...config, updateBlob }
 
-    let component = <div />;
+    let component = <></>;
 
     if (!hasBlob() && (tree || url)) {
       component = (

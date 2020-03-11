@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   AppBar,
@@ -23,38 +23,48 @@ function ApplicationBar({
   authenticationConfig,
   repository,
   onRepository,
-  repositoryConfig,
-  blob,
-  onBlob,
+  repositoryConfig: {
+    repositories,
+    urls,
+    defaultOwner: _defaultOwner,
+    defaultQuery,
+    branch,
+  },
+  config: _config,
+  file,
+  onFile,
 }) {
   const classes = useStyles();
-  let _authenticationConfig = { ...authenticationConfig };
-  const _repositoryConfig = { ...repositoryConfig };
+  const _authenticationConfig = (authentication && authentication.config) || { ...authenticationConfig };
+  const config = _config || _authenticationConfig;
 
-  if (authentication && authentication.config) {
-    _authenticationConfig = authentication.config;
-    _repositoryConfig.defaultOwner = authentication.user.username;
-  }
+  const defaultOwner = _defaultOwner || (authentication && authentication.user.username);
 
-  if (!repository && blob) {
-    onBlob();
-  }
+  useEffect(() => {
+    if (onFile && !repository && file) onFile();
+  }, [repository, file, onFile]);
 
   const drawerMenuComponent = (
     <DrawerMenu
       drawerMenu={drawerMenu}
       repository={repository}
-      config={_repositoryConfig}
-      blob={blob}
-      onBlob={onBlob}
+      authentication={authentication}
+      config={config}
+      file={file}
+      onFile={onFile}
     />
   );
   const repositoryMenuComponent = (
     <RepositoryMenu
+      config={config}
       authentication={authentication}
       repository={repository}
       onRepository={onRepository}
-      repositoryConfig={_repositoryConfig}
+      repositories={repositories}
+      urls={urls}
+      defaultOwner={defaultOwner}
+      defaultQuery={defaultQuery}
+      branch={branch}
     />
   );
   const userMenuComponent = (
@@ -78,7 +88,7 @@ function ApplicationBar({
             {title}
           </Typography>
           <Typography variant="subtitle2" color="inherit" className={classes.grow} noWrap>
-            {blob ? blob.filepath : ''}
+            {file ? file.filepath : ''}
           </Typography>
           <div className={classes.grow} />
           {buttons}
@@ -129,10 +139,17 @@ ApplicationBar.propTypes = {
   }),
   /** Configuration required if paths are provided as URL. */
   repositoryConfig: PropTypes.shape({
-    server: PropTypes.string.isRequired,
+    /** Urls array to get repository data, if repository data is not provided. */
+    urls: PropTypes.array,
+    /** Repositories data array to render, if urls not provided. */
+    repositories: PropTypes.array,
+    /** Prefill the owner search field. */
+    defaultOwner: PropTypes.string,
+    /** Prefill the query search field. */
+    defaultQuery: PropTypes.string,
   }),
   /** Blob data to render, if url not provided. */
-  blob: PropTypes.shape({
+  file: PropTypes.shape({
     /** The filepath in the Git Tree Blob Object */
     path: PropTypes.string.isRequired,
     /** The url in the Git Tree Blob Object */
@@ -141,7 +158,12 @@ ApplicationBar.propTypes = {
     size: PropTypes.number,
   }),
   /** Function to propogate when the Blob is selected. */
-  onBlob: PropTypes.func,
+  onFile: PropTypes.func,
+  /** Configuration for authentication to work, server and tokenid are required. */
+  config: PropTypes.shape({
+    /** The Gitea server to use when authenticating. */
+    server: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 export default ApplicationBar;

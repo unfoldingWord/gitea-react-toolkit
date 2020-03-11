@@ -126,20 +126,19 @@ function useRepository({
 };
 
 useRepository.propTypes = {
+  /** Urls array to get repository data, if repository data is not provided. */
+  urls: PropTypes.array,
+  /** Repositories data array to render, if urls not provided. */
+  repositories: PropTypes.array,
+  /** Prefill the owner search field. */
+  defaultOwner: PropTypes.string,
+  /** Prefill the query search field. */
+  defaultQuery: PropTypes.string,
   /** Configuration to pass through to the Search/Repositories component. */
-  repositoryConfig: PropTypes.shape({
-    /** Urls array to get repository data, if repository data is not provided. */
-    urls: PropTypes.array,
-    /** Repositories data array to render, if urls not provided. */
-    repositories: PropTypes.array,
-    /** Prefill the owner search field. */
-    defaultOwner: PropTypes.string,
-    /** Prefill the query search field. */
-    defaultQuery: PropTypes.string,
+  config: PropTypes.shape({
     /** Configuration required for Search or Repositories if paths are provided as URL. */
     server: PropTypes.string,
   }).isRequired,
-  ...Repository.propTypes,
 };
 
 export default useRepository;
