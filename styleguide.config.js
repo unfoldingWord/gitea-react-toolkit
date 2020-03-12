@@ -29,7 +29,8 @@ const sections = [
     name: 'Authentication ',
     content: path.join(pathComponents, 'authentication', '_readme.md'),
     components: [
-      'withAuthentication',
+      'Authentication.context',
+      'useAuthentication',
       'Authentication',
       'LoginForm',
     ].map(componentName =>

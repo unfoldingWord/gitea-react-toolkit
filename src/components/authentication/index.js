@@ -1,4 +1,4 @@
 export { default as useAuthentication } from './useAuthentication';
-export { default as withAuthentication } from './withAuthentication';
+export { AuthenticationContext, AuthenticationContextProvider } from './Authentication.context';
 export { default as Authentication } from './Authentication';
 export { LoginFormComponent as LoginForm } from './LoginForm';

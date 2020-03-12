@@ -1,50 +1,35 @@
-import React, {
-  useState, useCallback, useMemo, useEffect,
-} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import deepFreeze from 'deep-freeze';
 
-import { isAuthenticated } from './helpers';
-import { Authentication } from '.';
+import { useAuthentication } from '.';
 
-function useAuthentication({
-  authentication: _authentication,
-  onAuthentication,
-  messages,
+export const AuthenticationContext = React.createContext();
+
+export function AuthenticationContextProvider({
   config,
+  messages,
+  authentication,
+  onAuthentication,
+  children,
 }) {
-  const [state, setState] = useState(_authentication);
-  const authentication = state && deepFreeze(state);
+  const { state, actions, component } = useAuthentication({
+    authentication, onAuthentication, config, messages,
+  });
 
-  const update = useCallback((_auth) => {
-    setState(_auth);
-  }, []);
-
-  useEffect(() => {
-    if (onAuthentication) onAuthentication(authentication);
-  }, [authentication, onAuthentication]);
-
-  const component = useMemo(() => (
-    (!isAuthenticated(authentication) && config) && (
-      <Authentication
-        messages={messages}
-        config={config}
-        authentication={authentication}
-        onAuthentication={update}
-      />
-    )
-  ), [authentication, config, messages, update]);
-
-  const response = {
-    state: authentication,
-    actions: { update },
+  const context = {
+    state,
+    actions,
     component,
   };
 
-  return response;
+  return (
+    <AuthenticationContext.Provider value={context}>
+      {children}
+    </AuthenticationContext.Provider>
+  );
 };
 
-useAuthentication.propTypes = {
+AuthenticationContextProvider.propTypes = {
   /** Pass a previously returned authentication object to bypass login. */
   authentication: PropTypes.shape({
     user: PropTypes.object.isRequired,
@@ -69,5 +54,3 @@ useAuthentication.propTypes = {
     tokenid: PropTypes.string.isRequired,
   }).isRequired,
 };
-
-export default useAuthentication;
