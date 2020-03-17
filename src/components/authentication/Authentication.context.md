@@ -4,9 +4,9 @@ import { Paper } from '@material-ui/core';
 import { Authentication, AuthenticationContext, AuthenticationContextProvider } from 'gitea-react-toolkit';
 
 function Component() {
-  const { state, actions, component } = useContext(AuthenticationContext);
+  const { state: authentication, actions, component } = useContext(AuthenticationContext);
 
-  return !state ? component : <pre>{JSON.stringify(state, null, 2)}</pre>;
+  return !authentication ? component : <pre>{JSON.stringify(authentication, null, 2)}</pre>;
 };
 
 const [authentication, setAuthentication] = React.useState();

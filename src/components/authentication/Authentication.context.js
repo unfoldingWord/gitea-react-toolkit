@@ -12,7 +12,9 @@ export function AuthenticationContextProvider({
   onAuthentication,
   children,
 }) {
-  const { state, actions, component } = useAuthentication({
+  const {
+    state, actions, component,
+  } = useAuthentication({
     authentication, onAuthentication, config, messages,
   });
 

@@ -70,6 +70,7 @@ const sections = [
     name: 'Repository ',
     content: path.join(pathComponents, 'repository', '_readme.md'),
     components: [
+      'Repository.context',
       'Repository',
       'withRepository',
     ].map(componentName =>

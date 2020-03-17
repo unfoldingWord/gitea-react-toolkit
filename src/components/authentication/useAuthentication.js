@@ -24,6 +24,14 @@ function useAuthentication({
     if (onAuthentication) onAuthentication(authentication);
   }, [authentication, onAuthentication]);
 
+
+  useEffect(() => {
+    const _auth = JSON.stringify(_authentication);
+    const auth = JSON.stringify(authentication);
+
+    if (_auth !== auth) setState(authentication);
+  }, [_authentication, authentication]);
+
   const component = useMemo(() => (
     (!isAuthenticated(authentication) && config) && (
       <Authentication
