@@ -52,6 +52,8 @@ function AuthenticatedRepositoryComponent() {
   return !authentication ? component : (
     <RepositoryContextProvider
       authentication={authentication}
+      repository={repository}
+      onRepository={setRepository}
       config={authentication.config}
       defaultOwner={authentication.user.name}
       defaultQuery=""

@@ -21,6 +21,7 @@ function useRepository({
   config: _config,
   authentication,
   repository: __repository,
+  onRepository,
   branch: __branch,
 }) {
   const [state, setState] = useState(__repository);
@@ -42,6 +43,17 @@ function useRepository({
     };
     setState(_repo);
   }, [branch]);
+
+  useEffect(() => {
+    if (onRepository) onRepository(repository);
+  }, [repository, onRepository]);
+
+  useEffect(() => {
+    const _repo = JSON.stringify(__repository);
+    const repo = JSON.stringify(repository);
+
+    if (_repo !== repo) setState(__repository);
+  }, [repository, __repository]);
 
   const updateBranch = useCallback((_branch) => {
     setBranch(_branch);
