@@ -17,7 +17,7 @@ export function FileContextProvider({
   children,
 }) {
   const {
-    state, actions, component, config,
+    state, actions, component, components, config,
   } = useFile({
     config: _config, authentication, repository, filepath, file, onFile, defaultContent, create,
   });
@@ -26,6 +26,7 @@ export function FileContextProvider({
     state,
     actions,
     component,
+    components,
     config,
   };
 

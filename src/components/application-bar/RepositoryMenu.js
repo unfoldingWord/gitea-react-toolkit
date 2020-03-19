@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
-import React, { useState, useCallback, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import React, {
+  useState, useCallback, useContext,
+} from 'react';
 import {
   IconButton,
   Avatar,
@@ -11,28 +12,16 @@ import {
 import { FolderShared } from '@material-ui/icons';
 
 import { useStyles } from './useStyles';
-import { useRepository } from '..';
+import { RepositoryContext } from '..';
 
-function RepositoryMenu({
-  repositories,
-  urls,
-  defaultOwner,
-  defaultQuery,
-  config,
-  branch,
-  authentication,
-  repository: _repository,
-  onRepository,
-}) {
+function RepositoryMenu() {
   const classes = useStyles();
   const [modal, setModal] = useState(false);
   const {
     state: repository,
-    actions: { update, close },
+    actions,
     component: repositoryComponent,
-  } = useRepository({
-    authentication, repositories, urls, defaultOwner, defaultQuery, branch, config, repository: _repository,
-  });
+  } = useContext(RepositoryContext) || {};
 
   const {
     name,
@@ -40,13 +29,6 @@ function RepositoryMenu({
     owner,
     full_name,
   } = repository || {};
-
-  useEffect(() => {
-    if (_repository && _repository.full_name !== full_name) update(repository);
-
-    if (repository && repository.full_name !== full_name) onRepository(repository);
-    setModal(false);
-  }, [_repository, full_name, onRepository, repository, update]);
 
   const handleOpen = useCallback(() => {
     setModal(true);
@@ -62,7 +44,7 @@ function RepositoryMenu({
         data-test="repository-item-icon"
         avatar={avatarComponent}
         label={name}
-        onDelete={close}
+        onDelete={actions && actions.close}
         color="primary"
       />
     );
@@ -95,39 +77,6 @@ function RepositoryMenu({
 };
 
 RepositoryMenu.propTypes = {
-  /** Urls array to get repository data, if repository data is not provided. */
-  urls: PropTypes.array,
-  /** Repositories data array to render, if urls not provided. */
-  repositories: PropTypes.array,
-  /** Prefill the owner search field. */
-  defaultOwner: PropTypes.string,
-  /** Prefill the query search field. */
-  defaultQuery: PropTypes.string,
-  /** Pass a previously returned authentication object to bypass login. */
-  authentication: PropTypes.shape({
-    user: PropTypes.object.isRequired,
-    token: PropTypes.object.isRequired,
-    config: PropTypes.object.isRequired,
-    remember: PropTypes.bool,
-  }),
-  /** Function to call when repository is selected. */
-  onRepository: PropTypes.func.isRequired,
-  /** Repository data to render, if url not provided. */
-  repository: PropTypes.shape({
-    id: PropTypes.number,
-    owner: PropTypes.object.isRequired,
-    name: PropTypes.string.isRequired,
-    full_name: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    html_url: PropTypes.string.isRequired,
-    website: PropTypes.string.isRequired,
-    tree_url: PropTypes.string,
-    avatar_url: PropTypes.string,
-  }),
-  /** Configuration required if paths are provided as URL. */
-  config: PropTypes.shape({
-    server: PropTypes.string.isRequired,
-  }),
 };
 
 export default RepositoryMenu;

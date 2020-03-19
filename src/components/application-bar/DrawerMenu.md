@@ -5,7 +5,11 @@ import {
   Paper, List, ListItem, ListItemIcon, ListItemText,
 } from '@material-ui/core';
 import { Mail, Inbox } from '@material-ui/icons';
-const drawerMenu = (
+import {
+  DrawerMenu, RepositoryContextProvider, FileContextProvider
+} from 'gitea-react-toolkit';
+
+const children = (
   <>
     <List>
       {['Inbox', 'Starred', 'Sent', 'Drafts'].map((text, index) => (
@@ -19,7 +23,11 @@ const drawerMenu = (
 );
 
 <Paper>
-  <DrawerMenu
-    drawerMenu={drawerMenu}
-  />
+  <RepositoryContextProvider>
+    <FileContextProvider>
+      <DrawerMenu
+        children={children}
+      />
+    </FileContextProvider>
+  </RepositoryContextProvider>
 </Paper>

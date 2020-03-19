@@ -16,7 +16,7 @@ function useBlob({
 
   const url = _url || (repository && repository.tree_url);
 
-  const updateBlob = useCallback((_blob) => {
+  const update = useCallback((_blob) => {
     let __blob;
 
     if (_blob) __blob = (_blob.filepath) ? _blob : { ..._blob, filepath: _blob.path };
@@ -24,30 +24,29 @@ function useBlob({
   }, []);
 
   const close = useCallback(() => {
-    updateBlob();
-  }, [updateBlob]);
+    update();
+  }, [update]);
 
-  const component = useMemo(() => {
-    return (!blob && (tree || url)) ? (
+  const browse = useMemo(() => {
+    return (tree || url) ? (
       <Tree
         tree={tree}
         url={url}
         config={config}
         selected={true}
-        onBlob={updateBlob}
+        onBlob={update}
       />
     ) : (<></>);
-  }, [tree, url, config, blob, updateBlob]);
-
-  console.log('useBlob');
+  }, [tree, url, config, update]);
 
   return {
     state: blob,
     actions: {
       close,
-      updateBlob,
+      update,
     },
-    component,
+    component: browse,
+    components: { browse },
   };
 };
 

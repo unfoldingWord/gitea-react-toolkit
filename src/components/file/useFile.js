@@ -30,7 +30,7 @@ function useFile({
   const [deleted, setDeleted] = useState();
 
   const {
-    state: blobState, actions: blobActions, component: blobComponent,
+    state: blobState, actions: blobActions, components: blobComponents,
   } = useBlob({
     config, repository, filepath,
   });
@@ -38,13 +38,10 @@ function useFile({
   const { push: writeable } = (repository && repository.permissions) ? repository.permissions : {};
 
   const update = useCallback((_file) => {
-    console.log('useFile.updateFile');
     onFile(_file);
   }, [onFile]);
 
   const load = useCallback(async () => {
-    console.log('useFile.load');
-
     if (config && repository && filepath) {
       const _file = await ensureFile({
         filepath, defaultContent, authentication, config, repository, branch,
@@ -77,6 +74,10 @@ function useFile({
     update();
     setFileProps({});
   }, [update, blobActions]);
+
+  useEffect(() => { // if there is a file but no repository, close file.
+    if (!repository && file) close();
+  }, [repository, file, close]);
 
   const save = useCallback(async (content) => {
     if (writeable) {
@@ -114,7 +115,7 @@ function useFile({
 
   const components = {
     create: <FileForm onSubmit={setFileProps} />,
-    browse: blobComponent,
+    browse: blobComponents.browse,
     fileCard: (
       <FileCard
         authentication={authentication}

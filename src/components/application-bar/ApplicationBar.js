@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
   AppBar,
@@ -11,69 +11,16 @@ import {
 // import { withAuthentication, withRepository, withFile } from '../';
 import { useStyles } from './useStyles';
 import {
-  UserMenu, DrawerMenu, RepositoryMenu,
+  UserMenu, DrawerMenu, RepositoryMenu, FileContext,
 } from '..';
 
 function ApplicationBar({
   title,
   buttons,
   drawerMenu,
-  authentication,
-  onAuthentication,
-  authenticationConfig,
-  repository,
-  onRepository,
-  repositoryConfig: {
-    repositories,
-    urls,
-    defaultOwner: _defaultOwner,
-    defaultQuery,
-    branch,
-  },
-  config: _config,
-  file,
-  onFile,
 }) {
   const classes = useStyles();
-  const _authenticationConfig = (authentication && authentication.config) || { ...authenticationConfig };
-  const config = _config || _authenticationConfig;
-
-  const defaultOwner = _defaultOwner || (authentication && authentication.user.username);
-
-  useEffect(() => {
-    if (onFile && !repository && file) onFile();
-  }, [repository, file, onFile]);
-
-  const drawerMenuComponent = (
-    <DrawerMenu
-      drawerMenu={drawerMenu}
-      repository={repository}
-      authentication={authentication}
-      config={config}
-      file={file}
-      onFile={onFile}
-    />
-  );
-  const repositoryMenuComponent = (
-    <RepositoryMenu
-      config={config}
-      authentication={authentication}
-      repository={repository}
-      onRepository={onRepository}
-      repositories={repositories}
-      urls={urls}
-      defaultOwner={defaultOwner}
-      defaultQuery={defaultQuery}
-      branch={branch}
-    />
-  );
-  const userMenuComponent = (
-    <UserMenu
-      authentication={authentication}
-      onAuthentication={onAuthentication}
-      authenticationConfig={_authenticationConfig}
-    />
-  );
+  const { state: file } = useContext(FileContext)
 
   return (
     <div className={classes.root}>
@@ -82,7 +29,9 @@ function ApplicationBar({
         className={classes.appBar}>
         <Toolbar data-test="application-bar">
           <div className={classes.menuButton}>
-            {drawerMenuComponent}
+            <DrawerMenu>
+              {drawerMenu}
+            </DrawerMenu>
           </div>
           <Typography variant="h6" color="inherit" className={classes.grow} noWrap>
             {title}
@@ -92,8 +41,8 @@ function ApplicationBar({
           </Typography>
           <div className={classes.grow} />
           {buttons}
-          {repositoryMenuComponent}
-          {userMenuComponent}
+          <RepositoryMenu />
+          <UserMenu />
         </Toolbar>
       </AppBar>
     </div>

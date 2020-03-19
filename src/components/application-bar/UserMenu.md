@@ -3,16 +3,19 @@ The `UserMenu` component helps manage a authentication via a modal with a menu t
 
 ```js
 import { Paper } from '@material-ui/core';
+import { AuthenticationContextProvider, UserMenu } from 'gitea-react-toolkit';
 const [authentication, setAuthentication] = React.useState();
 
 <Paper>
-  <UserMenu
+  <AuthenticationContextProvider
     authentication={authentication}
     onAuthentication={setAuthentication}
-    authenticationConfig={{
+    config={{
       server: "https://bg.door43.org",
       tokenid:"PlaygroundTesting",
     }}
-  />
+  >
+    <UserMenu />
+  </AuthenticationContextProvider>
 </Paper>
 ```
