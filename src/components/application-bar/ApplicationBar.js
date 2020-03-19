@@ -56,63 +56,6 @@ ApplicationBar.propTypes = {
   buttons: PropTypes.element,
   /** Component to render inside of the drawer menu. */
   drawerMenu: PropTypes.element,
-  /** Pass a previously returned authentication object to bypass login. */
-  authentication: PropTypes.shape({
-    user: PropTypes.object.isRequired,
-    token: PropTypes.object.isRequired,
-    config: PropTypes.object.isRequired,
-    remember: PropTypes.bool,
-  }),
-  /** Callback function to propogate the user/token used for API Authentication. */
-  onAuthentication: PropTypes.func.isRequired,
-  /** Configuration for authentication to work, server and tokenid are required. */
-  authenticationConfig: PropTypes.shape({
-    /** The Gitea server to use when authenticating. */
-    server: PropTypes.string.isRequired,
-    /** The id of the token to create/retrieve that is used for the app. */
-    tokenid: PropTypes.string.isRequired,
-  }).isRequired,
-  /** Function to call when repository is selected. */
-  onRepository: PropTypes.func.isRequired,
-  /** Repository data to render, if url not provided. */
-  repository: PropTypes.shape({
-    id: PropTypes.number,
-    owner: PropTypes.object.isRequired,
-    name: PropTypes.string.isRequired,
-    full_name: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    html_url: PropTypes.string.isRequired,
-    website: PropTypes.string.isRequired,
-    tree_url: PropTypes.string,
-    avatar_url: PropTypes.string,
-  }),
-  /** Configuration required if paths are provided as URL. */
-  repositoryConfig: PropTypes.shape({
-    /** Urls array to get repository data, if repository data is not provided. */
-    urls: PropTypes.array,
-    /** Repositories data array to render, if urls not provided. */
-    repositories: PropTypes.array,
-    /** Prefill the owner search field. */
-    defaultOwner: PropTypes.string,
-    /** Prefill the query search field. */
-    defaultQuery: PropTypes.string,
-  }),
-  /** Blob data to render, if url not provided. */
-  file: PropTypes.shape({
-    /** The filepath in the Git Tree Blob Object */
-    path: PropTypes.string.isRequired,
-    /** The url in the Git Tree Blob Object */
-    url: PropTypes.string,
-    /** The content size of the Git Tree Blob Object */
-    size: PropTypes.number,
-  }),
-  /** Function to propogate when the Blob is selected. */
-  onFile: PropTypes.func,
-  /** Configuration for authentication to work, server and tokenid are required. */
-  config: PropTypes.shape({
-    /** The Gitea server to use when authenticating. */
-    server: PropTypes.string.isRequired,
-  }).isRequired,
 };
 
 export default ApplicationBar;

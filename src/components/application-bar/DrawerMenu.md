@@ -25,9 +25,9 @@ const children = (
 <Paper>
   <RepositoryContextProvider>
     <FileContextProvider>
-      <DrawerMenu
-        children={children}
-      />
+      <DrawerMenu>
+        {children}
+      </DrawerMenu>
     </FileContextProvider>
   </RepositoryContextProvider>
 </Paper>

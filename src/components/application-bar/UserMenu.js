@@ -18,7 +18,7 @@ function UserMenu() {
   const openModal = () => setModal(true);
 
   const avatar = !(authentication && authentication.user) ? <AccountCircle fontSize="large" /> : (
-    <Avatar className={classes.avatar} src={authentication.user.avatar_url} />
+    <Avatar data-test="user-menu-avatar" className={classes.avatar} src={authentication.user.avatar_url} />
   );
 
   const authenticationModal = (!modal) ? <></> : (

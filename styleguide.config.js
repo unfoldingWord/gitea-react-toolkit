@@ -186,10 +186,10 @@ const sections = [
 
 module.exports = {
   title: `${upperFirst(camelCase(name))} v${version}`,
-  ribbon: {
-    url: repository.url,
-    text: 'View on GitHub',
-  },
+  // ribbon: {
+  //   url: repository.url,
+  //   text: 'View on GitHub',
+  // },
   styles,
   theme,
   getComponentPathLine: (componentPath) => {

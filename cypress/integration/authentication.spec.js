@@ -39,8 +39,7 @@ describe('Authentication', function () {
   });
 
   it('should fail on invalid server url', function () {
-    cy.get('[title="Show editor"]').eq(APPLICATION_FORMS.AUTHENTICATION).click();
-    cy.contains('bg.door43.org').click({ force: true }).focused().type('hello', { force: true });
+    cy.contains('bg.door43.org').eq(APPLICATION_FORMS.AUTHENTICATION).click({ force: true }).focused().type('hello', { force: true });
     cy.get('[data-test=username-input] input').eq(APPLICATION_FORMS.AUTHENTICATION).type(Cypress.env('TEST_USERNAME'));
     cy.get('[data-test=password-input] input').eq(APPLICATION_FORMS.AUTHENTICATION).type(Cypress.env('TEST_PASSWORD'));
     cy.get('[data-test=remember-checkbox]').eq(APPLICATION_FORMS.AUTHENTICATION).click();
