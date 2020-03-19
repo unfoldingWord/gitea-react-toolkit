@@ -1,46 +1,58 @@
 Reading files only requires a `repository`, a `config`, and a `filepath`.
 
 ```js
-import React, { useMemo } from 'react';
-import { useRepository, useFile } from 'gitea-react-toolkit';
+import { useContext } from 'react';
+import { Paper } from '@material-ui/core';
+import {
+  AuthenticationContext,
+  AuthenticationContextProvider,
+  RepositoryContext,
+  RepositoryContextProvider,
+  FileContext,
+  FileContextProvider,
+} from 'gitea-react-toolkit';
 
-// Define your React component and optionally access blob in props.
-function FileComponent({
-  repository,
-  filepath,
-  config,
-}) {
-  const { state, actions, component } = useFile({ repository, filepath, config });
+function FileComponent() {
+  const { state: file, actions, component, config } = useContext(FileContext);
+
   return component;
 };
 
-function RepositoryFileComponent({
-  defaultOwner,
-  branch,
-  filepath,
-  config,
-}) {
-  const { state: repository, actions, component: repoComponent } = useRepository({ branch, config, defaultOwner });
+function RepositoryComponent() {
+  const [file, setFile] = React.useState();
+  const { state: repository, actions, component, config } = useContext(RepositoryContext);
 
-  const component = (!repository) ? repoComponent : (
-    <FileComponent repository={repository} filepath={filepath} config={config} />
+  // const filepath = '_new_file_1.md';
+  // const defaultContent = 'This is a new file, today...';
+
+  return !repository ? component : (
+    <FileContextProvider
+      config={config}
+      repository={repository}
+      // filepath={filepath}
+      // defaultContent={defaultContent}
+      file={file}
+      onFile={setFile}
+    >
+      <FileComponent />
+    </FileContextProvider>
   );
-
-  return component;
 };
 
-const defaultOwner = 'unfoldingWord';
-const branch = 'master';
-// const filepath = 'README.md';
+const [repository, setRepository] = React.useState();
+const branch = 'testing';
 const config = {
-  server: "https://bg.door43.org/",
+  server: "https://bg.door43.org",
+  tokenid:"PlaygroundTesting",
 };
 
-<RepositoryFileComponent
-  //** Pass any props as you normally would. */
-  defaultOwner={defaultOwner}
-  branch={branch}
-  // filepath={filepath}
+<RepositoryContextProvider
+  repository={repository}
+  onRepository={setRepository}
   config={config}
-/>
+  defaultQuery=""
+  // branch={branch}
+>
+  <RepositoryComponent />
+</RepositoryContextProvider>
 ```

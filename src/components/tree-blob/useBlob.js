@@ -5,8 +5,7 @@ import deepFreeze from 'deep-freeze';
 import { Tree } from '.';
 
 function useBlob({
-  config: _config,
-  authentication,
+  config,
   repository,
   // filepath, TODO: use filepath to pre-select blob;
   tree,
@@ -15,7 +14,6 @@ function useBlob({
   const [state, setState] = useState();
   const blob = state ? deepFreeze(state) : undefined;
 
-  const config = _config || (repository && repository.config) || (authentication && authentication.config);
   const url = _url || (repository && repository.tree_url);
 
   const updateBlob = useCallback((_blob) => {

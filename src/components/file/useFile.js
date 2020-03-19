@@ -16,29 +16,31 @@ function useFile({
   repository,
   filepath: _filepath,
   defaultContent: _defaultContent,
-  config: _config,
-  browse=true,
+  config,
+  file: _file,
+  onFile,
+  create=false,
 }) {
   const [{ filepath, defaultContent }, setFileProps] = useState({
     filepath: _filepath, defaultContent: _defaultContent,
   });
   const branch = repository && (repository.branch || repository.default_branch);
-  const [state, setState] = useState();
+  const file = _file && deepFreeze(_file);
+
   const [deleted, setDeleted] = useState();
-  const config = _config || (authentication && authentication.config);
+
   const {
     state: blobState, actions: blobActions, component: blobComponent,
   } = useBlob({
-    config, authentication, repository, filepath,
+    config, repository, filepath,
   });
-  const file = state && deepFreeze(state);
 
   const { push: writeable } = (repository && repository.permissions) ? repository.permissions : {};
 
-  const updateFile = useCallback((_file) => {
+  const update = useCallback((_file) => {
     console.log('useFile.updateFile');
-    setState(_file);
-  }, []);
+    onFile(_file);
+  }, [onFile]);
 
   const load = useCallback(async () => {
     console.log('useFile.load');
@@ -49,15 +51,15 @@ function useFile({
       });
       const content = await getContentFromFile(_file);
 
-      updateFile({
+      update({
         ..._file, branch, content, filepath: _file.path,
       });
     }
-  }, [authentication, branch, config, defaultContent, filepath, repository, updateFile]);
+  }, [authentication, branch, config, defaultContent, filepath, repository, update]);
 
   useEffect(() => {
-    if (!state && filepath && !deleted) load();
-  }, [deleted, filepath, load, state]);
+    if (!file && filepath && !deleted) load();
+  }, [deleted, filepath, load, file]);
 
   const blobFilepath = blobState && blobState.filepath;
 
@@ -72,9 +74,9 @@ function useFile({
 
   const close = useCallback(() => {
     if (blobActions && blobActions.close) blobActions.close();
-    updateFile();
+    update();
     setFileProps({});
-  }, [updateFile, blobActions]);
+  }, [update, blobActions]);
 
   const save = useCallback(async (content) => {
     if (writeable) {
@@ -103,7 +105,7 @@ function useFile({
   }, [deleted, close]);
 
   const actions = {
-    onFile: updateFile,
+    update,
     load,
     save,
     close,
@@ -117,17 +119,17 @@ function useFile({
       <FileCard
         authentication={authentication}
         repository={repository}
-        file={{ ...state, ...actions }}
+        file={{ ...file, ...actions }}
       />
     ),
   };
 
   let component = <></>;
 
-  if (state) component = components.fileCard;
+  if (file) component = components.fileCard;
   else if (!filepath) {
-    if (browse) component = components.browse;
-    else component = components.create;
+    if (create) component = components.create;
+    else component = components.browse;
   }
 
   return {
@@ -141,8 +143,6 @@ function useFile({
 useFile.propTypes = {
   /** The full filepath for the file. */
   filepath: PropTypes.string,
-  /** The branch to use for the file */
-  branch: PropTypes.string,
   /** Authentication object returned from a successful withAuthentication login. */
   authentication: PropTypes.shape({
     config: PropTypes.shape({
@@ -163,6 +163,8 @@ useFile.propTypes = {
     }),
     name: PropTypes.string.isRequired,
   }).isRequired,
+  /** use a form to create a new file */
+  create: PropTypes.bool,
 };
 
 export default useFile;

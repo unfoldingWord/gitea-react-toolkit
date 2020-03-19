@@ -10,7 +10,7 @@ export function RepositoryContextProvider({
   urls,
   defaultOwner,
   defaultQuery,
-  config,
+  config: _config,
   authentication,
   repository,
   onRepository,
@@ -18,16 +18,17 @@ export function RepositoryContextProvider({
   children,
 }) {
   const {
-    state, actions, component,
+    state, actions, component, config,
   } = useRepository({
     repositories, urls, defaultOwner, defaultQuery,
-    config, authentication, repository, branch, onRepository,
+    config: _config, authentication, repository, branch, onRepository,
   });
 
   const context = {
     state,
     actions,
     component,
+    config,
   };
 
   return (

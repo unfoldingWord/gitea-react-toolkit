@@ -22,6 +22,8 @@ const config = {
   config={config}
   defaultOwner="unfoldingWord"
   defaultQuery="en_ta"
+  repository={repository}
+  onRepository={setRepository}
 >
   <Component />
 </RepositoryContextProvider>

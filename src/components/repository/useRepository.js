@@ -18,17 +18,14 @@ function useRepository({
   urls,
   defaultOwner,
   defaultQuery,
-  config: _config,
+  config,
   authentication,
   repository: __repository,
   onRepository,
   branch: __branch,
 }) {
-  const [state, setState] = useState(__repository);
   const [branch, setBranch] = useState(__branch);
-  const repository = state ? deepFreeze(state) : undefined;
-
-  const config = _config || (repository && repository.config) || (authentication && authentication.config);
+  const repository = __repository && deepFreeze(__repository);
 
   const hasRepository = repository && repository.name && repository.owner && repository.permissions;
   const user = (authentication && authentication.user) ? authentication.user : undefined;
@@ -41,19 +38,12 @@ function useRepository({
       const tree_url = repoTreeUrl(_repo);
       _repo = { ..._repo, tree_url };
     };
-    setState(_repo);
-  }, [branch]);
+    onRepository(_repo);
+  }, [branch, onRepository]);
 
   useEffect(() => {
     if (onRepository) onRepository(repository);
   }, [repository, onRepository]);
-
-  useEffect(() => {
-    const _repo = JSON.stringify(__repository);
-    const repo = JSON.stringify(repository);
-
-    if (_repo !== repo) setState(__repository);
-  }, [repository, __repository]);
 
   const updateBranch = useCallback((_branch) => {
     setBranch(_branch);
@@ -100,7 +90,9 @@ function useRepository({
   let component = <></>;
   // TODO: add Repository component when state
 
-  if (!hasRepository && (urls || repositories)) {
+  if (hasRepository) {
+    component = <Repository repository={repository} config={config} onRepository={onRepository} />;
+  } else if (urls || repositories) {
     component = (
       <Repositories
         urls={urls}
@@ -109,7 +101,7 @@ function useRepository({
         config={config}
       />
     );
-  } else if (!hasRepository && config) {
+  } else if (config) {
     let username;
 
     if (authentication) username = authentication.user.username;
@@ -135,6 +127,7 @@ function useRepository({
       updateBranch,
     },
     component,
+    config,
   };
 };
 

@@ -40,6 +40,9 @@ const sections = [
   {
     name: 'File CRUD',
     content: path.join(pathComponents, 'file', '_readme.md'),
+    components: [
+      path.join(pathComponents, 'file', 'File.context.js'),
+    ],
     sections: [
       {
         name: 'Create',
@@ -72,7 +75,6 @@ const sections = [
     components: [
       'Repository.context',
       'Repository',
-      'withRepository',
     ].map(componentName =>
       path.join(pathComponents, 'repository', `${componentName}.js`)
     ),
@@ -117,7 +119,7 @@ const sections = [
       'Tree',
       'TreeObject',
       'BlobObject',
-      'withBlob',
+      'useBlob',
     ].map(componentName =>
       path.join(pathComponents, 'tree-blob', `${componentName}.js`)
     ),

@@ -6,22 +6,23 @@ import { useAuthentication } from '.';
 export const AuthenticationContext = React.createContext();
 
 export function AuthenticationContextProvider({
-  config,
+  config: _config,
   messages,
   authentication,
   onAuthentication,
   children,
 }) {
   const {
-    state, actions, component,
+    state, actions, component, config,
   } = useAuthentication({
-    authentication, onAuthentication, config, messages,
+    authentication, onAuthentication, config: _config, messages,
   });
 
   const context = {
     state,
     actions,
     component,
+    config,
   };
 
   return (

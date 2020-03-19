@@ -7,52 +7,87 @@ This example expects a `branch`, `filepath`, and `defaultContent` to be given, a
 
 Supplying a branch when creating a file, will use `ensureFile` and will handle branch and file creation behind the scenes.
 
+TODO: Currently branch is managed at Repository and not file. Make the FileForm work with updating Repository Branch.
+
 See [ensureFile](/#/core%2Frepo%2Fcontents?id=section-ensure-content) for more information.
 
 If `filepath` is not provided, a form will be provided as the `component` so that it can be provided.
 
 ```js
-import { useState } from 'react';
-import { withAuthentication, withRepository, useFile } from 'gitea-react-toolkit';
+import { useContext } from 'react';
+import { Paper } from '@material-ui/core';
+import {
+  AuthenticationContext,
+  AuthenticationContextProvider,
+  RepositoryContext,
+  RepositoryContextProvider,
+  FileContext,
+  FileContextProvider,
+} from 'gitea-react-toolkit';
 
-// Define your React component and optionally access blob in props.
-function FileComponent({
-  config,
-  authentication,
-  repository,
-  filepath,
-  defaultContent,
-}) {
-  const { state, actions, component } = useFile({
-    config, authentication, repository, filepath, defaultContent,
-  });
+function FileComponent() {
+  const { state: file, actions, component } = useContext(FileContext);
 
   return component;
 };
 
-const File = withAuthentication(withRepository(FileComponent));
+function RepositoryComponent() {
+  const [file, setFile] = React.useState();
+  const { state: authentication } = useContext(AuthenticationContext);
+  const { state: repository, actions, component, config } = useContext(RepositoryContext);
 
-// Then you can use your blob wrapped component.
-const [authentication, setAuthentication] = useState();
-const [repository, setRepository] = useState();
-const config = authentication && authentication.config;
+  // const filepath = '_new_file_1.md';
+  // const defaultContent = 'This is a new file, today...';
 
-const branch = 'testing';
-const filepath = '_new_file.md';
-const defaultContent = 'This is a new file...';
+  return !repository ? component : (
+    <FileContextProvider
+      config={config}
+      authentication={authentication}
+      repository={repository}
+      // filepath={filepath}
+      // defaultContent={defaultContent}
+      file={file}
+      onFile={setFile}
+      create={true}
+    >
+      <FileComponent />
+    </FileContextProvider>
+  );
+};
 
-<File
-  authenticationConfig={{
-    server: 'https://bg.door43.org/',
-    tokenid: 'PlaygroundTesting',
-  }}
-  authentication={authentication}
-  // onAuthentication={setAuthentication}
-  repository={repository}
-  // onRepository={setRepository}
+function AuthenticatedRepositoryComponent() {
+  const [repository, setRepository] = React.useState();
+  const { state: authentication, actions, component, config } = useContext(AuthenticationContext);
+
+  const branch = 'testing';
+
+  return !authentication ? component : (
+    <RepositoryContextProvider
+      authentication={authentication}
+      repository={repository}
+      onRepository={setRepository}
+      config={config}
+      defaultOwner={authentication.user.name}
+      defaultQuery=""
+      branch={branch}
+    >
+      <RepositoryComponent />
+    </RepositoryContextProvider>
+  );
+}
+
+const [authentication, setAuthentication] = React.useState();
+
+const config = {
+  server: "https://bg.door43.org",
+  tokenid:"PlaygroundTesting",
+};
+
+<AuthenticationContextProvider
   config={config}
-  branch={branch}
-  filepath={filepath}
-  defaultContent={defaultContent}
-/>;
+  authentication={authentication}
+  onAuthentication={setAuthentication}
+>
+  <AuthenticatedRepositoryComponent />
+</AuthenticationContextProvider>
 ```
