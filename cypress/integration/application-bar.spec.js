@@ -4,7 +4,7 @@ describe('Application Bar', function () {
     cy.clearLocalStorage();
   });
   beforeEach(() => {
-    cy.visit('/#/Application%20Bar%20?id=applicationbar');
+    cy.visit('/#!/Application%20Bar%20/ApplicationBar');
     cy.wait(500);
   });
 
