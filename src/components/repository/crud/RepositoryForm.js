@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, useContext, useCallback } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   Avatar,
@@ -11,8 +10,11 @@ import {
   FolderShared,
 } from '@material-ui/icons';
 
-import { createRepository } from '../helpers';
-import { FormCheckbox } from '.';
+import {
+  FormCheckbox,
+  RepositoryContext,
+  AuthenticationContext,
+} from '../..';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -34,30 +36,27 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function RepositoryForm({
-  authentication,
-  repository,
-  onRepository,
-}) {
+function RepositoryForm() {
   const classes = useStyles();
   const [formData, setFormData] = useState({});
   const [errorText, setErrorText] = useState();
+  const { state: authentication } = useContext(AuthenticationContext);
+  const { state: repository, actions: { create, save } } = useContext(RepositoryContext);
 
   const updateFormData = (event) => {
     const { type, name, value, checked } = event.target;
-    let _formData = { ...formData };
+    const _formData = { ...formData };
 
     if (type === 'checkbox') _formData[value] = checked;
     else _formData[name] = value;
     setFormData(_formData);
   };
 
-  let mode, config;
+  let mode;
   const authenticated = (authentication && authentication.user);
 
   if (authenticated) {
     const admin = repository && repository.permissions.admin;
-    config = authentication.config;
 
     if (!repository) mode = 'create';
     else if (admin) mode = 'edit';
@@ -66,29 +65,23 @@ function RepositoryForm({
 
   const disabled = (mode === 'view');
 
-  const handleSubmit = async (settings) => {
-    let repo, _errorText;
-
+  const handleSubmit = useCallback(async (settings) => {
     if (mode === 'create') {
-      repo = await createRepository({ settings, config });
+      const repo = await create(settings);
 
-      if (repo) onRepository(repo);
-
-      if (!repo) _errorText = 'Error creating repository.';
+      if (!repo) setErrorText('Error creating repository.');
     } else if (mode === 'edit') {
-      repo = await repository.update(settings);
+      const repo = await save(settings);
 
-      if (!repo) _errorText = 'Error editing repository.';
+      if (!repo) setErrorText('Error editing repository.');
     }
-
-    if (_errorText) setErrorText(_errorText);
-  };
+  }, [create, mode, save]);
 
   let actionText;
 
   if (mode === 'create') actionText = 'Create Repository';
   else if (mode === 'edit') actionText = 'Edit Repository';
-  else if (mode === 'view') actionText = 'View Repository'
+  else if (mode === 'view') actionText = 'View Repository';
   else if (mode === 'error') {
     actionText = 'View/Edit/Create Repository';
 
@@ -136,35 +129,7 @@ function RepositoryForm({
   );
 }
 
-RepositoryForm.propTypes = {
-  /** Authentication object returned from a successful withAuthentication login. */
-  authentication: PropTypes.shape({
-    config: PropTypes.shape({
-      server: PropTypes.string.isRequired,
-      headers: PropTypes.shape({
-        Authorization: PropTypes.string.isRequired,
-      }).isRequired,
-    }).isRequired,
-    user: PropTypes.shape({
-      username: PropTypes.string.isRequired,
-      email: PropTypes.string.isRequired,
-    }).isRequired,
-  }),
-  /** Function to call when repository is selected. */
-  onRepository: PropTypes.func.isRequired,
-  /** Repository data to render, if url not provided. */
-  repository: PropTypes.shape({
-    id: PropTypes.number,
-    owner: PropTypes.object.isRequired,
-    name: PropTypes.string.isRequired,
-    full_name: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    html_url: PropTypes.string.isRequired,
-    website: PropTypes.string.isRequired,
-    tree_url: PropTypes.string,
-    avatar_url: PropTypes.string,
-  }),
-};
+RepositoryForm.propTypes = {};
 
 RepositoryForm.defaultProps = {
   actionText: 'Repository Settings',

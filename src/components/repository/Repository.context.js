@@ -1,27 +1,31 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 
-import { useRepository } from '.';
+import { useRepository, AuthenticationContext } from '../..';
 
 export const RepositoryContext = React.createContext();
 
 export function RepositoryContextProvider({
+  full_name,
   repositories,
   urls,
   defaultOwner,
   defaultQuery,
   config: _config,
-  authentication,
+  authentication: _authentication,
   repository,
   onRepository,
   branch,
   children,
 }) {
+  const { state: contextAuthentication, config: contextConfig } = useContext(AuthenticationContext);
   const {
     state, actions, component, config,
   } = useRepository({
-    repositories, urls, defaultOwner, defaultQuery,
-    config: _config, authentication, repository, branch, onRepository,
+    full_name, repositories, urls, defaultOwner, defaultQuery,
+    config: _config || contextConfig,
+    authentication: _authentication || contextAuthentication,
+    repository, branch, onRepository,
   });
 
   const context = {
@@ -51,5 +55,5 @@ RepositoryContextProvider.propTypes = {
   config: PropTypes.shape({
     /** Configuration required for Search or Repositories if paths are provided as URL. */
     server: PropTypes.string,
-  }).isRequired,
+  }),
 };

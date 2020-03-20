@@ -10,11 +10,14 @@ import {
   forkRepository,
   saveRepository,
   repositoryForks,
+  createRepository,
+  readRepository,
 } from './helpers';
-import { Repository } from '.';
+import { Repository } from '..';
 
 function useRepository({
   repositories,
+  full_name: __full_name,
   urls,
   defaultOwner,
   defaultQuery,
@@ -26,24 +29,35 @@ function useRepository({
 }) {
   const [branch, setBranch] = useState(__branch);
   const repository = __repository && deepFreeze(__repository);
+  const { full_name } = repository || {};
 
   const hasRepository = repository && repository.name && repository.owner && repository.permissions;
   const user = (authentication && authentication.user) ? authentication.user : undefined;
 
   const update = useCallback((repo) => {
-    let _repo;
-
-    if (repo) {
-      _repo = { ...repo, branch };
-      const tree_url = repoTreeUrl(_repo);
-      _repo = { ..._repo, tree_url };
+    if (onRepository) {
+      let _repo;
+  
+      if (repo) {
+        _repo = { ...repo, branch };
+        const tree_url = repoTreeUrl(_repo);
+        _repo = { ..._repo, tree_url };
+      };
+      onRepository(_repo);
     };
-    onRepository(_repo);
   }, [branch, onRepository]);
 
+  const read = useCallback(async ({ owner, name }) => {
+    const _repository = await readRepository({ owner, repo: name, config });
+    update(_repository);
+  }, [config, update]);
+
   useEffect(() => {
-    if (onRepository) onRepository(repository);
-  }, [repository, onRepository]);
+    if (__full_name && !full_name) {
+      const [owner, name] = __full_name.split('/');
+      read({ owner, name });
+    };
+  }, [full_name, __full_name, read]);
 
   const updateBranch = useCallback((_branch) => {
     setBranch(_branch);
@@ -57,6 +71,11 @@ function useRepository({
     if (repository && branch !== repository.branch) update({ ...repository, branch });
   }, [branch, repository, update]);
 
+  const create = useCallback(async (settings) => {
+    const _repository = await createRepository({ settings, config });
+    update(_repository);
+  }, [config, update]);
+
   const dangerouslyDelete = useCallback(() => {
     if (user && user.username === repository.owner.username) {
       deleteRepository({ repository, config });
@@ -64,18 +83,19 @@ function useRepository({
     };
   }, [user, repository, config, update]);
 
-  const fork = useCallback(() => {
-    if (!(user && user.username === repository.owner.username)) {
-      forkRepository({ repository, config });
-      update();
+  const fork = useCallback(async () => {
+    if ((user && user.username) !== repository.owner.username) {
+      const _repo = await forkRepository({ repository, config });
+      update(_repo);
     };
   }, [config, repository, update, user]);
 
   const save = useCallback(async (settings) => {
+    let _repository;
+
     if (repository.permissions.admin) {
-      const _repository = await saveRepository({ repository, settings, config });
+      _repository = await saveRepository({ repository, settings, config });
       update(_repository);
-      return _repository;
     };
   }, [config, repository, update]);
 
@@ -119,12 +139,14 @@ function useRepository({
     state: repository,
     actions: {
       close,
+      create,
       update,
       dangerouslyDelete,
       fork,
       save,
       forks,
       updateBranch,
+      read,
     },
     component,
     config,

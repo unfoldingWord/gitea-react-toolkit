@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 
-import { useFile } from '.';
+import {
+  useFile,
+  AuthenticationContext,
+  RepositoryContext,
+} from '../..';
 
 export const FileContext = React.createContext();
 
 export function FileContextProvider({
   config: _config,
-  authentication,
-  repository,
+  authentication: _authentication,
+  repository: _repository,
   filepath,
   file,
   onFile,
@@ -16,10 +20,16 @@ export function FileContextProvider({
   create,
   children,
 }) {
+  const { state: contextAuthentication } = useContext(AuthenticationContext);
+  const { state: contextRepository, config: contextConfig } = useContext(RepositoryContext);
+
   const {
     state, actions, component, components, config,
   } = useFile({
-    config: _config, authentication, repository, filepath, file, onFile, defaultContent, create,
+    config: _config || contextConfig,
+    authentication: _authentication || contextAuthentication,
+    repository: _repository || contextRepository,
+    filepath, file, onFile, defaultContent, create,
   });
 
   const context = {
@@ -49,7 +59,7 @@ FileContextProvider.propTypes = {
     server: PropTypes.string.isRequired,
     headers: PropTypes.shape({
       Authorization: PropTypes.string.isRequired,
-    }).isRequired,
+    }),
   }),
   authentication: PropTypes.shape({
     config: PropTypes.shape({

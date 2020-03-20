@@ -8,7 +8,6 @@ import {
 import {
 } from '@material-ui/icons';
 
-// import { withAuthentication, withRepository, withFile } from '../';
 import { useStyles } from './useStyles';
 import {
   UserMenu, DrawerMenu, RepositoryMenu, FileContext,

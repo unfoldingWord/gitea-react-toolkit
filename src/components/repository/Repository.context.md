@@ -3,7 +3,7 @@
 ```js
 import { useContext } from 'react';
 import { Paper } from '@material-ui/core';
-import { RepositoryContext, RepositoryContextProvider } from 'gitea-react-toolkit';
+import { RepositoryContext, RepositoryContextProvider, AuthenticationContextProvider } from 'gitea-react-toolkit';
 
 function Component() {
   const { state: repository, actions, component } = useContext(RepositoryContext);
@@ -18,15 +18,17 @@ const config = {
   tokenid:"PlaygroundTesting",
 };
 
-<RepositoryContextProvider
-  config={config}
-  defaultOwner="unfoldingWord"
-  defaultQuery="en_ta"
-  repository={repository}
-  onRepository={setRepository}
->
-  <Component />
-</RepositoryContextProvider>
+<AuthenticationContextProvider>
+  <RepositoryContextProvider
+    config={config}
+    defaultOwner="unfoldingWord"
+    defaultQuery="en_ta"
+    repository={repository}
+    onRepository={setRepository}
+  >
+    <Component />
+  </RepositoryContextProvider>
+</AuthenticationContextProvider>
 ```
 
 ## Authenticated Repositories
@@ -41,42 +43,33 @@ import {
   RepositoryContextProvider
 } from 'gitea-react-toolkit';
 
-function RepositoryComponent() {
-  const { state: repository, actions, component } = useContext(RepositoryContext);
+function Component() {
+  const { state: auth, component: authComponent } = useContext(AuthenticationContext);
+  const { state: repo, component: repoComponent } = useContext(RepositoryContext);
 
-  return !repository ? component : <pre>{JSON.stringify(repository, null, 2)}</pre>;
+  return (!auth && authComponent) || (!repo && repoComponent) || <pre>{JSON.stringify(repository, null, 2)}</pre>;
 };
-
-function AuthenticatedRepositoryComponent() {
-  const [repository, setRepository] = React.useState();
-  const { state: authentication, actions, component } = useContext(AuthenticationContext);
-
-  return !authentication ? component : (
-    <RepositoryContextProvider
-      authentication={authentication}
-      repository={repository}
-      onRepository={setRepository}
-      config={authentication.config}
-      defaultOwner={authentication.user.name}
-      defaultQuery=""
-    >
-      <RepositoryComponent />
-    </RepositoryContextProvider>
-  );
-}
 
 const [authentication, setAuthentication] = React.useState();
-
-const config = {
-  server: "https://bg.door43.org",
-  tokenid:"PlaygroundTesting",
-};
+const [repository, setRepository] = React.useState();
 
 <AuthenticationContextProvider
-  config={config}
+  config={{
+    server: "https://bg.door43.org",
+    tokenid:"PlaygroundTesting",
+  }}
   authentication={authentication}
   onAuthentication={setAuthentication}
 >
-  <AuthenticatedRepositoryComponent />
+  <RepositoryContextProvider
+    authentication={authentication}
+    repository={repository}
+    onRepository={setRepository}
+    config={authentication && authentication.config}
+    defaultOwner={authentication && authentication.user.name}
+    defaultQuery=""
+  >
+    <Component />
+  </RepositoryContextProvider>
 </AuthenticationContextProvider>
 ```

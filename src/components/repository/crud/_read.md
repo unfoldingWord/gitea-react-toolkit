@@ -1,16 +1,36 @@
-In order to read a repository you must pass `repository` or wrap with `withRepository`.
+In order to read a repository you must wrap with `RepositoryContext`.
 
 ```js
+import { useContext } from 'react';
 import { Paper } from '@material-ui/core';
-import { withRepository, RepositoryForm } from 'gitea-react-toolkit';
-const RepositoryFormComponent = withRepository(RepositoryForm);
+import {
+  AuthenticationContextProvider,
+  RepositoryContextProvider,
+  RepositoryContext,
+  RepositoryForm,
+} from 'gitea-react-toolkit';
+
+function Component() {
+  const { state: repo, component } = useContext(RepositoryContext);
+
+  return (!repo) ? component: <RepositoryForm />;
+}
+
+const [repository, setRepository] = React.useState();
 
 <Paper>
-  <RepositoryFormComponent
-    repositoryConfig={{
-      server: "https://bg.door43.org",
-      tokenid: "PlaygroundTesting"
-    }}
-  />
+  <AuthenticationContextProvider>
+    <RepositoryContextProvider
+      repository={repository}
+      onRepository={setRepository}
+      full_name="unfoldingWord/en_ta"
+      config={{
+        tokenid: "PlaygroundTesting",
+        server: "https://bg.door43.org",
+      }}
+    >
+      <Component />
+    </RepositoryContextProvider>
+  </AuthenticationContextProvider>
 </Paper>
 ```

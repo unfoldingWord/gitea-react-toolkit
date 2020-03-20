@@ -1,7 +1,6 @@
 
 There are three components that work together to render a Git Tree.
 
-1. The [withBlob HOC](/tree#withblob-hoc)  is a Higher Order Component that wraps any component with access to a blob, and a tree to select one.
 1. The [Tree Component](/tree#tree-component) is a higher level component that brings it all together, and renders a Tree Object Component.
 1. The [TreeObject Component](/tree#treeobject-component) is a recursive component that renders a tree object and renders a Blob Object Component for each child Blob.
 1. The [BlobObject Component](/tree#blobobject-component) is a component that renders a blob object.

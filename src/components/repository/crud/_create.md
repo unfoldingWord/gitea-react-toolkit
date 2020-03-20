@@ -2,54 +2,72 @@ In order to create a repository you must pass authentication or wrap with `withA
 Once a repository is created and propogated, the Create form changes to an Edit form.
 
 ```js
+import { useState, useContext } from 'react';
 import { Paper } from '@material-ui/core';
-import { withAuthentication, RepositoryForm } from 'gitea-react-toolkit';
+import {
+  AuthenticationContextProvider,
+  AuthenticationContext,
+  RepositoryContextProvider,
+  RepositoryContext,
+  RepositoryForm,
+} from 'gitea-react-toolkit';
 
-const AuthenticatedRepositoryForm = withAuthentication(RepositoryForm);
-const [authentication, setAuthentication] = React.useState();
-const [repository, setRepository] = React.useState();
+
+function Component() {
+  const { state: auth, component: authComponent } = useContext(AuthenticationContext);
+  const { state: repo, component: repoComponent } = useContext(RepositoryContext);
+
+  const component = (!auth && authComponent) || <RepositoryForm />;
+
+  return component;
+};
+
+const [authentication, setAuthentication] = useState();
+const [repository, setRepository] = useState();
 
 <Paper>
-  <AuthenticatedRepositoryForm
+  <AuthenticationContextProvider
     authentication={authentication}
     onAuthentication={setAuthentication}
-    repository={repository}
-    onRepository={setRepository}
-    authenticationConfig={{
+    config={{
+      tokenid: "PlaygroundTesting",
       server: "https://bg.door43.org",
-      tokenid: "PlaygroundTesting"
     }}
-  />
+  >
+    <RepositoryContextProvider
+      repository={repository}
+      onRepository={setRepository}
+    >
+      <Component />
+    </RepositoryContextProvider>
+  </AuthenticationContextProvider>
 </Paper>
 ```
 
 ## Create and Delete
 
 ```js
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Paper, Card, CardContent, CardHeader, CardActions, IconButton, Avatar } from '@material-ui/core';
 import { DeleteSweep, Cancel } from '@material-ui/icons';
 import moment from 'moment';
 
-import { withAuthentication, RepositoryQuickCreate } from 'gitea-react-toolkit';
+import {
+  AuthenticationContextProvider,
+  AuthenticationContext,
+  RepositoryContextProvider,
+  RepositoryContext,
+  RepositoryQuickCreate
+} from 'gitea-react-toolkit';
 // Define your React component and optionally access repository in props.
-function Component({
-  authentication,
-  authentication: {
-    user: {
-      username,
-    }
-  }
-}) {
-  const [repository, setRepository] = useState();
-  return (!repository) ?
-  (
-    <RepositoryQuickCreate
-      authentication={authentication}
-      onRepository={setRepository}
-    />
-  ) :
-  (
+function Component() {
+  const { state: auth, component: authComponent } = useContext(AuthenticationContext);
+  const { user: { username }={} } = auth || {};
+  const { state: repo, actions: { update, close, dangerouslyDelete } } = useContext(RepositoryContext);
+
+  let component = !auth && authComponent;
+  component = component || (!repository && <RepositoryQuickCreate />);
+  component = component || (
     <Card>
       <CardHeader
         title={<strong>{repository.full_name}</strong>}
@@ -64,14 +82,14 @@ function Component({
             disabled={username !== repository.owner.username}
             onClick={() => {
               const confirmation = confirm(`Are you sure you want to Delete ${repository.full_name}?`);
-              if (confirmation) repository.dangerouslyDelete();
+              if (confirmation) dangerouslyDelete();
             }}
           >
             <DeleteSweep />
           </IconButton>
           <IconButton
             title="Close Repository"
-            onClick={repository.close}
+            onClick={close}
           >
             <Cancel />
           </IconButton>
@@ -79,19 +97,28 @@ function Component({
       </CardContent>
     </Card>
   );
-}
-/** Usually you would wrap it during export at the bottom of your component's file.
- *  export default withRepository(Component);
- */
-const RepositoryComponent = withAuthentication(Component);
-// Then you can use your repository wrapped component.
+
+  return component;
+};
+
+const [authentication, setAuthentication] = React.useState();
+const [repository, setRepository] = React.useState();
+
 <Paper>
-  <RepositoryComponent
-    //** Pass any props as you normally would. */
-    authenticationConfig={{
+  <AuthenticationContextProvider
+    authentication={authentication}
+    onAuthentication={setAuthentication}
+    config={{
       tokenid: "PlaygroundTesting",
       server: "https://bg.door43.org",
     }}
-  />
+  >
+    <RepositoryContextProvider
+      repository={repository}
+      onRepository={setRepository}
+    >
+      <Component />
+    </RepositoryContextProvider>
+  </AuthenticationContextProvider>
 </Paper>
 ```

@@ -23,11 +23,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function RepositoryFormMenu({
-  authentication,
-  repository,
-  onRepository,
-}) {
+function RepositoryFormMenu() {
   const classes = useStyles();
   const [modal, setModal] = useState(false);
 
@@ -43,11 +39,7 @@ function RepositoryFormMenu({
     modalComponent = (
       <Modal open={true} onClose={() => { setModal(false); }}>
         <Paper className={classes.modal}>
-          <RepositoryForm
-            authentication={authentication}
-            repository={repository}
-            onRepository={onRepository}
-          />
+          <RepositoryForm />
         </Paper>
       </Modal>
     );
@@ -61,34 +53,6 @@ function RepositoryFormMenu({
   );
 };
 
-RepositoryFormMenu.propTypes = {
-  /** Authentication object returned from a successful withAuthentication login. */
-  authentication: PropTypes.shape({
-    config: PropTypes.shape({
-      server: PropTypes.string.isRequired,
-      headers: PropTypes.shape({
-        Authorization: PropTypes.string.isRequired,
-      }).isRequired,
-    }).isRequired,
-    user: PropTypes.shape({
-      username: PropTypes.string.isRequired,
-      email: PropTypes.string.isRequired,
-    }).isRequired,
-  }),
-  /** Function to call when repository is selected. */
-  onRepository: PropTypes.func.isRequired,
-  /** Repository data to render, if url not provided. */
-  repository: PropTypes.shape({
-    id: PropTypes.number,
-    owner: PropTypes.object.isRequired,
-    name: PropTypes.string.isRequired,
-    full_name: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    html_url: PropTypes.string.isRequired,
-    website: PropTypes.string.isRequired,
-    tree_url: PropTypes.string,
-    avatar_url: PropTypes.string,
-  }),
-};
+RepositoryFormMenu.propTypes = {};
 
 export default RepositoryFormMenu;

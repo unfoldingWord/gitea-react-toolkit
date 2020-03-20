@@ -17,7 +17,7 @@ function useAuthentication({
 
   const update = useCallback(async (_auth) => {
     if (_auth && _auth.remember) await saveAuth(_auth);
-    onAuthentication(_auth);
+    return onAuthentication && onAuthentication(_auth);
   }, [onAuthentication]);
 
   useEffect(() => {

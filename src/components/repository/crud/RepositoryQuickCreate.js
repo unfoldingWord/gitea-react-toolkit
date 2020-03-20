@@ -1,5 +1,6 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import React, {
+  useState, useCallback, useContext,
+} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   Avatar,
@@ -11,8 +12,7 @@ import {
 } from '@material-ui/core';
 import { AddCircle } from '@material-ui/icons';
 
-import { createRepository } from '../helpers';
-import { useRepository } from '..';
+import { RepositoryContext, AuthenticationContext } from '../..';
 
 const useStyles = makeStyles(theme => ({
   listItemAvatar: {
@@ -37,41 +37,17 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function RepositoryQuickCreate({
-  authentication,
-  authentication: {
-    user: {
-      username,
-      avatar_url,
-    },
-    config,
-  },
-  onRepository,
-}) {
+function RepositoryQuickCreate() {
   const classes = useStyles();
   const [repo, setRepo] = useState();
-  const [updated, setUpdated] = useState(false);
-  const { state, actions } = useRepository({ authentication, config });
+  const { state: authentication } = useContext(AuthenticationContext);
+  const { actions: { create } } = useContext(RepositoryContext);
 
-  const _update = useCallback((_repository) => {
-    actions.update(_repository);
-  }, [actions]);
+  const { user: { username, avatar_url } } = authentication;
 
-  const _onRepository = useCallback(() => {
-    if (onRepository && state && actions) onRepository({ ...state, ...actions });
-  }, [onRepository, state, actions]);
-
-  useEffect(() => {
-    if (!updated && state) {
-      _onRepository();
-      setUpdated(true);
-    }
-  }, [_onRepository, state, updated]);
-
-  const handleCreate = useCallback(async () => {
-    const _repository = await createRepository({ repo, config });
-    _update(_repository);
-  }, [config, repo, _update]);
+  const handleCreate = useCallback(() => {
+    create({ name: repo });
+  }, [repo, create]);
 
   return (
     <ListItem
@@ -117,20 +93,6 @@ function RepositoryQuickCreate({
   );
 }
 
-RepositoryQuickCreate.propTypes = {
-  /** Function to call when repository is selected. */
-  onRepository: PropTypes.func.isRequired,
-  /** A passed authentication object from login. */
-  authentication: PropTypes.shape({
-    user: PropTypes.object.isRequired,
-    token: PropTypes.object.isRequired,
-    config: PropTypes.shape({
-      /** The Gitea server to use when authenticating. */
-      server: PropTypes.string.isRequired,
-      /** The id of the token to create/retrieve that is used for the app. */
-      tokenid: PropTypes.string.isRequired,
-    }).isRequired,
-  }),
-};
+RepositoryQuickCreate.propTypes = {};
 
 export default RepositoryQuickCreate;

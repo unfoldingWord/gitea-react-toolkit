@@ -1,5 +1,5 @@
 
-## Authenticated Files
+## FileContext
 
 ```js
 import { useContext } from 'react';
@@ -13,62 +13,42 @@ import {
   FileContextProvider,
 } from 'gitea-react-toolkit';
 
-function FileComponent() {
-  const { state: file, actions, component } = useContext(FileContext);
+function Component() {
+  const { state: auth, component: authComponent } = useContext(AuthenticationContext);
+  const { state: repo, component: repoComponent } = useContext(RepositoryContext);
+  const { state: file, component: fileComponent } = useContext(FileContext);
 
-  return !file ? component : <pre>{JSON.stringify(file, null, 2)}</pre>;
+  return (!auth && authComponent) || (!repo && repoComponent) || (!file && fileComponent) || <pre>{JSON.stringify(file, null, 2)}</pre>;
 };
-
-function RepositoryComponent() {
-  const [file, setFile] = React.useState();
-  const { state: authentication } = useContext(AuthenticationContext);
-  const { state: repository, actions, component } = useContext(RepositoryContext);
-
-  return !repository ? component : (
-    <FileContextProvider
-      config={authentication.config}
-      authentication={authentication}
-      repository={repository}
-      // filepath={filepath}
-      file={file}
-      onFile={setFile}
-    >
-      <FileComponent />
-    </FileContextProvider>
-  );
-};
-
-function AuthenticatedRepositoryComponent() {
-  const [repository, setRepository] = React.useState();
-  const { state: authentication, actions, component, config } = useContext(AuthenticationContext);
-
-  return !authentication ? component : (
-    <RepositoryContextProvider
-      authentication={authentication}
-      repository={repository}
-      onRepository={setRepository}
-      config={authentication.config}
-      defaultOwner={authentication.user.name}
-      defaultQuery=""
-      // branch=""
-    >
-      <RepositoryComponent />
-    </RepositoryContextProvider>
-  );
-}
 
 const [authentication, setAuthentication] = React.useState();
-
-const config = {
-  server: "https://bg.door43.org",
-  tokenid:"PlaygroundTesting",
-};
+const [repository, setRepository] = React.useState();
+const [file, setFile] = React.useState();
 
 <AuthenticationContextProvider
-  config={config}
+  config={{
+    server: "https://bg.door43.org",
+    tokenid:"PlaygroundTesting",
+  }}
   authentication={authentication}
   onAuthentication={setAuthentication}
 >
-  <AuthenticatedRepositoryComponent />
+  <RepositoryContextProvider
+    repository={repository}
+    onRepository={setRepository}
+    defaultOwner={authentication && authentication.user.name}
+    defaultQuery=""
+    branch='testing'
+  >
+    <FileContextProvider
+      // filepath={filepath}
+      // defaultContent={defaultContent}
+      file={file}
+      onFile={setFile}
+      create={false}
+    >
+      <Component />
+    </FileContextProvider>
+  </RepositoryContextProvider>
 </AuthenticationContextProvider>
 ```

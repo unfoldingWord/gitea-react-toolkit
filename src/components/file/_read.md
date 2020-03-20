@@ -4,55 +4,46 @@ Reading files only requires a `repository`, a `config`, and a `filepath`.
 import { useContext } from 'react';
 import { Paper } from '@material-ui/core';
 import {
-  AuthenticationContext,
   AuthenticationContextProvider,
-  RepositoryContext,
   RepositoryContextProvider,
-  FileContext,
+  RepositoryContext,
   FileContextProvider,
+  FileContext,
 } from 'gitea-react-toolkit';
 
-function FileComponent() {
-  const { state: file, actions, component, config } = useContext(FileContext);
+function Component() {
+  const { state: repo, component: repoComponent } = useContext(RepositoryContext);
+  const { state: file, component: fileComponent } = useContext(FileContext);
 
-  return component;
+  return (!repo && repoComponent) || fileComponent;
 };
 
-function RepositoryComponent() {
-  const [file, setFile] = React.useState();
-  const { state: repository, actions, component, config } = useContext(RepositoryContext);
+const [repository, setRepository] = React.useState();
+const [file, setFile] = React.useState();
+const config = {
+  server: "https://bg.door43.org",
+  tokenid:"PlaygroundTesting",
+};
+const branch = 'testing';
+const filepath = '_new_file_1.md';
+const defaultContent = 'This is a new file, today...';
 
-  // const filepath = '_new_file_1.md';
-  // const defaultContent = 'This is a new file, today...';
-
-  return !repository ? component : (
+<AuthenticationContextProvider>
+  <RepositoryContextProvider
+    repository={repository}
+    onRepository={setRepository}
+    config={config}
+    defaultQuery=""
+    // branch={branch}
+  >
     <FileContextProvider
-      config={config}
-      repository={repository}
       // filepath={filepath}
       // defaultContent={defaultContent}
       file={file}
       onFile={setFile}
     >
-      <FileComponent />
+      <Component />
     </FileContextProvider>
-  );
-};
-
-const [repository, setRepository] = React.useState();
-const branch = 'testing';
-const config = {
-  server: "https://bg.door43.org",
-  tokenid:"PlaygroundTesting",
-};
-
-<RepositoryContextProvider
-  repository={repository}
-  onRepository={setRepository}
-  config={config}
-  defaultQuery=""
-  // branch={branch}
->
-  <RepositoryComponent />
-</RepositoryContextProvider>
+  </RepositoryContextProvider>
+</AuthenticationContextProvider>
 ```

@@ -23,7 +23,7 @@ export const repositoryForks = async ({ repository, config }) => {
 export const createRepository = async ({ repo, settings, config }) => {
   const _settings = {
     name: repo,
-    description: `${repo} created via API.`,
+    description: `${repo || settings.name} created via API.`,
     private: false,
     ...settings,
   }
