@@ -24,20 +24,18 @@ const config = {
   server: "https://bg.door43.org",
   tokenid:"PlaygroundTesting",
 };
-const branch = 'testing';
-const filepath = '_new_file_1.md';
-const defaultContent = 'This is a new file, today...';
 
 <AuthenticationContextProvider>
   <RepositoryContextProvider
     repository={repository}
     onRepository={setRepository}
     config={config}
-    defaultQuery=""
-    // branch={branch}
+    defaultQuery=''
+    full_name='unfoldingWord/en_ta'
+    branch='master'
   >
     <FileContextProvider
-      // filepath={filepath}
+      filepath='README.md'
       // defaultContent={defaultContent}
       file={file}
       onFile={setFile}
