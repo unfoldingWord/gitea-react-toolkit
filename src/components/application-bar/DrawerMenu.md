@@ -6,7 +6,7 @@ import {
 } from '@material-ui/core';
 import { Mail, Inbox } from '@material-ui/icons';
 import {
-  DrawerMenu, RepositoryContextProvider, FileContextProvider
+  DrawerMenu, AuthenticationContextProvider, RepositoryContextProvider, FileContextProvider
 } from 'gitea-react-toolkit';
 
 const children = (
@@ -23,11 +23,13 @@ const children = (
 );
 
 <Paper>
-  <RepositoryContextProvider>
-    <FileContextProvider>
-      <DrawerMenu>
-        {children}
-      </DrawerMenu>
-    </FileContextProvider>
-  </RepositoryContextProvider>
+  <AuthenticationContextProvider>
+    <RepositoryContextProvider>
+      <FileContextProvider>
+        <DrawerMenu>
+          {children}
+        </DrawerMenu>
+      </FileContextProvider>
+    </RepositoryContextProvider>
+  </AuthenticationContextProvider>
 </Paper>

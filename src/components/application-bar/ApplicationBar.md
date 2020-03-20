@@ -15,10 +15,7 @@ import {
   ApplicationBar,
 } from 'gitea-react-toolkit';
 
-function FileContextComponent() {
-  const [file, setFile] = useState();
-  const { state: repository, config } = useContext(RepositoryContext);
-
+function Component() {
   const buttons = (
     <IconButton color="inherit">
       <Badge badgeContent={17} color="secondary">
@@ -40,43 +37,17 @@ function FileContextComponent() {
   );
 
   return (
-    <FileContextProvider
-      file={file}
-      onFile={setFile}
-      repository={repository}
-      config={config}
-    >
-      <ApplicationBar
-        title='Application Title'
-        buttons={buttons}
-        drawerMenu={drawerMenu}
-      />
-    </FileContextProvider>
+    <ApplicationBar
+      title='Application Title'
+      buttons={buttons}
+      drawerMenu={drawerMenu}
+    />
   );
 };
 
-function RepositoryContextComponent() {
-  const [repository, setRepository] = useState();
-  const { config } = useContext(AuthenticationContext);
-
-  return(
-    <RepositoryContextProvider
-      repository={repository}
-      onRepository={setRepository}
-      config={config}
-      urls={[
-        "https://bg.door43.org/api/v1/repos/door43-catalog/en_ta",
-        "https://bg.door43.org/api/v1/repos/door43-catalog/en_tw",
-        "https://bg.door43.org/api/v1/repos/door43-catalog/en_tn",
-        "https://bg.door43.org/api/v1/repos/door43-catalog/en_obs",
-      ]}
-    >
-      <FileContextComponent />
-    </RepositoryContextProvider>
-  );
-}
-
-const [authentication, setAuthentication] = React.useState();
+const [authentication, setAuthentication] = useState();
+const [repository, setRepository] = useState();
+const [file, setFile] = useState();
 
 const config = {
   server: "https://bg.door43.org",
@@ -88,6 +59,22 @@ const config = {
   onAuthentication={setAuthentication}
   config={config}
 >
-  <RepositoryContextComponent />
+  <RepositoryContextProvider
+    repository={repository}
+    onRepository={setRepository}
+    urls={[
+      "https://bg.door43.org/api/v1/repos/door43-catalog/en_ta",
+      "https://bg.door43.org/api/v1/repos/door43-catalog/en_tw",
+      "https://bg.door43.org/api/v1/repos/door43-catalog/en_tn",
+      "https://bg.door43.org/api/v1/repos/door43-catalog/en_obs",
+    ]}
+  >
+    <FileContextProvider
+      file={file}
+      onFile={setFile}
+    >
+      <Component />
+    </FileContextProvider>
+  </RepositoryContextProvider>
 </AuthenticationContextProvider>
 ```
