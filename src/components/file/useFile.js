@@ -14,16 +14,17 @@ import {
 function useFile({
   authentication,
   repository,
-  filepath: _filepath,
-  defaultContent: _defaultContent,
+  filepath: __filepath,
+  defaultContent: __defaultContent,
   config,
   file: _file,
   onFile,
   create=false,
 }) {
   const [{ filepath, defaultContent }, setFileProps] = useState({
-    filepath: _filepath, defaultContent: _defaultContent,
+    filepath: __filepath, defaultContent: __defaultContent,
   });
+  const [blob, setBlob] = useState();
   const branch = repository && (repository.branch || repository.default_branch);
   const file = _file && deepFreeze(_file);
 
@@ -32,7 +33,7 @@ function useFile({
   const {
     state: blobState, actions: blobActions, components: blobComponents,
   } = useBlob({
-    config, repository, filepath,
+    blob, onBlob: setBlob, config, repository, filepath,
   });
 
   const { push: writeable } = (repository && repository.permissions) ? repository.permissions : {};
@@ -53,6 +54,10 @@ function useFile({
       });
     }
   }, [authentication, branch, config, defaultContent, filepath, repository, update]);
+
+  const read = useCallback((_filepath) => {
+    setFileProps({ filepath: _filepath, defaultContent });
+  }, [defaultContent]);
 
   useEffect(() => {
     if (!file && filepath && !deleted) load();
@@ -107,6 +112,7 @@ function useFile({
 
   const actions = {
     update,
+    read,
     load,
     save,
     close,

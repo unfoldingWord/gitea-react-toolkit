@@ -45,7 +45,19 @@ import {
 
 function Component() {
   const { state: auth, component: authComponent } = useContext(AuthenticationContext);
-  const { state: repo, component: repoComponent } = useContext(RepositoryContext);
+  const { state: repo, actions: repoActions, component: repoComponent } = useContext(RepositoryContext);
+  // the following are all the actions available for the repository context.
+  const {
+    close,
+    create,
+    update,
+    dangerouslyDelete,
+    fork,
+    save,
+    forks,
+    updateBranch,
+    read,
+  } = repoActions;
 
   return (!auth && authComponent) || (!repo && repoComponent) || <pre>{JSON.stringify(repository, null, 2)}</pre>;
 };

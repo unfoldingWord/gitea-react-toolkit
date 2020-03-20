@@ -6,22 +6,20 @@ import { Tree } from '.';
 
 function useBlob({
   config,
+  blob: __blob,
+  onBlob,
   repository,
   // filepath, TODO: use filepath to pre-select blob;
   tree,
   url: _url,
 }) {
-  const [state, setState] = useState();
-  const blob = state ? deepFreeze(state) : undefined;
+  const blob = __blob && deepFreeze(__blob);
 
   const url = _url || (repository && repository.tree_url);
 
   const update = useCallback((_blob) => {
-    let __blob;
-
-    if (_blob) __blob = (_blob.filepath) ? _blob : { ..._blob, filepath: _blob.path };
-    setState(__blob);
-  }, []);
+    if (onBlob) onBlob(_blob && { ..._blob, filepath: _blob.path });
+  }, [onBlob]);
 
   const close = useCallback(() => {
     update();

@@ -16,7 +16,16 @@ import {
 function Component() {
   const { state: auth, component: authComponent } = useContext(AuthenticationContext);
   const { state: repo, component: repoComponent } = useContext(RepositoryContext);
-  const { state: file, component: fileComponent } = useContext(FileContext);
+  const { state: file, actions: fileActions component: fileComponent } = useContext(FileContext);
+    // the following are all the actions available for the file context.
+  const {
+    update,
+    read,
+    load,
+    save,
+    close,
+    dangerouslyDelete,
+  } = fileActions;
 
   return (!auth && authComponent) || (!repo && repoComponent) || (!file && fileComponent) || <pre>{JSON.stringify(file, null, 2)}</pre>;
 };
