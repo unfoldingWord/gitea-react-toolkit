@@ -16,7 +16,7 @@ import {
 function Component() {
   const { state: auth, component: authComponent } = useContext(AuthenticationContext);
   const { state: repo, component: repoComponent } = useContext(RepositoryContext);
-  const { state: file, actions: fileActions component: fileComponent } = useContext(FileContext);
+  const { state: file, actions: fileActions, component: fileComponent } = useContext(FileContext);
     // the following are all the actions available for the file context.
   const {
     update,

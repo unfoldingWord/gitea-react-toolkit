@@ -120,9 +120,9 @@ function useFile({
   };
 
   const components = {
-    create: <FileForm onSubmit={setFileProps} />,
-    browse: blobComponents.browse,
-    fileCard: (
+    create: repository && <FileForm onSubmit={setFileProps} />,
+    browse: repository && blobComponents.browse,
+    fileCard: repository && file && (
       <FileCard
         authentication={authentication}
         repository={repository}

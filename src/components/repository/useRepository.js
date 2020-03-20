@@ -30,8 +30,6 @@ function useRepository({
   const [branch, setBranch] = useState(__branch);
   const repository = __repository && deepFreeze(__repository);
   const { full_name } = repository || {};
-
-  const hasRepository = repository && repository.name && repository.owner && repository.permissions;
   const user = authentication && authentication.user;
 
   const update = useCallback((repo) => {
@@ -109,6 +107,8 @@ function useRepository({
 
   let component = <></>;
   // TODO: add Repository component when state
+
+  const hasRepository = repository && repository.name && repository.owner && repository.permissions;
 
   if (hasRepository) {
     component = <Repository repository={repository} config={config} onRepository={onRepository} />;

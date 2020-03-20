@@ -32,12 +32,14 @@ function useAuthentication({
   }, [update]);
 
   const component = useMemo(() => (
-    <Authentication
-      messages={messages}
-      config={config}
-      authentication={authentication}
-      onAuthentication={update}
-    />
+    config && (
+      <Authentication
+        messages={messages}
+        config={config}
+        authentication={authentication}
+        onAuthentication={update}
+      />
+    )
   ), [authentication, config, messages, update]);
 
   const _config = (authentication && authentication.config) || config;

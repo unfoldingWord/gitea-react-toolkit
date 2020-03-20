@@ -89,7 +89,7 @@ FileContextProvider.propTypes = {
       username: PropTypes.string.isRequired,
     }),
     name: PropTypes.string.isRequired,
-  }).isRequired,
+  }),
   /** Children to render inside of Provider */
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
