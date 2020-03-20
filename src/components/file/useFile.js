@@ -21,10 +21,10 @@ function useFile({
   onFile,
   create=false,
 }) {
+  const [blob, setBlob] = useState();
   const [{ filepath, defaultContent }, setFileProps] = useState({
     filepath: __filepath, defaultContent: __defaultContent,
   });
-  const [blob, setBlob] = useState();
   const branch = repository && (repository.branch || repository.default_branch);
   const file = _file && deepFreeze(_file);
 
@@ -59,30 +59,11 @@ function useFile({
     setFileProps({ filepath: _filepath, defaultContent });
   }, [defaultContent]);
 
-  useEffect(() => {
-    if (!file && filepath && !deleted) load();
-  }, [deleted, filepath, load, file]);
-
-  const blobFilepath = blobState && blobState.filepath;
-
-  useEffect(() => {
-    if (blobFilepath) {
-      const _fileProps = {
-        branch, filepath: blobFilepath, defaultContent,
-      };
-      setFileProps(_fileProps);
-    };
-  }, [blobFilepath, branch, defaultContent]);
-
   const close = useCallback(() => {
     if (blobActions && blobActions.close) blobActions.close();
     update();
     setFileProps({});
   }, [update, blobActions]);
-
-  useEffect(() => { // if there is a file but no repository, close file.
-    if (!repository && file) close();
-  }, [repository, file, close]);
 
   const save = useCallback(async (content) => {
     if (writeable) {
@@ -102,6 +83,25 @@ function useFile({
       if (_deleted) setDeleted(true);
     };
   }, [file, authentication, branch, repository, writeable]);
+
+  useEffect(() => {
+    if (!file && filepath && !deleted) load();
+  }, [deleted, filepath, load, file]);
+
+  const blobFilepath = blobState && blobState.filepath;
+
+  useEffect(() => {
+    if (blobFilepath) {
+      const _fileProps = {
+        branch, filepath: blobFilepath, defaultContent,
+      };
+      setFileProps(_fileProps);
+    };
+  }, [blobFilepath, branch, defaultContent]);
+
+  useEffect(() => { // if there is a file but no repository, close file.
+    if (!repository && file) close();
+  }, [repository, file, close]);
 
   useEffect(() => {
     if (deleted) {
@@ -148,6 +148,16 @@ function useFile({
 };
 
 useFile.propTypes = {
+  /** Pass a previously returned file object to bypass the selection. */
+  file: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    path: PropTypes.string.isRequired,
+    sha: PropTypes.string.isRequired,
+    download_url: PropTypes.string.isRequired,
+    content: PropTypes.string.isRequired,
+  }),
+  /** Function to propogate when the Blob is selected. */
+  onFile: PropTypes.func,
   /** The full filepath for the file. */
   filepath: PropTypes.string,
   /** Authentication object returned from a successful withAuthentication login. */

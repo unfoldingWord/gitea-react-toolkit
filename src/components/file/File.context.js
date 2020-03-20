@@ -48,6 +48,16 @@ export function FileContextProvider({
 };
 
 FileContextProvider.propTypes = {
+  /** Pass a previously returned file object to bypass the selection. */
+  file: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    path: PropTypes.string.isRequired,
+    sha: PropTypes.string.isRequired,
+    download_url: PropTypes.string.isRequired,
+    content: PropTypes.string.isRequired,
+  }),
+  /** Function to propogate when the Blob is selected. */
+  onFile: PropTypes.func,
   /** The full filepath for the file. */
   filepath: PropTypes.string,
   /** The default string to populate the file if it doesn't exist */
@@ -80,4 +90,9 @@ FileContextProvider.propTypes = {
     }),
     name: PropTypes.string.isRequired,
   }).isRequired,
+  /** Children to render inside of Provider */
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]).isRequired,
 };

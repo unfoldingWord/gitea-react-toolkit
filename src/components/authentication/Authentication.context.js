@@ -55,5 +55,5 @@ AuthenticationContextProvider.propTypes = {
     server: PropTypes.string.isRequired,
     /** The id of the token to create/retrieve that is used for the app. */
     tokenid: PropTypes.string.isRequired,
-  }).isRequired,
+  }),
 };

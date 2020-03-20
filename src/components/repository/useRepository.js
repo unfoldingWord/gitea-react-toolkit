@@ -32,12 +32,12 @@ function useRepository({
   const { full_name } = repository || {};
 
   const hasRepository = repository && repository.name && repository.owner && repository.permissions;
-  const user = (authentication && authentication.user) ? authentication.user : undefined;
+  const user = authentication && authentication.user;
 
   const update = useCallback((repo) => {
     if (onRepository) {
       let _repo;
-  
+
       if (repo) {
         _repo = { ...repo, branch };
         const tree_url = repoTreeUrl(_repo);
@@ -52,24 +52,9 @@ function useRepository({
     update(_repository);
   }, [config, update]);
 
-  useEffect(() => {
-    if (__full_name && !full_name) {
-      const [owner, name] = __full_name.split('/');
-      read({ owner, name });
-    };
-  }, [full_name, __full_name, read]);
-
   const updateBranch = useCallback((_branch) => {
     setBranch(_branch);
   }, []);
-
-  useEffect(() => {
-    if (__branch !== branch) setBranch(__branch);
-  }, [__branch, branch]);
-
-  useEffect(() => {
-    if (repository && branch !== repository.branch) update({ ...repository, branch });
-  }, [branch, repository, update]);
 
   const create = useCallback(async (settings) => {
     const _repository = await createRepository({ settings, config });
@@ -107,6 +92,21 @@ function useRepository({
     update();
   }, [update]);
 
+  useEffect(() => {
+    if (__branch !== branch) setBranch(__branch);
+  }, [__branch, branch]);
+
+  useEffect(() => {
+    if (repository && branch !== repository.branch) update({ ...repository, branch });
+  }, [branch, repository, update]);
+
+  useEffect(() => {
+    if (__full_name && !full_name) {
+      const [owner, name] = __full_name.split('/');
+      read({ owner, name });
+    };
+  }, [full_name, __full_name, read]);
+
   let component = <></>;
   // TODO: add Repository component when state
 
@@ -122,9 +122,8 @@ function useRepository({
       />
     );
   } else if (config) {
-    let username;
+    const username = authentication && authentication.user && authentication.user.username;
 
-    if (authentication) username = authentication.user.username;
     component = (
       <Search
         defaultOwner={defaultOwner || username}
@@ -154,6 +153,30 @@ function useRepository({
 };
 
 useRepository.propTypes = {
+  /** Repository data to render, if url not provided. */
+  repository: PropTypes.shape({
+    id: PropTypes.number,
+    owner: PropTypes.object.isRequired,
+    name: PropTypes.string.isRequired,
+    full_name: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    html_url: PropTypes.string.isRequired,
+    website: PropTypes.string.isRequired,
+    tree_url: PropTypes.string,
+    avatar_url: PropTypes.string,
+    branch: PropTypes.string,
+  }),
+  /** Function to call when repository is selected. */
+  onRepository: PropTypes.func.isRequired,
+  /** Full name of the repo, `owner/name` */
+  full_name: PropTypes.string,
+  /** Pass a previously returned authentication object to bypass login. */
+  authentication: PropTypes.shape({
+    user: PropTypes.object.isRequired,
+    token: PropTypes.object.isRequired,
+    config: PropTypes.object.isRequired,
+    remember: PropTypes.bool,
+  }),
   /** Urls array to get repository data, if repository data is not provided. */
   urls: PropTypes.array,
   /** Repositories data array to render, if urls not provided. */
@@ -162,6 +185,8 @@ useRepository.propTypes = {
   defaultOwner: PropTypes.string,
   /** Prefill the query search field. */
   defaultQuery: PropTypes.string,
+  /** The name of the branch to read/write files */
+  branch: PropTypes.string,
   /** Configuration to pass through to the Search/Repositories component. */
   config: PropTypes.shape({
     /** Configuration required for Search or Repositories if paths are provided as URL. */

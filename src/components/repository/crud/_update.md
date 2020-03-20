@@ -1,4 +1,4 @@
-In order to update a repository you must pass authentication and repository or wrap with `withAuthentication` and `withRepository`.
+In order to update a repository you must pass authentication and repository or wrap with `AuthenticationContextProvider` and `RepositoryContextProvider`.
 Once a repository is created and propogated, the Create form changes to an Edit form.
 
 ```js

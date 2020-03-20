@@ -82,10 +82,6 @@ function Repository({
 };
 
 Repository.propTypes = {
-  /** Function to call when repository is selected. */
-  onRepository: PropTypes.func.isRequired,
-  /** Url to get repository data, if repository data is not provided. */
-  url: PropTypes.string,
   /** Repository data to render, if url not provided. */
   repository: PropTypes.shape({
     id: PropTypes.number,
@@ -99,6 +95,10 @@ Repository.propTypes = {
     avatar_url: PropTypes.string,
     branch: PropTypes.string,
   }),
+  /** Function to call when repository is selected. */
+  onRepository: PropTypes.func.isRequired,
+  /** Url to get repository data, if repository data is not provided. */
+  url: PropTypes.string,
   /** Configuration required if paths are provided as URL. */
   config: PropTypes.shape({
     server: PropTypes.string.isRequired,
