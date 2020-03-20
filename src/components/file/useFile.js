@@ -84,11 +84,14 @@ function useFile({
     };
   }, [file, authentication, branch, repository, writeable]);
 
-  useEffect(() => {
-    if (!file && filepath && !deleted) load();
-  }, [deleted, filepath, load, file]);
-
   const blobFilepath = blobState && blobState.filepath;
+
+  useEffect(() => {
+    const notLoaded = (!file && filepath && !deleted);
+    const loadNew = (file && file.filepath !== blobFilepath);
+
+    if (notLoaded || loadNew) load();
+  }, [deleted, filepath, load, file, blobFilepath]);
 
   useEffect(() => {
     if (blobFilepath) {

@@ -49,7 +49,7 @@ function DrawerMenu({
       </Drawer>
     </div>
   );
-}
+};
 
 DrawerMenu.propTypes = {
   /** Component to render inside of the drawer menu. */
