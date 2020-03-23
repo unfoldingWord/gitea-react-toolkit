@@ -1,6 +1,6 @@
 {
   "name": "gitea-react-toolkit",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.4",
   "license": "MIT",
   "description": "A Gitea API React Toolkit Component Library",
   "homepage": "https://gitea-react-toolkit.netlify.com/",
@@ -87,7 +87,6 @@
     "source-map-support": "0.5.16",
     "start-server-and-test": "1.10.6",
     "style-loader": "^1.0.0",
-    "ts-loader": "^6.2.1",
     "ts-jest": "24.1.0",
     "ts-loader": "^6.2.1",
     "typescript": "3.7.2",
