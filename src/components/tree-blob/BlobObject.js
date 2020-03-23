@@ -1,7 +1,7 @@
+import Path from 'path';
 import React from 'react';
 import PropTypes from 'prop-types';
-import Path from 'path';
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   ListItem,
   ListItemIcon,
@@ -14,24 +14,32 @@ import {
 
 import { humanFileSize } from './helpers';
 
+const useStyles = makeStyles(theme => ({
+  root: {
+    paddingRight: '0.7em',
+  },
+  pathText: {
+    paddingLeft: '0.7em',
+  }
+}));
+
 /**
  * A Blob Component to render a Git Tree blob object.
  */
-function BlobObjectComponent ({
-  classes,
+function BlobObject({
   selected,
   blob,
   blob: {
     path,
-    url,
     size,
   },
   onBlob,
   depth,
   filepath,
 }) {
+  const classes = useStyles();
   const _filepath = Path.join(filepath || '', path);
-  const _blob = {...blob, filepath: _filepath};
+  const _blob = { ...blob, filepath: _filepath };
 
   const icon = selected ?
     <Note /> :
@@ -42,8 +50,10 @@ function BlobObjectComponent ({
       button
       selected={selected}
       className={classes.root}
-      style={{paddingLeft: depth + 'em'}}
-      onClick={() => {if (onBlob) onBlob(_blob)}}
+      style={{ paddingLeft: depth + 'em' }}
+      onClick={() => {
+        if (onBlob) { onBlob(_blob); }
+      }}
     >
       <ListItemIcon style={{ marginRight: 0 }}>
         {icon}
@@ -57,9 +67,7 @@ function BlobObjectComponent ({
   );
 }
 
-BlobObjectComponent.propTypes = {
-  /** @ignore */
-  classes: PropTypes.object.isRequired,
+BlobObject.propTypes = {
   /** Blob data to render, if url not provided. */
   blob: PropTypes.shape({
     /** The filepath in the Git Tree Blob Object */
@@ -79,18 +87,9 @@ BlobObjectComponent.propTypes = {
   filepath: PropTypes.string,
 };
 
-BlobObjectComponent.defaultProps = {
+BlobObject.defaultProps = {
   selected: false,
   depth: 1,
 };
 
-const styles = theme => ({
-  root: {
-    paddingRight: '0.7em',
-  },
-  pathText: {
-    paddingLeft: '0.7em',
-  }
-});
-
-export const BlobObject = withStyles(styles)(BlobObjectComponent);
+export default BlobObject;

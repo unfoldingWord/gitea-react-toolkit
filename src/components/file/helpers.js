@@ -1,53 +1,56 @@
-import base64 from 'base-64';
-import utf8 from 'utf8';
-import { get, updateContent, ensureFile as _ensureFile, removeFile, decodeBase64ToUtf8 } from '../../core';
+import {
+  get, updateContent, ensureContent, deleteContent, decodeBase64ToUtf8,
+} from '../..';
 
 export const ensureFile = async ({
-  filepath, defaultContent, message, authentication, repository, config, branch
+  config, authentication, repository, branch, filepath, defaultContent, message,
 }) => {
-  let _config = config;
-  if (authentication) _config = authentication.config;
-  const { owner: {username}, name } = repository;
-  let _payload;
+  const _config = (authentication) ? authentication.config : { ...config };
+  const { owner: { username: owner }, name: repo } = repository;
+  let _message = message;
+  let author;
+
   if (authentication) {
-    const _message = message || `Created '${filepath}' using '${authentication.token.name}'`;
-    _payload = payload(
-      { content: defaultContent, message: _message, authentication, repository, branch }
-    );
+    const { user: _author, token: { name: tokenid } } = authentication;
+    author = _author;
+    _message = message || `Created '${filepath}' using '${tokenid}'`;
   }
-  const file = await _ensureFile(
-    { owner: username, repo: name, filepath, payload: _payload, config: _config }
-  );
+
+  const file = await ensureContent({
+    config: _config, owner, repo, branch, filepath,
+    content: defaultContent, message: _message, author,
+  });
   return file;
 };
 
-export const deleteFile = async (
-  { file, message, authentication, repository, branch }
-) => {
-  const { config } = authentication;
-  const { owner: {username}, name } = repository;
-  const { filepath } = file;
-  const _message = message || `Deleted '${filepath}' using '${authentication.token.name}'`;
-  const _payload = payload({message: _message, authentication, repository, file, branch});
-  const deleted = await removeFile({
-    owner: username,
-    repo: name,
-    filepath,
-    payload: _payload,
-    config,
+export const deleteFile = async ({
+  authentication, repository, branch, file, message,
+}) => {
+  const {
+    user: author, config, token: { name: tokenid },
+  } = authentication;
+  const { owner: { username: owner }, name: repo } = repository;
+  const { path: filepath, sha } = file;
+  const _message = message || `Deleted '${filepath}' using '${tokenid}'`;
+  const deleted = await deleteContent({
+    config, owner, repo, branch, filepath, message: _message, author, sha,
   });
   return deleted;
 };
 
 export const getContentFromFile = async (file) => {
-  const {content, encoding, download_url, git_url} = file;
+  const {
+    content, encoding, download_url, git_url,
+  } = file;
   let _content;
+
   if (content && encoding === 'base64') {
     _content = decodeBase64ToUtf8(content);
   } else if (!content && download_url) {
-    _content = await get({url: download_url, noCache: true});
+    _content = await get({ url: download_url, noCache: true });
   } else if (!content && git_url) {
-    const blobObject = await get({url: git_url, noCache: true});
+    const blobObject = await get({ url: git_url, noCache: true });
+
     if (blobObject.content && blobObject.encoding === 'base64') {
       _content = decodeBase64ToUtf8(blobObject.content);
     }
@@ -55,27 +58,19 @@ export const getContentFromFile = async (file) => {
   return _content;
 };
 
-export const payload = ({content, message, authentication, repository, file, branch}) => ({
-  author: {
-    email: authentication.user.email,
-    name: authentication.user.username,
-  },
-  content: base64.encode(utf8.encode(content || '')),
-  message: message || `Edit '${file.path}' using '${authentication.token.name}'`,
-  sha: (file) ? file.sha : null,
-  new_branch: branch || repository.default_branch,
-});
+export const saveFile = async ({
+  authentication, repository, branch, file, content, message,
+}) => {
+  const {
+    user: author, config, token: { name: tokenid },
+  } = authentication;
+  const { owner: { username: owner }, name: repo } = repository;
+  const { path: filepath, sha } = file;
+  const _message = message || `Edit '${filepath}' using '${tokenid}'`;
 
-export const saveContent = async ({content, message, authentication, repository, file, branch}) => {
-  const { config } = authentication;
-  const { owner: {username}, name } = repository;
-  const { path } = file;
   const response = await updateContent({
-    owner: username,
-    repo: name,
-    filepath: path,
-    payload: payload({content, message, authentication, repository, file, branch}),
-    config,
+    config, owner, repo, branch, filepath,
+    content, message: _message, author, sha,
   });
   return response;
 };

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   Avatar,
   ListItem,
@@ -9,37 +9,35 @@ import {
   ListItemSecondaryAction,
   IconButton,
 } from '@material-ui/core';
-import {
-  Code,
-} from '@material-ui/icons';
+import { Code } from '@material-ui/icons';
 
-import { get, repoTreeUrl } from '../../core';
+import { get } from '../../core';
 
-function RepositoryComponent({
-  classes,
+const useStyles = makeStyles(theme => ({
+  avatar: { borderRadius: '20%' },
+}));
+
+function Repository({
   url,
   repository,
   onRepository,
   config,
 }) {
+  const classes = useStyles();
   const [repo, setRepo] = useState(repository || { owner: {} });
 
-  const getData = async () => {
+  const getData = useCallback(async () => {
     const data = await get({ url, config });
     setRepo(data);
-  };
+  }, [config, url]);
 
-  if (Object.keys(repo.owner).length === 0) {
-    getData();
-  }
+  useEffect(() => {
+    if (Object.keys(repo.owner).length === 0) getData();
+  }, [getData, repo.owner]);
 
-  const _onRepository = () => {
-    if (repo && repo.full_name && (repo.branch || repo.default_branch)) {
-      const tree_url = repoTreeUrl(repo);
-      const _repo = { tree_url, ...repo };
-      onRepository(_repo);
-    }
-  };
+  const _onRepository = useCallback(() => {
+    onRepository(repo);
+  }, [repo, onRepository]);
 
   const {
     owner,
@@ -47,7 +45,7 @@ function RepositoryComponent({
     full_name,
     description,
     html_url,
-    avatar_url
+    avatar_url,
   } = repo;
 
   return (
@@ -81,14 +79,9 @@ function RepositoryComponent({
       </ListItemSecondaryAction>
     </ListItem>
   );
-}
+};
 
-RepositoryComponent.propTypes = {
-  classes: PropTypes.object.isRequired,
-  /** Function to call when repository is selected. */
-  onRepository: PropTypes.func.isRequired,
-  /** Url to get repository data, if repository data is not provided. */
-  url: PropTypes.string,
+Repository.propTypes = {
   /** Repository data to render, if url not provided. */
   repository: PropTypes.shape({
     id: PropTypes.number,
@@ -100,17 +93,16 @@ RepositoryComponent.propTypes = {
     website: PropTypes.string.isRequired,
     tree_url: PropTypes.string,
     avatar_url: PropTypes.string,
+    branch: PropTypes.string,
   }),
+  /** Function to call when repository is selected. */
+  onRepository: PropTypes.func.isRequired,
+  /** Url to get repository data, if repository data is not provided. */
+  url: PropTypes.string,
   /** Configuration required if paths are provided as URL. */
   config: PropTypes.shape({
     server: PropTypes.string.isRequired,
   }),
 };
 
-const styles = {
-  avatar: {
-    borderRadius: '20%',
-  },
-};
-
-export const Repository = withStyles(styles)(RepositoryComponent);
+export default Repository;

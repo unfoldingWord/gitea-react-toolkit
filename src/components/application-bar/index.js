@@ -1,5 +1,4 @@
-export { ApplicationBar } from './ApplicationBar';
-export { UserMenu } from './UserMenu';
-export { RepositoryMenu } from './RepositoryMenu';
-export { DrawerMenu } from './DrawerMenu';
-export { FileMenu } from './FileMenu';
+export { default as ApplicationBar } from './ApplicationBar';
+export { default as UserMenu } from './UserMenu';
+export { default as RepositoryMenu } from './RepositoryMenu';
+export { default as DrawerMenu } from './DrawerMenu';

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+/* eslint-disable camelcase */
+import React, {
+  useState, useCallback, useContext,
+} from 'react';
 import {
   IconButton,
   Avatar,
@@ -10,69 +11,62 @@ import {
 } from '@material-ui/core';
 import { FolderShared } from '@material-ui/icons';
 
-import { withRepository } from '../repository';
+import { useStyles } from './useStyles';
+import { RepositoryContext } from '..';
 
-function RepositoryMenuComponent({
-  classes,
-  authentication,
-  repository,
-  onRepository,
-  repositoryConfig,
-}) {
+function RepositoryMenu() {
+  const classes = useStyles();
   const [modal, setModal] = useState(false);
+  const {
+    state: repository,
+    actions,
+    component: repositoryComponent,
+  } = useContext(RepositoryContext) || {};
 
-  const handleClose = () => {
-    repository.close();
-    setModal(false);
-  };
+  const {
+    name,
+    avatar_url,
+    owner,
+    full_name,
+  } = repository || {};
 
-  const handleOpen = () => {
+  const handleOpen = useCallback(() => {
     setModal(true);
-  };
+  }, []);
 
   let button;
 
-  if (repository && repository.owner) {
-    const avatarUrl = repository.avatar_url || repository.owner.avatar_url;
+  if (name && owner) {
+    const avatarComponent = <Avatar src={avatar_url || owner.avatar_url} />;
 
     button = (
       <Chip
         data-test="repository-item-icon"
-        avatar={<Avatar src={avatarUrl} />}
-        label={repository.name}
-        onDelete={handleClose}
+        avatar={avatarComponent}
+        label={name}
+        onDelete={actions && actions.close}
         color="primary"
       />
     );
   } else {
     button = (
-      <IconButton
-        onClick={handleOpen}
-        color="inherit"
-      >
+      <IconButton onClick={handleOpen} color="inherit">
         <FolderShared />
       </IconButton>
     );
-  }
+  };
 
-  let modalComponent = <div />;
+  let modalComponent = <></>;
 
-  if (modal && !repository) {
-    const RepositoryComponent = withRepository(<div />);
-
+  if (modal && !full_name) {
     modalComponent = (
       <Modal data-test="repository-menu-modal" open={true} onClose={() => setModal(false)}>
         <Paper className={classes.modal}>
-          <RepositoryComponent
-            authentication={authentication}
-            repository={repository}
-            onRepository={onRepository}
-            repositoryConfig={repositoryConfig}
-          />
+          {repositoryComponent}
         </Paper>
       </Modal>
     );
-  }
+  };
 
   return (
     <div data-test="repository-menu">
@@ -80,25 +74,9 @@ function RepositoryMenuComponent({
       {modalComponent}
     </div>
   );
-}
+};
 
-if (withRepository && withRepository.propTypes) {
-  RepositoryMenuComponent.propTypes = { ...withRepository.propTypes, };
-}
+RepositoryMenu.propTypes = {
+};
 
-const styles = (theme) => ({
-  avatar: {
-    width: '35px',
-    height: '35px',
-  },
-  modal: {
-    position: 'absolute',
-    top: '10%',
-    left: '10%',
-    right: '10%',
-    maxHeight: '80%',
-    overflow: 'scroll',
-  },
-});
-
-export const RepositoryMenu = withStyles(styles, { withTheme: true })(RepositoryMenuComponent);
+export default RepositoryMenu;

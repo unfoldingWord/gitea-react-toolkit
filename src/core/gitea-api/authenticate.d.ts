@@ -1,4 +1,4 @@
-import { APIConfig } from './core.d';
+import { APIConfig } from './http/http.d';
 
 export interface AuthenticateOptions {
   username: string;

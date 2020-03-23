@@ -1,10 +1,9 @@
 import Path from 'path';
 
+import { APIConfig } from '../http/http.d';
 import {
-  apiPath, get, post,
-} from '../';
-import { APIConfig } from '../core.d';
-import { ExtendConfig } from '../core';
+  apiPath, get, post, ExtendConfig,
+} from '..';
 
 interface ReadForksOptions {
   owner: string;

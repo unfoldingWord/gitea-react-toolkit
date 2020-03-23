@@ -1,30 +1,21 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import {
-  List,
-} from '@material-ui/core';
+import { List } from '@material-ui/core';
 
 import { Repository } from '../';
-import { extendRepository } from '../repository/helpers';
 
-function RepositoriesComponent({
-  classes,
+function Repositories({
   urls,
   repositories,
   onRepository,
   config,
 }) {
-  const updateRepository = (_repo) => {
-    let __repo;
-    if (_repo) {
-      __repo = { ..._repo };
-      __repo = extendRepository({ repository: __repo, updateRepository, config });
-    }
-    onRepository(__repo);
-  };
+  const updateRepository = useCallback((repo) => {
+    onRepository(repo);
+  }, [onRepository]);
 
   let components = [];
+
   if (repositories) {
     components = repositories.map((repository) =>
       <Repository
@@ -45,14 +36,13 @@ function RepositoriesComponent({
     );
   }
   return (
-    <List className={classes.root}>
+    <List>
       {components}
     </List>
   );
 }
 
-RepositoriesComponent.propTypes = {
-  classes: PropTypes.object.isRequired,
+Repositories.propTypes = {
   /** Urls array to get repository data, if repository data is not provided. */
   urls: PropTypes.array,
   /** Repositories data array to render, if urls not provided. */
@@ -65,9 +55,4 @@ RepositoriesComponent.propTypes = {
   }),
 };
 
-const styles = {
-  root: {
-  },
-};
-
-export const Repositories = withStyles(styles)(RepositoriesComponent);
+export default Repositories;

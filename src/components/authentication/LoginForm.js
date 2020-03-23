@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import withStyles from '@material-ui/core/styles/withStyles';
 import {
   Avatar,
   Button,
@@ -10,22 +9,21 @@ import {
   TextField,
 } from '@material-ui/core';
 import { LockOutlined } from '@material-ui/icons';
+import { useStyles } from './useStyles';
 
-function LoginFormComponent({
+function LoginForm({
   config,
-  classes,
   authentication,
   actionText,
   errorText,
   onSubmit,
 }) {
+  const classes = useStyles();
   const [formData, setFormData] = useState({});
 
   let user;
 
-  if (authentication) {
-    user = authentication.user;
-  }
+  if (authentication) user = authentication.user;
 
   const updateFormData = (event) => {
     const {
@@ -33,11 +31,9 @@ function LoginFormComponent({
     } = event.target;
     const _formData = { ...formData };
 
-    if (type === 'checkbox') {
-      _formData[value] = checked;
-    } else {
-      _formData[name] = value;
-    }
+    if (type === 'checkbox') _formData[value] = checked;
+    else _formData[name] = value;
+
     setFormData(_formData);
   };
 
@@ -88,7 +84,7 @@ function LoginFormComponent({
           }
         />
         <Button data-test={user ? 'logout-button' : 'submit-button'} type="button" fullWidth variant="contained"
-          color={(user) ? 'secondary' : 'primary'}
+          color='primary'
           className={classes.submit}
           onClick={() => {
             onSubmit(formData);
@@ -99,12 +95,11 @@ function LoginFormComponent({
       </form>
     </div>
   );
-}
+};
 
-LoginFormComponent.propTypes = {
+LoginForm.propTypes = {
   /** Configuration to use for sign up/forgot password flow */
   config: PropTypes.shape({ server: PropTypes.string.isRequired }),
-  classes: PropTypes.object.isRequired,
   /** Callback function to propogate the username and password entered. */
   onSubmit: PropTypes.func.isRequired,
   /** The text to describe the action of logging in. */
@@ -115,35 +110,6 @@ LoginFormComponent.propTypes = {
   authentication: PropTypes.shape({ user: PropTypes.object }),
 };
 
-LoginFormComponent.defaultProps = { actionText: 'Login' };
+LoginForm.defaultProps = { actionText: 'Login' };
 
-const styles = theme => ({
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
-  },
-  avatar: {
-    margin: theme.spacing.unit,
-    backgroundColor: theme.palette.primary.main,
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing.unit,
-  },
-  submit: {
-    marginTop: theme.spacing.unit * 3,
-    marginBottom: theme.spacing.unit * 2,
-  },
-  footer_container: {
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
-  footer_column: {
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
-});
-
-export const LoginForm = withStyles(styles)(LoginFormComponent);
+export const LoginFormComponent = LoginForm;

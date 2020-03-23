@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   List,
   Divider,
@@ -8,15 +8,22 @@ import {
 import {
 } from '@material-ui/icons';
 
-import { Repositories, SearchForm } from './';
+import { Repositories, SearchForm } from '.';
 
-function SearchComponent({
-  classes,
+const useStyles = makeStyles(theme => ({
+  root: {
+    overflow: 'auto',
+    height: '100%',
+  },
+}));
+
+function Search({
   defaultOwner,
   defaultQuery,
   onRepository,
   config,
 }) {
+  const classes = useStyles();
   const [repositories, setRepositories] = useState([]);
 
   return (
@@ -37,8 +44,7 @@ function SearchComponent({
   );
 }
 
-SearchComponent.propTypes = {
-  classes: PropTypes.object.isRequired,
+Search.propTypes = {
   /** Prefill the owner search field. */
   defaultOwner: PropTypes.string,
   /** Prefill the query search field. */
@@ -51,11 +57,4 @@ SearchComponent.propTypes = {
   }).isRequired,
 };
 
-const styles = (theme) => ({
-  root: {
-    overflow: 'auto',
-    height: '100%',
-  }
-});
-
-export const Search = withStyles(styles)(SearchComponent);
+export default Search;

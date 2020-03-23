@@ -1,3 +1,4 @@
-export { RepositoryForm } from './RepositoryForm';
-export { RepositoryFormMenu } from './RepositoryFormMenu';
-export { RepositoryQuickCreate } from './RepositoryQuickCreate';
+export { default as FormCheckbox } from './FormCheckbox';
+export { default as RepositoryForm } from './RepositoryForm';
+export { default as RepositoryFormMenu } from './RepositoryFormMenu';
+export { default as RepositoryQuickCreate } from './RepositoryQuickCreate';

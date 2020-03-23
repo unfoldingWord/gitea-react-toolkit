@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   IconButton,
   ListItem,
@@ -10,42 +10,62 @@ import {
 import { Search } from '@material-ui/icons';
 import AwesomeDebouncePromise from 'awesome-debounce-promise';
 
-import { repositorySearch } from '../../core';
+import { repositorySearch } from '../..';
 
 const repositorySearchDebounced = AwesomeDebouncePromise(repositorySearch, 250);
 
-function SearchFormComponent({
-  classes,
+const useStyles = makeStyles(theme => ({
+  root: {
+    position: 'sticky',
+    borderRadius: theme.shape.borderRadius,
+    marginLeft: 0,
+    width: '100%',
+  },
+  listItemIcon: { marginRight: '8px' },
+  form: { width: '100%' },
+  input: {
+    width: '40%',
+    display: 'inline-block',
+    marginRight: '1em',
+  },
+}));
+
+function SearchForm({
   defaultOwner,
   defaultQuery,
   onRepositories,
   config,
 }) {
+  const classes = useStyles();
   const [owner, setOwner] = useState(defaultOwner);
   const [query, setQuery] = useState(defaultQuery);
   const [initialSearch, setInitialSearch] = useState(false);
 
-  const updateRepositories = async (owner, query) => {
+  const updateRepositories = useCallback(async (owner, query) => {
     const repositories = await repositorySearchDebounced({
       owner, query, config,
     });
     onRepositories(repositories);
-  };
+  }, [config, onRepositories]);
 
-  if (!initialSearch) {
-    updateRepositories(owner, query)
-      .then(() => setInitialSearch(true));
-  }
+  useEffect(() => {
+    const _updateRepositories = async () => {
+      await updateRepositories(owner, query);
+      setInitialSearch(true);
+    };
 
-  const onOwner = (_owner) => {
+    if (!initialSearch) _updateRepositories();
+  }, [initialSearch, owner, query, updateRepositories]);
+
+  const onOwner = useCallback((_owner) => {
     setOwner(_owner);
     updateRepositories(_owner, query);
-  };
+  }, [query, updateRepositories]);
 
-  const onQuery = (_query) => {
+  const onQuery = useCallback((_query) => {
     setQuery(_query);
     updateRepositories(owner, _query);
-  };
+  }, [owner, updateRepositories]);
 
   return (
     <ListItem
@@ -74,7 +94,7 @@ function SearchFormComponent({
           <TextField
             id='search' label='Search' type='text'
             variant="outlined" margin="normal" fullWidth
-            defaultValue={query} autoFocus autoComplete={undefined}
+            defaultValue={query} autoComplete={undefined}
             onChange={(event) => {
               onQuery(event.target.value);
             }}
@@ -85,8 +105,7 @@ function SearchFormComponent({
   );
 }
 
-SearchFormComponent.propTypes = {
-  classes: PropTypes.object.isRequired,
+SearchForm.propTypes = {
   /** Prefill the owner search field. */
   defaultOwner: PropTypes.string,
   /** Prefill the query search field. */
@@ -97,20 +116,4 @@ SearchFormComponent.propTypes = {
   config: PropTypes.shape({ server: PropTypes.string.isRequired }).isRequired,
 };
 
-const styles = (theme) => ({
-  root: {
-    position: 'sticky',
-    borderRadius: theme.shape.borderRadius,
-    marginLeft: 0,
-    width: '100%',
-  },
-  listItemIcon: { marginRight: '8px' },
-  form: { width: '100%' },
-  input: {
-    width: '40%',
-    display: 'inline-block',
-    marginRight: '1em',
-  },
-});
-
-export const SearchForm = withStyles(styles)(SearchFormComponent);
+export default SearchForm;

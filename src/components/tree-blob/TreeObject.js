@@ -1,7 +1,7 @@
+import Path from 'path';
 import React from 'react';
 import PropTypes from 'prop-types';
-import Path from 'path';
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   ListItem,
   ListItemIcon,
@@ -14,11 +14,19 @@ import {
 
 import { Tree } from './';
 
+const useStyles = makeStyles(theme => ({
+  root: {
+    paddingRight: '0.7em',
+  },
+  pathText: {
+    paddingLeft: '0.7em',
+  },
+}));
+
 /**
  * A TreeObject Component to render a Git Tree tree object.
  */
-function TreeObjectComponent ({
-  classes,
+function TreeObject({
   path,
   tree,
   url,
@@ -28,6 +36,7 @@ function TreeObjectComponent ({
   depth,
   filepath,
 }) {
+  const classes = useStyles();
   const _filepath = Path.join(filepath || '', path);
 
   const icon = selected ?
@@ -63,9 +72,7 @@ function TreeObjectComponent ({
   );
 }
 
-TreeObjectComponent.propTypes = {
-  /** @ignore */
-  classes: PropTypes.object.isRequired,
+TreeObject.propTypes = {
   /** The filename or path in the Git Tree Object */
   path: PropTypes.string.isRequired,
   /** An array of paths from the Gitea file tree api. */
@@ -87,18 +94,9 @@ TreeObjectComponent.propTypes = {
   filepath: PropTypes.string,
 };
 
-TreeObjectComponent.defaultProps = {
+TreeObject.defaultProps = {
   selected: false,
   depth: 1,
 };
 
-const styles = theme => ({
-  root: {
-    paddingRight: '0.7em',
-  },
-  pathText: {
-    paddingLeft: '0.7em',
-  }
-});
-
-export const TreeObject = withStyles(styles)(TreeObjectComponent);
+export default TreeObject;

@@ -1,47 +1,53 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import React, {
+  useState, useCallback, useContext,
+} from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   Avatar,
   ListItem,
   ListItemAvatar,
   ListItemSecondaryAction,
   IconButton,
-  TextField
+  TextField,
 } from '@material-ui/core';
-import {
-  AddCircle,
-} from '@material-ui/icons';
+import { AddCircle } from '@material-ui/icons';
 
-import { createRepository, extendRepository } from '../helpers';
+import { RepositoryContext, AuthenticationContext } from '../..';
 
-function RepositoryQuickCreateComponent({
-  classes,
-  authentication,
-  authentication: {
-    user: {
-      username,
-      avatar_url,
-    },
-    config,
+const useStyles = makeStyles(theme => ({
+  listItemAvatar: {
+    marginRight: '16px',
+    marginTop: '20px',
   },
-  onRepository,
-}) {
+  avatar: {
+    borderRadius: '20%',
+  },
+  root: {
+    borderRadius: theme.shape.borderRadius,
+    marginLeft: 0,
+    width: '100%',
+  },
+  form: {
+    width: '100%',
+  },
+  input: {
+    width: '40%',
+    display: 'inline-block',
+    marginRight: '1em',
+  }
+}));
+
+function RepositoryQuickCreate() {
+  const classes = useStyles();
   const [repo, setRepo] = useState();
+  const { state: authentication } = useContext(AuthenticationContext);
+  const { actions: { create } } = useContext(RepositoryContext);
 
-  const updateRepository = (_repo) => {
-    if (_repo) {
-      _repo = extendRepository({
-        repository: _repo, authentication, updateRepository, config
-      });
-    }
-    onRepository(_repo);
-  }
+  const { user: { username, avatar_url } } = authentication;
 
-  const handleCreate = async () => {
-    const repository = await createRepository({repo, config});
-    updateRepository(repository);
-  }
+  const handleCreate = useCallback(() => {
+    create({ name: repo });
+  }, [repo, create]);
 
   return (
     <ListItem
@@ -68,8 +74,10 @@ function RepositoryQuickCreateComponent({
           <TextField
             id='repo' label='Repository' type='text' required
             variant="outlined" margin="normal" fullWidth
-            defaultValue="" autoFocus autoComplete={undefined}
-            onChange={(event) => {setRepo(event.target.value)}}
+            defaultValue="" autoComplete={undefined}
+            onChange={(event) => {
+              setRepo(event.target.value);
+            }}
           />
         </div>
       </form>
@@ -85,44 +93,6 @@ function RepositoryQuickCreateComponent({
   );
 }
 
-RepositoryQuickCreateComponent.propTypes = {
-  classes: PropTypes.object.isRequired,
-  /** Function to call when repository is selected. */
-  onRepository: PropTypes.func.isRequired,
-  /** A passed authentication object from login. */
-  authentication: PropTypes.shape({
-    user: PropTypes.object.isRequired,
-    token: PropTypes.object.isRequired,
-    config: PropTypes.shape({
-      /** The Gitea server to use when authenticating. */
-      server: PropTypes.string.isRequired,
-      /** The id of the token to create/retrieve that is used for the app. */
-      tokenid: PropTypes.string.isRequired,
-    }).isRequired,
-  }),
-};
+RepositoryQuickCreate.propTypes = {};
 
-const styles = (theme) => ({
-  listItemAvatar: {
-    marginRight: '16px',
-    marginTop: '20px',
-  },
-  avatar: {
-    borderRadius: '20%',
-  },
-  root: {
-    borderRadius: theme.shape.borderRadius,
-    marginLeft: 0,
-    width: '100%',
-  },
-  form: {
-    width: '100%',
-  },
-  input: {
-    width: '40%',
-    display: 'inline-block',
-    marginRight: '1em',
-  }
-});
-
-export const RepositoryQuickCreate = withStyles(styles)(RepositoryQuickCreateComponent);
+export default RepositoryQuickCreate;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   IconButton,
   Modal,
@@ -12,12 +12,19 @@ import {
 
 import { RepositoryForm } from './';
 
-function RepositoryFormMenuComponent({
-  classes,
-  authentication,
-  repository,
-  onRepository,
-}) {
+const useStyles = makeStyles(theme => ({
+  modal: {
+    position: 'absolute',
+    top: '10%',
+    left: '10%',
+    right: '10%',
+    maxHeight: '80%',
+    overflow: 'scroll',
+  },
+}));
+
+function RepositoryFormMenu() {
+  const classes = useStyles();
   const [modal, setModal] = useState(false);
 
   const button = (
@@ -26,38 +33,26 @@ function RepositoryFormMenuComponent({
     </IconButton>
   );
 
-  let modalComponent = <div />;
+  let modalComponent = <></>;
+
   if (modal) {
     modalComponent = (
       <Modal open={true} onClose={() => { setModal(false); }}>
         <Paper className={classes.modal}>
-          <RepositoryForm
-            authentication={authentication}
-            repository={repository}
-            onRepository={onRepository}
-          />
+          <RepositoryForm />
         </Paper>
       </Modal>
     );
   }
 
   return (
-    <>{button}{modalComponent}</>
+    <>
+      {button}
+      {modalComponent}
+    </>
   );
-}
-
-RepositoryFormMenuComponent.propTypes = {
 };
 
-const styles = (theme) => ({
-  modal: {
-    position: 'absolute',
-    top: '10%',
-    left: '10%',
-    right: '10%',
-    maxHeight: '80%',
-    overflow: 'scroll',
-  }
-});
+RepositoryFormMenu.propTypes = {};
 
-export const RepositoryFormMenu = withStyles(styles, { withTheme: true })(RepositoryFormMenuComponent);
+export default RepositoryFormMenu;

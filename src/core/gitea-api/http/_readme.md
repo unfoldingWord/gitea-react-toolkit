@@ -1,0 +1,1 @@
+The following are examples to document and test the HTTP Methods of GET, POST, PUT, and DELETE.

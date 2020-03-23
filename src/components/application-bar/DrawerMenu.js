@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
   IconButton,
@@ -11,33 +10,19 @@ import {
   ChevronLeft,
 } from '@material-ui/icons';
 
-import { Tree } from '../';
-import styles from './styles';
+import { useStyles } from './useStyles';
+import { FileContext } from '..';
 
-
-function DrawerMenuComponent({
-  classes,
-  drawerMenu,
-  blob,
-  onBlob,
-  repository,
-  config,
+function DrawerMenu({
+  children,
 }) {
+  const classes = useStyles();
   const [openDrawer, setOpenDrawer] = useState(false);
+  const { components } = useContext(FileContext) || {};
 
   const toggleDrawer = () => {
     setOpenDrawer(!openDrawer);
   };
-
-  const fileTree = (!repository) ? <></> : (
-    <Tree
-      url={repository.tree_url}
-      blob={blob}
-      onBlob={onBlob}
-      config={config}
-      selected={true}
-    />
-  );
 
   const drawerClasses = { paper: classes.drawerPaper };
   return (
@@ -57,26 +42,18 @@ function DrawerMenuComponent({
           </IconButton>
         </div>
         <Divider />
-        {drawerMenu}
+        {children}
         <Divider />
-        {fileTree}
+        {components && components.browse}
         <Divider />
       </Drawer>
     </div>
   );
-}
+};
 
-DrawerMenuComponent.propTypes = {
+DrawerMenu.propTypes = {
   /** Component to render inside of the drawer menu. */
-  drawerMenu: PropTypes.element,
+  children: PropTypes.element,
 };
 
-const areEqual = (prevProps, nextProps) => {
-  const keys = ['blob', 'repository', 'config'];
-  const checks = keys.map(key => (JSON.stringify(prevProps[key]) === JSON.stringify(nextProps[key])));
-  const equal = !checks.includes(false);
-  // console.log('DrawerMenuComponent', keys, checks, equal);
-  return equal;
-};
-
-export const DrawerMenu = React.memo(withStyles(styles)(DrawerMenuComponent), areEqual);
+export default DrawerMenu;

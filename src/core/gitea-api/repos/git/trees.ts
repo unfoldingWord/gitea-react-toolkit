@@ -45,7 +45,7 @@ export const decodeBase64ToUtf8 = (encoded) => {
   return text;
 };
 
-// http://git.door43.org/api/v1/repos/unfoldingword/en_ugl/git/trees/master
+// http://bg.door43.org/api/v1/repos/unfoldingword/en_ugl/git/trees/master
 export const fetchTree = async ({ owner, repository, sha='master', per_page, page, recursive, config }) => {
   const params = {recursive, per_page, page};
   const url = path.join(apiPath, 'repos', owner, repository, 'git', 'trees', sha);

@@ -1,9 +1,8 @@
 import Path from 'path';
-
+import { AuthToken } from '../index.d';
 import {
   apiPath, get, post, del,
-} from '../core';
-import { AuthToken } from '../index.d';
+} from '..';
 
 interface TokenConfig {
   headers?: object;
@@ -12,7 +11,7 @@ interface TokenConfig {
   tokenid: string;
 }
 
-interface TokenConfigWithHeaders {
+export interface TokenConfigWithHeaders {
   headers: object;
   server?: string;
   token: AuthToken;

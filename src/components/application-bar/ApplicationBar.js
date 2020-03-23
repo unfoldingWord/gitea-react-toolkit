@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
   AppBar,
@@ -9,62 +8,18 @@ import {
 import {
 } from '@material-ui/icons';
 
-// import { withAuthentication, withRepository, withFile } from '../';
-import styles from './styles';
+import { useStyles } from './useStyles';
 import {
-  UserMenu, DrawerMenu, RepositoryMenu,
-} from './';
+  UserMenu, DrawerMenu, RepositoryMenu, FileContext,
+} from '..';
 
-function ApplicationBarComponent({
-  classes,
+function ApplicationBar({
   title,
   buttons,
   drawerMenu,
-  authentication,
-  onAuthentication,
-  authenticationConfig,
-  repository,
-  onRepository,
-  repositoryConfig,
-  blob,
-  onBlob,
 }) {
-  let _authenticationConfig = { ...authenticationConfig };
-  const _repositoryConfig = { ...repositoryConfig };
-
-  if (authentication && authentication.config) {
-    _authenticationConfig = authentication.config;
-    _repositoryConfig.defaultOwner = authentication.user.username;
-  }
-
-  if (!repository && blob) {
-    onBlob();
-  }
-
-  const drawerMenuComponent = (
-    <DrawerMenu
-      drawerMenu={drawerMenu}
-      repository={repository}
-      config={_repositoryConfig}
-      blob={blob}
-      onBlob={onBlob}
-    />
-  );
-  const repositoryMenuComponent = (
-    <RepositoryMenu
-      authentication={authentication}
-      repository={repository}
-      onRepository={onRepository}
-      repositoryConfig={_repositoryConfig}
-    />
-  );
-  const userMenuComponent = (
-    <UserMenu
-      authentication={authentication}
-      onAuthentication={onAuthentication}
-      authenticationConfig={_authenticationConfig}
-    />
-  );
+  const classes = useStyles();
+  const { state: file } = useContext(FileContext)
 
   return (
     <div className={classes.root}>
@@ -73,33 +28,33 @@ function ApplicationBarComponent({
         className={classes.appBar}>
         <Toolbar data-test="application-bar">
           <div className={classes.menuButton}>
-            {drawerMenuComponent}
+            <DrawerMenu>
+              {drawerMenu}
+            </DrawerMenu>
           </div>
           <Typography variant="h6" color="inherit" className={classes.grow} noWrap>
             {title}
           </Typography>
           <Typography variant="subtitle2" color="inherit" className={classes.grow} noWrap>
-            {blob ? blob.filepath : ''}
+            {file ? file.filepath : ''}
           </Typography>
           <div className={classes.grow} />
           {buttons}
-          {repositoryMenuComponent}
-          {userMenuComponent}
+          <RepositoryMenu />
+          <UserMenu />
         </Toolbar>
       </AppBar>
     </div>
   );
 }
 
-ApplicationBarComponent.propTypes = {
+ApplicationBar.propTypes = {
   /** The title string to be displayed. */
   title: PropTypes.string,
   /** Additional buttons to be displayed. */
   buttons: PropTypes.element,
   /** Component to render inside of the drawer menu. */
   drawerMenu: PropTypes.element,
-  // ...withAuthentication.propTypes,
-  // ...withRepository.propTypes,
 };
 
-export const ApplicationBar = withStyles(styles, { withTheme: true })(ApplicationBarComponent);
+export default ApplicationBar;

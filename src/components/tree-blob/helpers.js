@@ -1,19 +1,19 @@
 import { get } from '../../core';
 
-export const fetchTree = async ({url, config}) => {
+export const fetchTree = async ({ url, config }) => {
   const _config = {
     cache: {
-      maxAge: 1 * 2 * 1000 // 2 sec cache override
+      maxAge: 1 * 2 * 1000, // 2 sec cache override
     },
-    ...config
+    ...config,
   };
-  const response = await get({url, config: _config});
-  const {tree} = response;
+  const response = await get({ url, config: _config });
+  const { tree } = response;
   return tree;
 };
 
 export const humanFileSize = (size=0) => {
-  if (size === 0) return '0 B'
+  if (size === 0) return '0 B';
   const units = ['B', 'KB', 'MB', 'GB', 'TB'];
   const i = Math.floor( Math.log(size) / Math.log(1024) );
   return ( size / Math.pow(1024, i) ).toFixed(2) * 1 + ' ' + units[i];

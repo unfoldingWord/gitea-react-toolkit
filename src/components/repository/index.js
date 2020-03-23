@@ -1,3 +1,4 @@
 export * from './crud';
-export { Repository } from './Repository';
-export { withRepository } from './withRepository';
+export * from './Repository.context';
+export { default as Repository } from './Repository';
+export { default as useRepository } from './useRepository';
