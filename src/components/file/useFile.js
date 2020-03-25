@@ -22,9 +22,7 @@ function useFile({
   create=false,
 }) {
   const [blob, setBlob] = useState();
-  const [{ filepath, defaultContent }, setFileProps] = useState({
-    filepath: __filepath, defaultContent: __defaultContent,
-  });
+  const [{ filepath, defaultContent }, setFileProps] = useState({ filepath: __filepath, defaultContent: __defaultContent });
   const branch = repository && (repository.branch || repository.default_branch);
   const file = _file && deepFreeze(_file);
 
@@ -60,7 +58,9 @@ function useFile({
   }, [defaultContent]);
 
   const close = useCallback(() => {
-    if (blobActions && blobActions.close) blobActions.close();
+    if (blobActions && blobActions.close) {
+      blobActions.close();
+    }
     update();
     setFileProps({});
   }, [update, blobActions]);
@@ -80,7 +80,9 @@ function useFile({
         authentication, repository, file, branch,
       });
 
-      if (_deleted) setDeleted(true);
+      if (_deleted) {
+        setDeleted(true);
+      }
     };
   }, [file, authentication, branch, repository, writeable]);
 
@@ -88,9 +90,11 @@ function useFile({
 
   useEffect(() => {
     const notLoaded = (!file && filepath && !deleted);
-    const loadNew = (file && file.filepath !== blobFilepath);
+    const loadNew = (file && blobFilepath && file.filepath !== blobFilepath);
 
-    if (notLoaded || loadNew) load();
+    if (notLoaded || loadNew) {
+      load();
+    }
   }, [deleted, filepath, load, file, blobFilepath]);
 
   useEffect(() => {
@@ -103,7 +107,9 @@ function useFile({
   }, [blobFilepath, branch, defaultContent]);
 
   useEffect(() => { // if there is a file but no repository, close file.
-    if (!repository && file) close();
+    if (!repository && file) {
+      close();
+    }
   }, [repository, file, close]);
 
   useEffect(() => {
@@ -136,10 +142,14 @@ function useFile({
 
   let component = <></>;
 
-  if (file) component = components.fileCard;
-  else if (!filepath) {
-    if (create) component = components.create;
-    else component = components.browse;
+  if (file) {
+    component = components.fileCard;
+  } else if (!filepath) {
+    if (create) {
+      component = components.create;
+    } else {
+      component = components.browse;
+    }
   }
 
   return {
@@ -167,9 +177,7 @@ useFile.propTypes = {
   authentication: PropTypes.shape({
     config: PropTypes.shape({
       server: PropTypes.string.isRequired,
-      headers: PropTypes.shape({
-        Authorization: PropTypes.string.isRequired,
-      }).isRequired,
+      headers: PropTypes.shape({ Authorization: PropTypes.string.isRequired }).isRequired,
     }).isRequired,
     user: PropTypes.shape({
       username: PropTypes.string.isRequired,
@@ -178,9 +186,7 @@ useFile.propTypes = {
   }),
   /** Repository tree_url can be used in place of blobConfig */
   repository: PropTypes.shape({
-    owner: PropTypes.shape({
-      username: PropTypes.string.isRequired,
-    }),
+    owner: PropTypes.shape({ username: PropTypes.string.isRequired }),
     name: PropTypes.string.isRequired,
   }).isRequired,
   /** use a form to create a new file */
