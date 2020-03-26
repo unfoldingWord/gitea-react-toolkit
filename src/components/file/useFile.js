@@ -14,17 +14,17 @@ import {
 function useFile({
   authentication,
   repository,
-  filepath: __filepath,
-  defaultContent: __defaultContent,
+  filepath,
+  onFilepath,
+  defaultContent,
   config,
-  file: _file,
+  file: __file,
   onFile,
   create=false,
 }) {
+  const file = deepFreeze(__file);
   const [blob, setBlob] = useState();
-  const [{ filepath, defaultContent }, setFileProps] = useState({ filepath: __filepath, defaultContent: __defaultContent });
   const branch = repository && (repository.branch || repository.default_branch);
-  const file = _file && deepFreeze(_file);
 
   const [deleted, setDeleted] = useState();
 
@@ -53,16 +53,11 @@ function useFile({
     }
   }, [authentication, branch, config, defaultContent, filepath, repository, update]);
 
-  const read = useCallback((_filepath) => {
-    setFileProps({ filepath: _filepath, defaultContent });
-  }, [defaultContent]);
-
   const close = useCallback(() => {
     if (blobActions && blobActions.close) {
       blobActions.close();
     }
     update();
-    setFileProps({});
   }, [update, blobActions]);
 
   const save = useCallback(async (content) => {
@@ -86,29 +81,20 @@ function useFile({
     };
   }, [file, authentication, branch, repository, writeable]);
 
-  const blobFilepath = blobState && blobState.filepath;
-
-  useEffect(() => {
-    if (__filepath !== filepath) setFileProps({ filepath: __filepath, defaultContent });
-  }, [__filepath, filepath, defaultContent]);
-
   useEffect(() => {
     const notLoaded = (!file && filepath && !deleted);
-    const loadNew = (file && blobFilepath && file.filepath !== blobFilepath);
+    const loadNew = (file && filepath && file.filepath !== filepath);
 
     if (notLoaded || loadNew) {
       load();
     }
-  }, [deleted, filepath, load, file, blobFilepath]);
+  }, [deleted, filepath, load, file]);
+
+  const blobFilepath = blobState && blobState.filepath;
 
   useEffect(() => {
-    if (blobFilepath) {
-      const _fileProps = {
-        branch, filepath: blobFilepath, defaultContent,
-      };
-      setFileProps(_fileProps);
-    };
-  }, [blobFilepath, branch, defaultContent]);
+    if (blobFilepath) onFilepath(blobFilepath);
+  }, [blobFilepath, onFilepath]);
 
   useEffect(() => { // if there is a file but no repository, close file.
     if (!repository && file) {

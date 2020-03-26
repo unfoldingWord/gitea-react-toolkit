@@ -3,11 +3,18 @@ import PropTypes from 'prop-types';
 import {
   Paper, TextField, Button,
 } from '@material-ui/core';
+import _default from 'jest';
 
-function FileForm({ submitText, onSubmit }) {
-  const [branch, setBranch] = useState();
-  const [filepath, setFilepath] = useState();
-  const [defaultContent, setDefaultContent] = useState();
+function FileForm({
+  branch: _branch,
+  filepath: _filepath,
+  defaultContent: _defaultContent,
+  submitText,
+  onSubmit,
+}) {
+  const [branch, setBranch] = useState(_branch);
+  const [filepath, setFilepath] = useState(_filepath);
+  const [defaultContent, setDefaultContent] = useState(_defaultContent);
   const disabled = !(filepath);
 
   return (

@@ -9,6 +9,7 @@ import {
   RepositoryContext,
   FileContextProvider,
   FileContext,
+  FileForm,
 } from 'gitea-react-toolkit';
 
 function Component() {
@@ -20,6 +21,9 @@ function Component() {
 
 const [repository, setRepository] = React.useState();
 const [file, setFile] = React.useState();
+const [filepath, setFilepath] = React.useState('README.md');
+const [branch, setBranch] = React.useState('master');
+const [defaultContent, setDefaultContent] = React.useState();
 const config = {
   server: "https://bg.door43.org",
   tokenid:"PlaygroundTesting",
@@ -32,14 +36,25 @@ const config = {
     config={config}
     defaultQuery=''
     full_name='unfoldingWord/en_ta'
-    branch='master'
+    branch={branch}
   >
     <FileContextProvider
-      filepath='README.md'
-      // defaultContent={defaultContent}
+      filepath={filepath}
+      // defaultContent={defaultContent} // would require authentication to do this
       file={file}
       onFile={setFile}
     >
+      <FileForm
+        branch={branch}
+        filepath={filepath}
+        defaultContent={defaultContent}
+        submitText="Submit"
+        onSubmit={({ branch: _branch, filepath: _filepath, defaultContent: _defaultContent}) => {
+          setBranch(_branch);
+          setFilepath(_filpath);
+          setDefaultContent(_defaultContent);
+        }}
+      />
       <Component />
     </FileContextProvider>
   </RepositoryContextProvider>
