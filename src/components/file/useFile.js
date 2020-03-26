@@ -89,6 +89,10 @@ function useFile({
   const blobFilepath = blobState && blobState.filepath;
 
   useEffect(() => {
+    if (__filepath !== filepath) setFileProps({ filepath: __filepath, defaultContent });
+  }, [__filepath, filepath, defaultContent]);
+
+  useEffect(() => {
     const notLoaded = (!file && filepath && !deleted);
     const loadNew = (file && blobFilepath && file.filepath !== blobFilepath);
 
