@@ -5,6 +5,7 @@ import { useContext } from 'react';
 import { Paper } from '@material-ui/core';
 import {
   AuthenticationContextProvider,
+  AuthenticationContext,
   RepositoryContextProvider,
   RepositoryContext,
   FileContextProvider,
@@ -13,12 +14,14 @@ import {
 } from 'gitea-react-toolkit';
 
 function Component() {
+  const { state: auth, component: authComponent } = useContext(AuthenticationContext);
   const { state: repo, component: repoComponent } = useContext(RepositoryContext);
   const { state: file, component: fileComponent } = useContext(FileContext);
 
-  return (!repo && repoComponent) || fileComponent;
+  return (!auth && authComponent) || (!repo && repoComponent) || fileComponent;
 };
 
+const [authentication, setAuthentication] = React.useState();
 const [repository, setRepository] = React.useState();
 const [file, setFile] = React.useState();
 const [filepath, setFilepath] = React.useState('README.md');
@@ -29,7 +32,11 @@ const config = {
   tokenid:"PlaygroundTesting",
 };
 
-<AuthenticationContextProvider>
+<AuthenticationContextProvider
+  authentication={authentication}
+  onAuthentication={setAuthentication}
+  config={config}
+>
   <RepositoryContextProvider
     repository={repository}
     onRepository={setRepository}
