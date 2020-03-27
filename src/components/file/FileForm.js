@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import {
   Paper, TextField, Button,
 } from '@material-ui/core';
-import _default from 'jest';
 
 function FileForm({
   branch: _branch,
@@ -55,8 +54,6 @@ FileForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
 };
 
-FileForm.defaultProps = {
-  submitText: 'Submit',
-};
+FileForm.defaultProps = { submitText: 'Submit' };
 
 export default FileForm;

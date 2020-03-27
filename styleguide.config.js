@@ -107,7 +107,7 @@ const sections = [
     components: [
       'RepositoryForm',
       'RepositoryFormMenu',
-      'FormCheckBox',
+      'FormCheckbox',
     ].map(componentName =>
       path.join(pathComponents, 'repository/crud', `${componentName}.js`)
     ),

@@ -4,7 +4,7 @@ import React, {
 import PropTypes from 'prop-types';
 import deepFreeze from 'deep-freeze';
 
-import { isAuthenticated, getAuth, saveAuth } from './helpers';
+import { getAuth, saveAuth } from './helpers';
 import { Authentication } from '.';
 
 function useAuthentication({
@@ -16,7 +16,9 @@ function useAuthentication({
   const authentication = _authentication && deepFreeze(_authentication);
 
   const update = useCallback(async (_auth) => {
-    if (_auth && _auth.remember) await saveAuth(_auth);
+    if (_auth && _auth.remember) {
+      await saveAuth(_auth);
+    }
     return onAuthentication && onAuthentication(_auth);
   }, [onAuthentication]);
 
