@@ -51,7 +51,7 @@ const config = {
         submitText="Submit"
         onSubmit={({ branch: _branch, filepath: _filepath, defaultContent: _defaultContent}) => {
           setBranch(_branch);
-          setFilepath(_filpath);
+          setFilepath(_filepath);
           setDefaultContent(_defaultContent);
         }}
       />

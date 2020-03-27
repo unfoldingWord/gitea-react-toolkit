@@ -22,7 +22,7 @@ function useFile({
   onFile,
   create=false,
 }) {
-  const file = deepFreeze(__file);
+  const file = __file && deepFreeze(__file);
   const [blob, setBlob] = useState();
   const branch = repository && (repository.branch || repository.default_branch);
 
@@ -39,6 +39,10 @@ function useFile({
   const update = useCallback((_file) => {
     onFile(_file);
   }, [onFile]);
+
+  const read = useCallback(async (_filepath) => {
+    onFilepath && await onFilepath(_filepath);
+  }, [onFilepath]);
 
   const load = useCallback(async () => {
     if (config && repository && filepath) {
@@ -111,15 +115,20 @@ function useFile({
 
   const actions = {
     update,
-    read,
     load,
+    read,
     save,
     close,
     dangerouslyDelete,
   };
 
+
+  const createSubmit = useCallback(({ branch, filepath, defaultContent }) => {
+    read(filepath);
+  }, [read]);
+
   const components = {
-    create: repository && <FileForm onSubmit={setFileProps} />,
+    create: repository && <FileForm onSubmit={() => {}} />,
     browse: repository && blobComponents.browse,
     fileCard: repository && file && (
       <FileCard
