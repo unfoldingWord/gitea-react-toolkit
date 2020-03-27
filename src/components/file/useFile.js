@@ -97,7 +97,7 @@ function useFile({
   const blobFilepath = blobState && blobState.filepath;
 
   useEffect(() => {
-    if (blobFilepath) onFilepath(blobFilepath);
+    if (blobFilepath && onFilepath) onFilepath(blobFilepath);
   }, [blobFilepath, onFilepath]);
 
   useEffect(() => { // if there is a file but no repository, close file.

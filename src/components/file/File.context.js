@@ -16,6 +16,7 @@ export function FileContextProvider({
   filepath,
   file,
   onFile,
+  onFilepath,
   defaultContent,
   create,
   children,
@@ -29,7 +30,7 @@ export function FileContextProvider({
     config: _config || contextConfig,
     authentication: _authentication || contextAuthentication,
     repository: _repository || contextRepository,
-    filepath, file, onFile, defaultContent, create,
+    filepath, onFilepath, file, onFile, defaultContent, create,
   });
 
   const context = {
