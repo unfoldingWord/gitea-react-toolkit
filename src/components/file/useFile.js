@@ -58,11 +58,10 @@ function useFile({
   }, [authentication, branch, config, defaultContent, filepath, repository, update]);
 
   const close = useCallback(() => {
-    if (blobActions && blobActions.close) {
-      blobActions.close();
-    }
+    if (blobActions && blobActions.close) blobActions.close();
+    if (onFilepath) onFilepath();
     update();
-  }, [update, blobActions]);
+  }, [update, blobActions, onFilepath]);
 
   const save = useCallback(async (content) => {
     if (writeable) {

@@ -47,6 +47,7 @@ const config = {
   >
     <FileContextProvider
       filepath={filepath}
+      onFilepath={setFilepath}
       // defaultContent={defaultContent} // would require authentication to do this
       file={file}
       onFile={setFile}
