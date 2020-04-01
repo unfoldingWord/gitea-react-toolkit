@@ -7,13 +7,11 @@ import {
   AuthenticationContextProvider,
   RepositoryContextProvider,
   RepositoryContext,
-  RepositoryForm,
 } from 'gitea-react-toolkit';
 
 function Component() {
-  const { state: repo, component } = useContext(RepositoryContext);
-
-  return (!repo) ? component: <RepositoryForm />;
+  const { state: repo, components: { search, form } } = useContext(RepositoryContext);
+  return (!repo) ? search : form;
 }
 
 const [repository, setRepository] = React.useState();
