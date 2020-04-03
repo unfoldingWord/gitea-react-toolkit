@@ -20,7 +20,7 @@ export function RepositoryContextProvider({
 }) {
   const { state: contextAuthentication, config: contextConfig } = useContext(AuthenticationContext);
   const {
-    state, actions, component, config,
+    state, actions, component, components, config,
   } = useRepository({
     full_name, repositories, urls, defaultOwner, defaultQuery,
     config: _config || contextConfig,
@@ -32,6 +32,7 @@ export function RepositoryContextProvider({
     state,
     actions,
     component,
+    components,
     config,
   };
 

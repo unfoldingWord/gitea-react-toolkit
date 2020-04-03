@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import deepFreeze from 'deep-freeze';
 
 import {
-  Repositories, Search, repoTreeUrl,
+  Repository, RepositoryForm, Repositories, Search, repoTreeUrl,
 } from '../..';
 import {
   deleteRepository,
@@ -13,7 +13,6 @@ import {
   createRepository,
   readRepository,
 } from './helpers';
-import { Repository } from '..';
 
 function useRepository({
   repositories,
@@ -105,34 +104,38 @@ function useRepository({
     };
   }, [full_name, __full_name, read]);
 
-  let component = <></>;
-  // TODO: add Repository component when state
-
   const hasRepository = repository && repository.name && repository.owner && repository.permissions;
 
-  if (hasRepository) {
-    component = <Repository repository={repository} config={config} onRepository={onRepository} />;
-  } else if (urls || repositories) {
-    component = (
-      <Repositories
-        urls={urls}
-        repositories={repositories}
-        onRepository={update}
-        config={config}
-      />
-    );
-  } else if (config) {
-    const username = authentication && authentication.user && authentication.user.username;
-
-    component = (
+  const username = authentication && authentication.user && authentication.user.username;
+  const components = {
+    search: config && (
       <Search
         defaultOwner={defaultOwner || username}
         defaultQuery={defaultQuery}
         onRepository={update}
         config={config}
       />
-    );
+    ),
+    browse: (urls || repositories) && (
+      <Repositories
+        urls={urls}
+        repositories={repositories}
+        onRepository={update}
+        config={config}
+      />
+    ),
+    view: hasRepository && (
+      <Repository repository={repository} config={config} onRepository={onRepository} />
+    ),
+    form: hasRepository && (
+      <RepositoryForm />
+    )
   };
+
+  let component = <></>;
+  if (hasRepository) component = components.form;
+  else if (urls || repositories) component = components.browse;
+  else if (config) component = components.search;
 
   return {
     state: repository,
@@ -148,6 +151,7 @@ function useRepository({
       read,
     },
     component,
+    components,
     config,
   };
 };
