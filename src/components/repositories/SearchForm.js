@@ -12,8 +12,6 @@ import AwesomeDebouncePromise from 'awesome-debounce-promise';
 
 import { repositorySearch } from '../..';
 
-const repositorySearchDebounced = AwesomeDebouncePromise(repositorySearch, 250);
-
 const useStyles = makeStyles(theme => ({
   root: {
     position: 'sticky',
@@ -40,6 +38,11 @@ function SearchForm({
   const [owner, setOwner] = useState(defaultOwner);
   const [query, setQuery] = useState(defaultQuery);
   const [initialSearch, setInitialSearch] = useState(false);
+
+  const repositorySearchDebounced = AwesomeDebouncePromise(
+    async (_props) => { return await repositorySearch(_props) },
+    250
+  );
 
   const updateRepositories = useCallback(async (owner, query) => {
     const repositories = await repositorySearchDebounced({
