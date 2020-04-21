@@ -1,14 +1,13 @@
 import React, {
-  useState, useCallback, useEffect,
+  useState, useCallback, useEffect, useContext,
 } from 'react';
 import PropTypes from 'prop-types';
-import deepFreeze from 'deep-freeze';
 
 import {
   getContentFromFile, saveFile, ensureFile, deleteFile,
 } from './helpers';
 import {
-  FileCard, FileForm, useBlob,
+  FileCard, FileForm, useBlob, RepositoryContext,
 } from '..';
 
 function useFile({
@@ -18,12 +17,11 @@ function useFile({
   onFilepath,
   defaultContent,
   config,
-  file: __file,
-  onFile,
   create=false,
 }) {
-  const file = __file && deepFreeze(__file);
+  const [file, setFile] = useState();
   const [blob, setBlob] = useState();
+  const { actions: repositoryActions } = useContext(RepositoryContext);
   const branch = repository && (repository.branch || repository.default_branch);
 
   const [deleted, setDeleted] = useState();
@@ -37,8 +35,8 @@ function useFile({
   const { push: writeable } = (repository && repository.permissions) ? repository.permissions : {};
 
   const update = useCallback((_file) => {
-    onFile(_file);
-  }, [onFile]);
+    setFile(_file);
+  }, []);
 
   const read = useCallback(async (_filepath) => {
     onFilepath && await onFilepath(_filepath);
@@ -56,6 +54,22 @@ function useFile({
       });
     }
   }, [authentication, branch, config, defaultContent, filepath, repository, update]);
+
+  const createFile = useCallback(async ({ branch: _branch, filepath: _filepath, defaultContent: _defaultContent }) => {
+    if (config && repository) {
+      const _file = await ensureFile({
+        authentication, config, repository,
+        branch: _branch,
+        filepath: _filepath,
+        defaultContent: _defaultContent,
+      });
+
+      if (_file) {
+        repositoryActions.updateBranch(_branch);
+        onFilepath(_filepath);
+      };
+    }
+  }, [authentication, config, repository]);
 
   const close = useCallback(() => {
     if (blobActions && blobActions.close) blobActions.close();
@@ -121,13 +135,14 @@ function useFile({
     dangerouslyDelete,
   };
 
-
-  const createSubmit = useCallback(({ branch, filepath, defaultContent }) => {
-    read(filepath);
-  }, [read]);
-
   const components = {
-    create: repository && <FileForm onSubmit={() => {}} />,
+    create: repository && (
+      <FileForm
+        branch={branch}
+        defaultContent={defaultContent}
+        onSubmit={createFile}
+      />
+    ),
     browse: repository && blobComponents.browse,
     fileCard: repository && file && (
       <FileCard
@@ -159,18 +174,10 @@ function useFile({
 };
 
 useFile.propTypes = {
-  /** Pass a previously returned file object to bypass the selection. */
-  file: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    path: PropTypes.string.isRequired,
-    sha: PropTypes.string.isRequired,
-    download_url: PropTypes.string.isRequired,
-    content: PropTypes.string.isRequired,
-  }),
-  /** Function to propogate when the Blob is selected. */
-  onFile: PropTypes.func,
   /** The full filepath for the file. */
   filepath: PropTypes.string,
+  /** Function to propogate filepath when the Blob is selected. */
+  onFilepath: PropTypes.func,
   /** Authentication object returned from a successful withAuthentication login. */
   authentication: PropTypes.shape({
     config: PropTypes.shape({

@@ -14,8 +14,6 @@ export function FileContextProvider({
   authentication: _authentication,
   repository: _repository,
   filepath,
-  file,
-  onFile,
   onFilepath,
   defaultContent,
   create,
@@ -30,7 +28,7 @@ export function FileContextProvider({
     config: _config || contextConfig,
     authentication: _authentication || contextAuthentication,
     repository: _repository || contextRepository,
-    filepath, onFilepath, file, onFile, defaultContent, create,
+    filepath, onFilepath, defaultContent, create,
   });
 
   const context = {
@@ -49,18 +47,10 @@ export function FileContextProvider({
 };
 
 FileContextProvider.propTypes = {
-  /** Pass a previously returned file object to bypass the selection. */
-  file: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    path: PropTypes.string.isRequired,
-    sha: PropTypes.string.isRequired,
-    download_url: PropTypes.string.isRequired,
-    content: PropTypes.string.isRequired,
-  }),
-  /** Function to propogate when the Blob is selected. */
-  onFile: PropTypes.func,
   /** The full filepath for the file. */
   filepath: PropTypes.string,
+  /** Function to propogate filepath when the Blob is selected. */
+  onFilepath: PropTypes.func,
   /** The default string to populate the file if it doesn't exist */
   defaultContent: PropTypes.string,
   /** use a form to create a new file */
