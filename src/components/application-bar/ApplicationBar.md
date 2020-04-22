@@ -47,7 +47,7 @@ function Component() {
 
 const [authentication, setAuthentication] = useState();
 const [repository, setRepository] = useState();
-const [file, setFile] = useState();
+const [filepath, setFilepath] = useState();
 
 const config = {
   server: "https://bg.door43.org",
@@ -70,8 +70,8 @@ const config = {
     ]}
   >
     <FileContextProvider
-      file={file}
-      onFile={setFile}
+      filepath={filepath}
+      onFilepath={setFilepath}
     >
       <Component />
     </FileContextProvider>
