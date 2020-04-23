@@ -70,6 +70,10 @@ const sections = [
     ),
   },
   {
+    name: 'Organizations',
+    content: path.join(pathCore, 'users', 'orgs.md'),
+  },
+  {
     name: 'Repository ',
     content: path.join(pathComponents, 'repository', '_readme.md'),
     components: [

@@ -1,5 +1,5 @@
 import React, {
-  useCallback, useMemo, useEffect,
+  useCallback, useMemo, useEffect, useState,
 } from 'react';
 import PropTypes from 'prop-types';
 import deepFreeze from 'deep-freeze';
@@ -13,12 +13,13 @@ function useAuthentication({
   messages,
   config,
 }) {
-  const authentication = _authentication && deepFreeze(_authentication);
+  const [authentication, setAuthentication] = useState(_authentication);
 
   const update = useCallback(async (_auth) => {
     if (_auth && _auth.remember) {
       await saveAuth(_auth);
     }
+    setAuthentication(_auth);
     return onAuthentication && onAuthentication(_auth);
   }, [onAuthentication]);
 
@@ -52,7 +53,6 @@ function useAuthentication({
     component,
     config: _config,
   };
-
   return response;
 };
 
