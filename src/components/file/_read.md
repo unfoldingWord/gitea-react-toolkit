@@ -10,32 +10,24 @@ import {
   RepositoryContext,
   FileContextProvider,
   FileContext,
-  FileForm,
 } from 'gitea-react-toolkit';
 
 function Component() {
-  const { state: auth, component: authComponent } = useContext(AuthenticationContext);
   const { state: repo, component: repoComponent } = useContext(RepositoryContext);
   const { state: file, component: fileComponent } = useContext(FileContext);
 
-  return (!auth && authComponent) || (!repo && repoComponent) || fileComponent;
+  return (!repo && repoComponent) || fileComponent;
 };
 
-const [authentication, setAuthentication] = React.useState();
 const [repository, setRepository] = React.useState();
-const [file, setFile] = React.useState();
-const [filepath, setFilepath] = React.useState('README.md');
+const [filepath, setFilepath] = React.useState();
 const [branch, setBranch] = React.useState('master');
-const [defaultContent, setDefaultContent] = React.useState();
 const config = {
   server: "https://bg.door43.org",
   tokenid:"PlaygroundTesting",
 };
 
 <AuthenticationContextProvider
-  authentication={authentication}
-  onAuthentication={setAuthentication}
-  config={config}
 >
   <RepositoryContextProvider
     repository={repository}
@@ -48,21 +40,7 @@ const config = {
     <FileContextProvider
       filepath={filepath}
       onFilepath={setFilepath}
-      // defaultContent={defaultContent} // would require authentication to do this
-      file={file}
-      onFile={setFile}
     >
-      <FileForm
-        branch={branch}
-        filepath={filepath}
-        defaultContent={defaultContent}
-        submitText="Submit"
-        onSubmit={({ branch: _branch, filepath: _filepath, defaultContent: _defaultContent}) => {
-          setBranch(_branch);
-          setFilepath(_filepath);
-          setDefaultContent(_defaultContent);
-        }}
-      />
       <Component />
     </FileContextProvider>
   </RepositoryContextProvider>

@@ -35,7 +35,7 @@ function Component() {
 
 const [authentication, setAuthentication] = React.useState();
 const [repository, setRepository] = React.useState();
-const [file, setFile] = React.useState();
+const [filepath, setFilepath] = React.useState();
 
 <AuthenticationContextProvider
   config={{
@@ -53,10 +53,9 @@ const [file, setFile] = React.useState();
     branch='testing'
   >
     <FileContextProvider
-      // filepath={filepath}
       // defaultContent={defaultContent}
-      file={file}
-      onFile={setFile}
+      filepath={filepath}
+      onFilepath={setFilepath}
       create={true}
     >
       <Component />

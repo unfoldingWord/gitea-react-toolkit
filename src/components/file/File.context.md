@@ -32,7 +32,7 @@ function Component() {
 
 const [authentication, setAuthentication] = React.useState();
 const [repository, setRepository] = React.useState();
-const [file, setFile] = React.useState();
+const [filepath, setFilepath] = React.useState();
 
 <AuthenticationContextProvider
   config={{
@@ -47,13 +47,11 @@ const [file, setFile] = React.useState();
     onRepository={setRepository}
     defaultOwner={authentication && authentication.user.name}
     defaultQuery=""
-    branch='testing'
+    // branch='master'
   >
     <FileContextProvider
-      // filepath={filepath}
-      // defaultContent={defaultContent}
-      file={file}
-      onFile={setFile}
+      filepath={filepath}
+      onFilepath={setFilepath}
       create={false}
     >
       <Component />
