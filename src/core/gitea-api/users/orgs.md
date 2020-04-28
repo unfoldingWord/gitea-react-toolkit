@@ -1,5 +1,3 @@
-Get does not pass payload even if passed.
-
 ```js
 import { Core, get } from 'gitea-react-toolkit';
 
