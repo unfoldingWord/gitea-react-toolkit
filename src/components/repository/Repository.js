@@ -8,10 +8,13 @@ import {
   ListItemText,
   ListItemSecondaryAction,
   IconButton,
+  Tooltip,
 } from '@material-ui/core';
 import { Code } from '@material-ui/icons';
 
 import { get } from '../../core';
+import { localString } from '../../core/localStrings';
+
 
 const useStyles = makeStyles(theme => ({
   avatar: { borderRadius: '20%' },
@@ -68,6 +71,7 @@ function Repository({
         secondary={description}
       />
       <ListItemSecondaryAction>
+        <Tooltip title={localString('OpenRepo')} arrow>
         <IconButton
           aria-label="Open Link"
           onClick={() => {
@@ -76,6 +80,7 @@ function Repository({
         >
           <Code />
         </IconButton>
+        </Tooltip>
       </ListItemSecondaryAction>
     </ListItem>
   );
