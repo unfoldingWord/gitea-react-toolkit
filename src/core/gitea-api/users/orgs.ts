@@ -6,7 +6,7 @@ export interface OrganizationList {
   avatar_url: string;
   description: string;
   full_name: string;
-  id: 0;
+  id: number;
   location: string;
   username: string;
   visibility: string;

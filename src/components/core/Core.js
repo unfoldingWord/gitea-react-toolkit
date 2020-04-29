@@ -10,9 +10,10 @@ function Core({
   props,
   authenticate,
 }) {
+  const [authentication, setAuthentication] = useState(null);
   const [response, setResponse] = useState();
   const [loading, setLoading] = useState(false);
-  const { state: authentication, component: authenticationComponent } = useAuthentication({ config: props.config });
+  const { component: authenticationComponent } = useAuthentication({ config: props.config, onAuthentication: setAuthentication });
   const needsAuthentication = (authenticate && !authentication && authenticationComponent);
   const _promise = useCallback(async () => {
     try {
