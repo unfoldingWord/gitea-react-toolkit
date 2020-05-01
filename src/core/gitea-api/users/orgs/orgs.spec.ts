@@ -1,4 +1,4 @@
-import { authorizationHeaders } from '../authentication';
+import { authorizationHeaders } from '../../authentication';
 import { getCurrentUserOrgs } from './orgs';
 jest.unmock('axios');
 jest.unmock('axios-cache-adapter');

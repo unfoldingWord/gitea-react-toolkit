@@ -1,6 +1,6 @@
 import path from 'path';
-import { apiPath, get } from '../http';
-import { APIConfig } from '../http/http.d';
+import { apiPath, get } from '../../http';
+import { APIConfig } from '../../http/http.d';
 
 export interface OrganizationList {
   avatar_url: string;

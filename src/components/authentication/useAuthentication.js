@@ -1,5 +1,5 @@
 import React, {
-  useCallback, useMemo, useEffect, useState,
+  useCallback, useMemo, useEffect,
 } from 'react';
 import PropTypes from 'prop-types';
 import deepFreeze from 'deep-freeze';
