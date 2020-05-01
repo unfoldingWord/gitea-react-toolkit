@@ -14,6 +14,7 @@ export interface Organization {
 }
 
 export function getCurrentUserOrgs({ config }: { config: APIConfig }): Promise<Organization[]> {
+  debugger;
   const url = path.join(apiPath, 'user/orgs');
   return get({ url, config });
 }

@@ -17,10 +17,10 @@ function Organizations({
   let components = [];
 
   if (organizations) {
-    components = organizations.map((repository) =>
+    components = organizations.map((organization) =>
       <Organization
-        key={JSON.stringify(repository)}
-        repository={repository}
+        key={JSON.stringify(organization)}
+        organization={organization}
         onOrganization={updateOrganization}
         config={config}
       />
@@ -43,11 +43,11 @@ function Organizations({
 }
 
 Organizations.propTypes = {
-  /** Urls array to get repository data, if repository data is not provided. */
+  /** Urls array to get organization data, if organization data is not provided. */
   urls: PropTypes.array,
   /** Organizations data array to render, if urls not provided. */
   organizations: PropTypes.array,
-  /** Function to call when repository is selected. */
+  /** Function to call when organization is selected. */
   onOrganization: PropTypes.func.isRequired,
   /** Configuration required if paths are provided as URL. */
   config: PropTypes.shape({ server: PropTypes.string.isRequired }),

@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, {
+  useState, useCallback, useEffect,
+} from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-  List,
-} from '@material-ui/core';
+import { List } from '@material-ui/core';
 
-import { Organizations, AuthenticationContextProvider } from '../';
+import {
+  Organizations, AuthenticationContextProvider, useAuthentication,
+} from '../';
 import { getCurrentUserOrgs } from '../../core';
 
 const useStyles = makeStyles(theme => ({
@@ -20,31 +22,29 @@ function CurrentUserOrganizations({
   config,
 }) {
   const classes = useStyles();
-  const [repositories, setOrganizations] = useState([]);
+  const [organizations, setOrganizations] = useState([]);
   const [authentication, setAuthentication] = useState(null);
+  const { component: authenticationComponent } = useAuthentication({ config, onAuthentication: setAuthentication });
   const getData = useCallback(async () => {
-    debugger;
-    const userOrgs = await getCurrentUserOrgs({ ...config, ...authentication });
-    setOrganizations(userOrgs);
-  }, [config, authentication])
+    if (authentication && authentication.config) {
+      const userOrgs = await getCurrentUserOrgs({ config: { ...config, ...authentication.config } });
+      setOrganizations(userOrgs);
+    }
+  }, [authentication, config]);
+
   useEffect(() => {
     if (config && authentication) {
       getData();
     }
-  }, [config, authentication])
+  }, [config, authentication, getData]);
 
-  return (
+  return !authentication ? authenticationComponent : (
     <List className={classes.root}>
-      <AuthenticationContextProvider
+      <Organizations
+        organizations={organizations}
+        onOrganization={onOrganization}
         config={config}
-        authentication={authentication}
-        onAuthentication={setAuthentication}>
-        <Repositories
-          repositories={repositories}
-          onOrganization={onOrganization}
-          config={config}
-        />
-      </AuthenticationContextProvider>
+      />
     </List>
   );
 }
@@ -53,9 +53,7 @@ CurrentUserOrganizations.propTypes = {
   /** Function to call when organization is selected. */
   onOrganization: PropTypes.func.isRequired,
   /** Configuration required if paths are provided as URL. */
-  config: PropTypes.shape({
-    server: PropTypes.string.isRequired,
-  }).isRequired,
+  config: PropTypes.shape({ server: PropTypes.string.isRequired }).isRequired,
 };
 
 export default CurrentUserOrganizations;
