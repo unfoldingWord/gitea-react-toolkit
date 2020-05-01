@@ -17,10 +17,10 @@ import { get } from '../../core';
 const useStyles = makeStyles(theme => ({ avatar: { borderRadius: '20%' } }));
 
 function Organization({
-  url,
-  config,
+  url = '',
+  config = {},
   organization,
-  onOrganization,
+  onOrganization = () => { },
 }) {
   const classes = useStyles();
   const [repo, setRepo] = useState(organization || {});
