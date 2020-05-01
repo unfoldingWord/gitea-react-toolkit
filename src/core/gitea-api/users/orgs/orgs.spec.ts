@@ -16,8 +16,8 @@ jest.mock('../../http', () => ({
 
 describe('Organization Lists', () => {
   it('should list organizations with correct config', async () => {
-    const username = 'tc-create-test';
-    const password = 'password123';
+    const username = 'test';
+    const password = 'password';
     const expected = [
       {
         'avatar_url': 'https://bg.door43.org/avatars/17918',
