@@ -1,7 +1,18 @@
+/// <reference types="jest" />
 import { authorizationHeaders } from '../../authentication';
 import { getCurrentUserOrgs } from './orgs';
-jest.unmock('axios');
-jest.unmock('axios-cache-adapter');
+jest.mock('../../http', () => ({
+  get: () => Promise.resolve([{
+    'avatar_url': 'https://bg.door43.org/avatars/17918',
+    'description': '',
+    'full_name': '',
+    'id': 17918,
+    'location': '',
+    'username': 'TC-Create-Test-Org',
+    'visibility': 'public',
+    'website': '',
+  }]), apiPath: 'api/v1',
+}));
 
 describe('Organization Lists', () => {
   it('should list organizations with correct config', async () => {
