@@ -24,7 +24,7 @@ import { Organization } from 'gitea-react-toolkit';
 
 <Paper>
   <Organization
-    url="https://bg.door43.org/unfoldingWord"
+    url="https://bg.door43.org/api/v1/orgs/unfoldingWord"
     onOrganization={(data) => {
       alert(JSON.stringify(data, null, 2));
     }}

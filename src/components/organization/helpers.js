@@ -1,9 +1,13 @@
+export function getConfigFromUrl(url) {
+  const stringSplit = url.split('/') || [];
 
-import {
-  getCurrentUserOrgs,
-} from '../..';
-
-export const getCurrentUserOrgs = async ({ config }) => {
-  const response = await getCurrentUserOrgs({ config });
-  return response;
-};
+  if (stringSplit[0]) {
+    const server = stringSplit[2];
+    const config = { server };
+    const organizationName = stringSplit[3];
+    return {
+      config,
+      organizationName,
+    };
+  }
+}

@@ -1,4 +1,6 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, {
+  useState, useCallback, useEffect,
+} from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -10,26 +12,31 @@ import {
   IconButton,
 } from '@material-ui/core';
 import { Code } from '@material-ui/icons';
-
 import { get } from '../../core';
 
-const useStyles = makeStyles(theme => ({
-  avatar: { borderRadius: '20%' },
-}));
+const useStyles = makeStyles(theme => ({ avatar: { borderRadius: '20%' } }));
 
 function Organization({
   url,
+  config,
   organization,
   onOrganization,
-  config,
 }) {
   const classes = useStyles();
-  const [repo, setRepo] = useState(organization);
+  const [repo, setRepo] = useState(organization || {});
 
   const getData = useCallback(async () => {
-    const data = await get({ url, config });
-    setRepo(data);
-  }, [config, url]);
+    if (url) {
+      const data = await get({ config, url });
+      setRepo(data);
+    } else if (organization) {
+      setRepo(organization);
+    }
+  }, [config, organization, url]);
+
+  useEffect(() => {
+    getData();
+  }, [url, organization, config, getData]);
 
   const _onOrganization = useCallback(() => {
     onOrganization(repo);
@@ -39,6 +46,7 @@ function Organization({
     avatar_url,
     description,
     full_name,
+    website,
   } = repo;
 
   return (
@@ -47,8 +55,7 @@ function Organization({
       alignItems="flex-start"
       button
       ContainerComponent="div"
-      onClick={_onOrganization}
-    >
+      onClick={_onOrganization}>
       <ListItemAvatar>
         <Avatar
           alt={full_name}
@@ -65,8 +72,7 @@ function Organization({
           aria-label="Open Link"
           onClick={() => {
             window.open(website, '_blank');
-          }}
-        >
+          }}>
           <Code />
         </IconButton>
       </ListItemSecondaryAction>
@@ -91,9 +97,7 @@ Organization.propTypes = {
   /** Url to get organization data, if organization data is not provided. */
   url: PropTypes.string,
   /** Configuration required if paths are provided as URL. */
-  config: PropTypes.shape({
-    server: PropTypes.string.isRequired,
-  }),
+  config: PropTypes.shape({ server: PropTypes.string.isRequired }),
 };
 
 export default Organization;
