@@ -1,4 +1,6 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, {
+  useState, useCallback, useEffect,
+} from 'react';
 import PropTypes from 'prop-types';
 import deepFreeze from 'deep-freeze';
 
@@ -45,7 +47,9 @@ function useRepository({
   }, [branch, onRepository]);
 
   const read = useCallback(async ({ owner, name }) => {
-    const _repository = await readRepository({ owner, repo: name, config });
+    const _repository = await readRepository({
+      owner, repo: name, config,
+    });
     update(_repository);
   }, [config, update]);
 
@@ -76,7 +80,9 @@ function useRepository({
     let _repository;
 
     if (repository.permissions.admin) {
-      _repository = await saveRepository({ repository, settings, config });
+      _repository = await saveRepository({
+        repository, settings, config,
+      });
       update(_repository);
     };
   }, [config, repository, update]);
@@ -90,11 +96,15 @@ function useRepository({
   }, [update]);
 
   useEffect(() => {
-    if (__branch !== branch) setBranch(__branch);
+    if (__branch !== branch) {
+      setBranch(__branch);
+    }
   }, [__branch, branch]);
 
   useEffect(() => {
-    if (repository && branch !== repository.branch) update({ ...repository, branch });
+    if (repository && branch !== repository.branch) {
+      update({ ...repository, branch });
+    }
   }, [branch, repository, update]);
 
   useEffect(() => {
@@ -129,13 +139,18 @@ function useRepository({
     ),
     form: hasRepository && (
       <RepositoryForm />
-    )
+    ),
   };
 
   let component = <></>;
-  if (hasRepository) component = components.form;
-  else if (urls || repositories) component = components.browse;
-  else if (config) component = components.search;
+
+  if (hasRepository) {
+    component = components.form;
+  } else if (urls || repositories) {
+    component = components.browse;
+  } else if (config) {
+    component = components.search;
+  }
 
   return {
     state: repository,
