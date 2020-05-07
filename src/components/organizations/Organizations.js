@@ -5,7 +5,7 @@ import { Organization } from '../';
 
 function Organizations({
   url,
-  organization,
+  organization = {},
   urls,
   organizations,
   onOrganization,
