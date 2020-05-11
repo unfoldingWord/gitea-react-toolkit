@@ -17,7 +17,6 @@ export function AuthenticationContextProvider({
   } = useAuthentication({
     authentication, onAuthentication, config: _config, messages,
   });
-
   const context = {
     state,
     actions,

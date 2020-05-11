@@ -52,7 +52,6 @@ function useAuthentication({
     component,
     config: _config,
   };
-
   return response;
 };
 

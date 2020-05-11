@@ -59,6 +59,25 @@ const sections = [
     ],
   },
   {
+    name: 'Organization ',
+    content: path.join(pathComponents, 'organization', '_readme.md'),
+    components: [
+      'Organization',
+    ].map(componentName =>
+      path.join(pathComponents, 'organization', `${componentName}.js`)
+    ),
+  },
+  {
+    name: 'Organizations ',
+    content: path.join(pathComponents, 'organizations', '_readme.md'),
+    components: [
+      'Organizations',
+      'CurrentUserOrganizations',
+    ].map(componentName =>
+      path.join(pathComponents, 'organizations', `${componentName}.js`)
+    ),
+  },
+  {
     name: 'Repositories ',
     content: path.join(pathComponents, 'repositories', '_readme.md'),
     components: [
@@ -169,6 +188,16 @@ const sections = [
       {
         name: 'Ensure Content',
         content: path.join(pathCore, 'repos/contents', 'ensureContent.md'),
+      },
+    ],
+  },
+  {
+    name: 'core/users/orgs',
+    content: path.join(pathCore, 'users/orgs', '_readme.md'),
+    sections: [
+      {
+        name: 'Get User Organization List',
+        content: path.join(pathCore, 'users/orgs', 'orgs.md'),
       },
     ],
   },

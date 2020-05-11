@@ -1,0 +1,1 @@
+The Organizations component renders a list of Organization components.

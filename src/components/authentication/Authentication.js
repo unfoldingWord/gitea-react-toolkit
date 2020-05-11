@@ -44,7 +44,9 @@ function Authentication({
   useEffect(() => {
     if (!authentication) {
       getAuth().then(_authentication => {
-        if (_authentication) updateAuthentication(_authentication);
+        if (_authentication) {
+          updateAuthentication(_authentication);
+        }
       });
     }
   }, [authentication, updateAuthentication]);

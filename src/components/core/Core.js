@@ -1,6 +1,4 @@
-import React, {
-  useState, useEffect, useCallback,
-} from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import ReactJson from 'react-json-view';
 import { Paper, Button } from '@material-ui/core';
@@ -12,57 +10,40 @@ function Core({
   props,
   authenticate,
 }) {
+  const [authentication, setAuthentication] = useState(null);
   const [response, setResponse] = useState();
-  const [propsMemo, setPropsMemo] = useState();
-  const [confirmed, setConfirmed] = useState(false);
-  const {
-    state: authentication, component: authenticationComponent,
-  } = useAuthentication({
-    authenticationConfig: props.config,
-  });
-
+  const [loading, setLoading] = useState(false);
+  const { component: authenticationComponent } = useAuthentication({ config: props.config, onAuthentication: setAuthentication });
   const needsAuthentication = (authenticate && !authentication && authenticationComponent);
-  let _props = { ...props };
+  const _promise = useCallback(async () => {
+    try {
+      setLoading(true);
+      const _response = await promise({
+        ...props,
+        ...authentication,
+      });
+      setResponse(_response);
+    } catch (error) {
+      const _error = { error: error.message };
+      setResponse(_error);
+    }
+    setLoading(false);
+  }, [authentication, promise, props]);
 
-  if (authenticate && authentication) _props = { ...props, config: authentication.config };
-  const _propsMemo = JSON.stringify(_props);
+  let responseComponent = <div />;
 
-  useEffect(() => {
-    if (propsMemo !== _propsMemo) {
-      setConfirmed(false);
-      setPropsMemo();
-    };
-  },[propsMemo, _propsMemo]);
+  if (needsAuthentication && authenticationComponent) {
+    return authenticationComponent;
+  }
 
-  const _promise = useCallback(() => {
-    const runPromise = async () => {
-      setPropsMemo(_propsMemo);
-
-      try {
-        const _response = await promise(_props);
-        setResponse(_response);
-      } catch (error) {
-        const _error = { error: error.message };
-        setResponse(_error);
-      }
-    };
-
-    runPromise();
-  }, [_propsMemo, promise, _props]);
-
-  useEffect(() => {
-    if (!needsAuthentication && confirmed && !propsMemo) _promise();
-  }, [needsAuthentication, confirmed, _promise, propsMemo]);
-
-  const responseComponent = (confirmed) ? (
-    <ReactJson src={response || { pending: true }} />
-  ) : (
-    <Button variant="contained" color='primary' onClick={() => setConfirmed(true)}>
-      Run
-    </Button>
-  );
-
-  const component = (needsAuthentication) ? authenticationComponent : (
+  if (response) {
+    responseComponent = <ReactJson src={response} />;
+  } else if (loading) {
+    responseComponent = <ReactJson src={{ pending: true }} />;
+  } else if (!response && typeof (response) !== 'undefined' && !loading) {
+    responseComponent = 'No response';
+  }
+  return (
     <>
       <h3>Props</h3>
       <Paper>
@@ -72,10 +53,11 @@ function Core({
       <Paper>
         {responseComponent}
       </Paper>
+      <Button variant="contained" color='primary' onClick={_promise}>
+        Run
+      </Button>
     </>
   );
-
-  return component;
 };
 
 Core.propTypes = {

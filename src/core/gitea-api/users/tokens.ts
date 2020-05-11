@@ -4,7 +4,7 @@ import {
   apiPath, get, post, del,
 } from '..';
 
-interface TokenConfig {
+export interface TokenConfig {
   headers?: object;
   server?: string;
   token: AuthToken;

@@ -9,6 +9,7 @@ export const isAuthenticated = (auth) => (auth && auth.token && auth.token && au
 
 export const getAuth = async () => {
   let authentication;
+
   try {
     const value = await authenticationStore.getItem('authentication');
     authentication = JSON.parse(value);
@@ -20,6 +21,7 @@ export const getAuth = async () => {
 
 export const saveAuth = async (authentication) => {
   let response;
+
   if (authentication) {
     const value = JSON.stringify(authentication);
     response = await authenticationStore.setItem('authentication', value);
