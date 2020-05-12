@@ -21,16 +21,17 @@ function Organization({
   config = {},
   organization,
   onOrganization = () => { },
+  selected,
 }) {
   const classes = useStyles();
-  const [repo, setRepo] = useState(organization || {});
+  const [org, setOrg] = useState(organization || {});
 
   const getData = useCallback(async () => {
     if (url) {
       const data = await get({ config, url });
-      setRepo(data);
+      setOrg(data);
     } else if (organization) {
-      setRepo(organization);
+      setOrg(organization);
     }
   }, [config, organization, url]);
 
@@ -39,18 +40,19 @@ function Organization({
   }, [url, organization, config, getData]);
 
   const _onOrganization = useCallback(() => {
-    onOrganization(repo);
-  }, [repo, onOrganization]);
+    onOrganization(org);
+  }, [org, onOrganization]);
 
   const {
     avatar_url,
     description,
     full_name,
     website,
-  } = repo;
+  } = org;
 
   return (
     <ListItem
+      selected={selected}
       data-test="organization-item"
       alignItems="flex-start"
       button
@@ -98,6 +100,8 @@ Organization.propTypes = {
   url: PropTypes.string,
   /** Configuration required if paths are provided as URL. */
   config: PropTypes.shape({ server: PropTypes.string.isRequired }),
+  /** The selected organization */
+  selected: PropTypes.bool,
 };
 
 export default Organization;
