@@ -21,7 +21,7 @@ function Organizations({
     components = organizations.map((_organization) =>
       <Organization
         key={_organization.id}
-        selected={_organization.id === organization.id}
+        selected={organization && _organization.id === organization.id}
         organization={_organization}
         onOrganization={updateOrganization}
         config={config} />

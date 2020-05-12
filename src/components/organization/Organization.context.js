@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-
-import { useRepository } from '../..';
+import { AuthenticationContext , useOrganization } from '../..';
 
 export const OrganizationContext = React.createContext();
 
@@ -12,12 +11,14 @@ export function OrganizationContextProvider({
   config: _config,
   onOrganization,
   children,
+  authentication: _authentication,
 }) {
+  const { state: contextAuthentication, config: contextConfig } = useContext(AuthenticationContext);
   const {
-    state, actions, component, config,
-  } = useRepository({
-    organizations, config: _config,
-    urls, authentication: _authentication,
+    state, actions, component, config, components,
+  } = useOrganization({
+    organizations, config: _config || contextConfig,
+    urls, authentication: _authentication || contextAuthentication,
     organization, onOrganization,
   });
 
@@ -64,4 +65,11 @@ OrganizationContextProvider.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
   ]).isRequired,
+  /** Pass a previously returned authentication object to bypass login. */
+  authentication: PropTypes.shape({
+    user: PropTypes.object.isRequired,
+    token: PropTypes.object.isRequired,
+    config: PropTypes.object.isRequired,
+    remember: PropTypes.bool,
+  }),
 };

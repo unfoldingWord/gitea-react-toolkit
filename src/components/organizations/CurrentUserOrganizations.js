@@ -25,7 +25,10 @@ function CurrentUserOrganizations({
   const getData = useCallback(async () => {
     if (authentication && authentication.config) {
       const userOrgs = await getCurrentUserOrgs({ config: authentication.config });
-      setOrganizations(userOrgs);
+
+      if (userOrgs) {
+        setOrganizations(userOrgs);
+      }
     }
   }, [authentication]);
 

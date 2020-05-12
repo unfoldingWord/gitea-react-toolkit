@@ -26,10 +26,15 @@ function useOrganization({
   let component = <div />;
 
   if (organization) {
-    component = <Organization config={config} organization={organization} onOrganization={update} />;
+    component = <Organization config={config || authentication.config} organization={organization} onOrganization={update} />;
   } else {
-    component = <CurrentUserOrganizations config={config} onOrganization={update} />;
+    component = <CurrentUserOrganizations authentication={authentication} organization={organization} onOrganization={update} />;
   }
+
+  const components = {
+    organization: <Organization config={config || authentication.config} organization={organization} onOrganization={update} />,
+    user: <CurrentUserOrganizations config={config || authentication.config} organization={organization} onOrganization={update} />,
+  };
 
   return {
     state: organization,
@@ -39,7 +44,7 @@ function useOrganization({
       close,
     },
     component,
-    //components,
+    components,
     config,
     authentication,
   };
