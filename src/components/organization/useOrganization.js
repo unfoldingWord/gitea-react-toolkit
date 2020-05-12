@@ -23,18 +23,12 @@ function useOrganization({
     update();
   }, [update]);
 
-  let component = <div />;
-
-  if (organization) {
-    component = <Organization config={config || authentication.config} organization={organization} onOrganization={update} />;
-  } else {
-    component = <CurrentUserOrganizations authentication={authentication} organization={organization} onOrganization={update} />;
-  }
-
   const components = {
-    organization: <Organization config={config || authentication.config} organization={organization} onOrganization={update} />,
-    user: <CurrentUserOrganizations config={config || authentication.config} organization={organization} onOrganization={update} />,
+    view: <Organization config={config || authentication.config} organization={organization} onOrganization={update} />,
+    list: <CurrentUserOrganizations config={config || authentication.config} organization={organization} onOrganization={update} />,
   };
+
+  const component = organization ? components.view : components.list;
 
   return {
     state: organization,

@@ -2,7 +2,7 @@
 The CurrentUserOrganizations component allows for authentication to see a users organizations
 
 ```js
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { Paper } from '@material-ui/core';
 import { CurrentUserOrganizations, AuthenticationContextProvider, AuthenticationContext } from 'gitea-react-toolkit';
 
@@ -16,7 +16,7 @@ import { CurrentUserOrganizations, AuthenticationContextProvider, Authentication
         onOrganization={setOrganization}
       />;
   };
-  const [authentication, setAuthentication] = React.useState();
+  const [authentication, setAuthentication] = useState();
 
   const config = {
     server: "https://bg.door43.org",
