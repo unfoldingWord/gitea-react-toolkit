@@ -47,6 +47,7 @@ function Organization({
     avatar_url,
     description,
     full_name,
+    username,
     website,
   } = org;
 
@@ -60,13 +61,13 @@ function Organization({
       onClick={_onOrganization}>
       <ListItemAvatar>
         <Avatar
-          alt={full_name}
+          alt={full_name || username}
           src={avatar_url}
           className={classes.avatar}
         />
       </ListItemAvatar>
       <ListItemText
-        primary={full_name}
+        primary={full_name || username}
         secondary={description}
       />
       <ListItemSecondaryAction>
