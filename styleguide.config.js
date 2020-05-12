@@ -62,6 +62,7 @@ const sections = [
     name: 'Organization ',
     content: path.join(pathComponents, 'organization', '_readme.md'),
     components: [
+      'Organization.context',
       'Organization',
       'useOrganization',
     ].map(componentName =>
