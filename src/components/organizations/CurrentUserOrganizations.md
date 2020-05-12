@@ -8,12 +8,12 @@ import { CurrentUserOrganizations, AuthenticationContextProvider, Authentication
 
   function Component() {
     const { state: authentication, actions, component } = useContext(AuthenticationContext);
+    const [organization, setOrganization] = useState(null);
 
     return !authentication ? component : <CurrentUserOrganizations
+        organization={organization}
         authentication={authentication}
-        onOrganization={(data) => {
-          alert(JSON.stringify(data, null, 2));
-        }}
+        onOrganization={setOrganization}
       />;
   };
   const [authentication, setAuthentication] = React.useState();
