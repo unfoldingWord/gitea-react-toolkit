@@ -23,9 +23,16 @@ function useOrganization({
     update();
   }, [update]);
 
+  const componentProps = {
+    config: config || authentication.config,
+    authentication,
+    organization,
+    onOrganization: update,
+  };
+
   const components = {
-    view: <Organization config={config || authentication.config} organization={organization} onOrganization={update} />,
-    list: <CurrentUserOrganizations config={config || authentication.config} organization={organization} onOrganization={update} />,
+    view: (<Organization {...componentProps} />),
+    list: (<CurrentUserOrganizations {...componentProps} />),
   };
 
   const component = organization ? components.view : components.list;
