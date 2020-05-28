@@ -4,7 +4,7 @@ import { ensureContent, deleteContent } from '../contents';
 export const ensureBranch = async ({
   owner, repo, settings, config, branch, author, message, content,
 }) => {
-  const tempFilePath = 'hi';
+  const tempFilePath = '__giteaReactToolkitTemp';
 
   await ensureRepo({
     owner, repo, settings, config,
