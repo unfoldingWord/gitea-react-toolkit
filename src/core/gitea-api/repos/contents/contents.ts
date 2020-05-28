@@ -172,7 +172,9 @@ export const ensureContent = async ({
       owner, repo, ref: branch, filepath, config,
     });
 
-    if (!contentObject) throw new Error('File does not exist in branch');
+    if (!contentObject) {
+      throw new Error('File does not exist in branch');
+    }
   } catch {
     try { // try to update the file in case it is in the default branch
       const _contentObject = await readContent({

@@ -168,6 +168,16 @@ const sections = [
     ],
   },
   {
+    name: 'core/repo/branches',
+    content: path.join(pathCore, 'repos/branches', '_readme.md'),
+    sections: [
+      {
+        name: 'Ensure Branch',
+        content: path.join(pathCore, 'repos/branches', 'ensureBranch.md'),
+      },
+    ],
+  },
+  {
     name: 'core/repo/contents',
     content: path.join(pathCore, 'repos/contents', '_readme.md'),
     sections: [
