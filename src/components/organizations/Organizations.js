@@ -10,37 +10,49 @@ function Organizations({
   organizations,
   onOrganization,
   config,
+  messages: {
+    primaryError = 'No organizations',
+    secondaryError = 'Please provide valid organization objects or urls.',
+  } = {},
 }) {
-  const updateOrganization = useCallback((repo) => {
-    onOrganization(repo);
-  }, [onOrganization]);
+  const updateOrganization = useCallback(
+    (repo) => {
+      onOrganization(repo);
+    },
+    [onOrganization]
+  );
 
   let components = [];
 
-  if (organizations) {
-    components = organizations.map((_organization) =>
+  if (organizations && organizations.length > 0) {
+    components = organizations.map((_organization) => (
       <Organization
         key={_organization.id}
         selected={organization && _organization.id === organization.id}
         organization={_organization}
         onOrganization={updateOrganization}
-        config={config} />
-    );
-  } else if (urls) {
-    components = urls.map((_url, index) =>
+        config={config}
+      />
+    ));
+  } else if (urls && urls.length > 0) {
+    components = urls.map((_url, index) => (
       <Organization
         selected={_url === url}
         key={index}
         url={_url}
         onOrganization={updateOrganization}
-        config={config} />
-    );
+        config={config}
+      />
+    ));
+  } else {
+    components = [
+      <Organization
+        config={config}
+        messages={{ primaryError, secondaryError }}
+      />,
+    ];
   }
-  return (
-    <List>
-      {components}
-    </List>
-  );
+  return <List>{components}</List>;
 }
 
 Organizations.propTypes = {
