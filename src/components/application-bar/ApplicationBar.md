@@ -71,6 +71,7 @@ const config = {
   >
     <FileContextProvider
       filepath={filepath}
+      onFile={console.log}
       onFilepath={setFilepath}
     >
       <Component />

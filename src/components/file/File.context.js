@@ -15,6 +15,7 @@ export function FileContextProvider({
   repository: _repository,
   filepath,
   onFilepath,
+  onFile,
   defaultContent,
   create,
   children,
@@ -28,7 +29,7 @@ export function FileContextProvider({
     config: _config || contextConfig,
     authentication: _authentication || contextAuthentication,
     repository: _repository || contextRepository,
-    filepath, onFilepath, defaultContent, create,
+    filepath, onFilepath, onFile, defaultContent, create,
   });
 
   const context = {
@@ -51,6 +52,8 @@ FileContextProvider.propTypes = {
   filepath: PropTypes.string,
   /** Function to propogate filepath when the Blob is selected. */
   onFilepath: PropTypes.func,
+  /** Function to propogate file when the Blob is loaded. */
+  onFile: PropTypes.func,
   /** The default string to populate the file if it doesn't exist */
   defaultContent: PropTypes.string,
   /** use a form to create a new file */
@@ -58,16 +61,12 @@ FileContextProvider.propTypes = {
   /** Authentication object returned from a successful withAuthentication login. */
   config: PropTypes.shape({
     server: PropTypes.string.isRequired,
-    headers: PropTypes.shape({
-      Authorization: PropTypes.string.isRequired,
-    }),
+    headers: PropTypes.shape({ Authorization: PropTypes.string.isRequired }),
   }),
   authentication: PropTypes.shape({
     config: PropTypes.shape({
       server: PropTypes.string.isRequired,
-      headers: PropTypes.shape({
-        Authorization: PropTypes.string.isRequired,
-      }).isRequired,
+      headers: PropTypes.shape({ Authorization: PropTypes.string.isRequired }).isRequired,
     }).isRequired,
     user: PropTypes.shape({
       username: PropTypes.string.isRequired,
@@ -76,9 +75,7 @@ FileContextProvider.propTypes = {
   }),
   /** Repository tree_url can be used in place of blobConfig */
   repository: PropTypes.shape({
-    owner: PropTypes.shape({
-      username: PropTypes.string.isRequired,
-    }),
+    owner: PropTypes.shape({ username: PropTypes.string.isRequired }),
     name: PropTypes.string.isRequired,
   }),
   /** Children to render inside of Provider */

@@ -52,6 +52,7 @@ const [filepath, setFilepath] = React.useState();
     <FileContextProvider
       filepath={filepath}
       onFilepath={setFilepath}
+      onFile={alert}
       create={false}
     >
       <Component />

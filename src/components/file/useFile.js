@@ -15,6 +15,7 @@ function useFile({
   repository,
   filepath,
   onFilepath,
+  onFile,
   defaultContent,
   config,
   create=false,
@@ -36,7 +37,8 @@ function useFile({
 
   const update = useCallback((_file) => {
     setFile(_file);
-  }, []);
+    onFile(_file);
+  }, [onFile]);
 
   const read = useCallback(async (_filepath) => {
     onFilepath && await onFilepath(_filepath);
@@ -55,7 +57,9 @@ function useFile({
     }
   }, [authentication, branch, config, defaultContent, filepath, repository, update]);
 
-  const createFile = useCallback(async ({ branch: _branch, filepath: _filepath, defaultContent: _defaultContent }) => {
+  const createFile = useCallback(async ({
+    branch: _branch, filepath: _filepath, defaultContent: _defaultContent,
+  }) => {
     if (config && repository) {
       const _file = await ensureFile({
         authentication, config, repository,
@@ -69,11 +73,16 @@ function useFile({
         onFilepath(_filepath);
       };
     }
-  }, [authentication, config, repository]);
+  }, [authentication, config, onFilepath, repository, repositoryActions]);
 
   const close = useCallback(() => {
-    if (blobActions && blobActions.close) blobActions.close();
-    if (onFilepath) onFilepath();
+    if (blobActions && blobActions.close) {
+      blobActions.close();
+    }
+
+    if (onFilepath) {
+      onFilepath();
+    }
     update();
   }, [update, blobActions, onFilepath]);
 
@@ -110,7 +119,9 @@ function useFile({
   const blobFilepath = blobState && blobState.filepath;
 
   useEffect(() => {
-    if (blobFilepath && onFilepath) onFilepath(blobFilepath);
+    if (blobFilepath && onFilepath) {
+      onFilepath(blobFilepath);
+    }
   }, [blobFilepath, onFilepath]);
 
   useEffect(() => { // if there is a file but no repository, close file.
@@ -178,6 +189,8 @@ useFile.propTypes = {
   filepath: PropTypes.string,
   /** Function to propogate filepath when the Blob is selected. */
   onFilepath: PropTypes.func,
+  /** Function to propogate file when the Blob is loaded. */
+  onFile: PropTypes.func,
   /** Authentication object returned from a successful withAuthentication login. */
   authentication: PropTypes.shape({
     config: PropTypes.shape({
