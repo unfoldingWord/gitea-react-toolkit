@@ -15,17 +15,11 @@ import { Code } from '@material-ui/icons';
 import { get } from '../../core';
 import { localString } from '../../core/localStrings';
 
-
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   avatar: { borderRadius: '20%' },
 }));
 
-function Repository({
-  url,
-  repository,
-  onRepository,
-  config,
-}) {
+function Repository({ url, repository, onRepository, config }) {
   const classes = useStyles();
   const [repo, setRepo] = useState(repository || { owner: {} });
 
@@ -42,21 +36,14 @@ function Repository({
     onRepository(repo);
   }, [repo, onRepository]);
 
-  const {
-    owner,
-    name,
-    full_name,
-    description,
-    html_url,
-    avatar_url,
-  } = repo;
+  const { owner, name, full_name, description, html_url, avatar_url } = repo;
 
   return (
     <ListItem
-      data-test="repository-item"
-      alignItems="flex-start"
+      data-test='repository-item'
+      alignItems='flex-start'
       button
-      ContainerComponent="div"
+      ContainerComponent='div'
       onClick={_onRepository}
     >
       <ListItemAvatar>
@@ -66,25 +53,22 @@ function Repository({
           className={classes.avatar}
         />
       </ListItemAvatar>
-      <ListItemText
-        primary={full_name || name}
-        secondary={description}
-      />
+      <ListItemText primary={description} secondary={full_name || name} />
       <ListItemSecondaryAction>
         <Tooltip title={localString('OpenRepo')} arrow>
-        <IconButton
-          aria-label="Open Link"
-          onClick={() => {
-            window.open(html_url, '_blank');
-          }}
-        >
-          <Code />
-        </IconButton>
+          <IconButton
+            aria-label='Open Link'
+            onClick={() => {
+              window.open(html_url, '_blank');
+            }}
+          >
+            <Code />
+          </IconButton>
         </Tooltip>
       </ListItemSecondaryAction>
     </ListItem>
   );
-};
+}
 
 Repository.propTypes = {
   /** Repository data to render, if url not provided. */
