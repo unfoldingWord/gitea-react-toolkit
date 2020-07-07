@@ -1,48 +1,139 @@
 import React, {
-  useCallback, useMemo, useEffect,
+  useCallback, useMemo, useEffect, useState,
 } from 'react';
 import PropTypes from 'prop-types';
 import deepFreeze from 'deep-freeze';
-
-import { getAuth, saveAuth } from './helpers';
-import { Authentication } from '.';
+import {
+  authenticate, ERROR_SERVER_UNREACHABLE, ERROR_NETWORK_DISCONNECTED,
+} from '../../core';
+import { LoginForm } from '.';
 
 function useAuthentication({
+  messages: _messages,
   authentication: _authentication,
   onAuthentication,
-  messages,
   config,
+  loadAuthentication,
+  saveAuthentication,
 }) {
   const authentication = _authentication && deepFreeze(_authentication);
 
+  const [error, setError] = useState();
+
+  let messages = {
+    actionText: 'Login',
+    genericError: 'Something went wrong, please try again.',
+    usernameError: 'Username does not exist.',
+    passwordError: 'Password is invalid.',
+    networkError: 'There is an issue with your network connection. Please try again.',
+    serverError: 'There is an issue with the server please try again.',
+  };
+
+  if ( _messages !== undefined ) {
+    messages = _messages;
+  }
+
+  const logout = useCallback((_auth) => {
+    saveAuthentication && saveAuthentication();
+  }, []);
+
+  /*
   const update = useCallback(async (_auth) => {
-    if (_auth && _auth.remember) {
-      await saveAuth(_auth);
+    if (_auth && _auth.remember && saveAuthentication) {
+      await saveAuthentication(_auth);
     }
     return onAuthentication && onAuthentication(_auth);
   }, [onAuthentication]);
+*/
+  const update = useCallback((_auth) => {
+    if (_auth) {
+      if (_auth.remember) {
+        saveAuthentication(_auth);
+      }
+    }
+    onAuthentication(_auth);
+  }, [logout, onAuthentication]);
 
   useEffect(() => {
+    console.log("useEffect()")
     if (!authentication) {
-      getAuth().then(_auth => update(_auth));
+      console.log("loading auth");
+      loadAuthentication && loadAuthentication().then(_authentication => {
+        if (_authentication) {
+          console.log("... auth loaded:", _authentication)
+          update(_authentication);
+        } else {
+          console.log("... auth not loaded")
+        }
+      });
     }
   }, [authentication, update]);
 
-  const logout = useCallback(async () => {
-    await saveAuth();
-    update();
-  }, [update]);
+  const onSubmit = async ({
+    username, password, remember,
+  }) => {
+    console.log("Authentication() onSubmit: username, password, remember",username, password, remember)
+    if (authentication) {
+      console.log("Authentication() logging out");
+      logout();
+      update();
+    } else {
+      try {
+        console.log("Authentication() logging in")
+        const authentication = await authenticate({
+          username, password, config,
+        });
+        authentication.remember = remember;
+
+        if (authentication) {
+          const { user, token } = authentication;
+
+          if (user && token) {
+            console.log("user, token OK:", user, token);
+            setError();
+            update(authentication);
+          } else {
+            console.log("user, token error:", user, token);
+            if (!user) {
+              console.log(".. user error");
+              setError(messages.usernameError);
+            } else if (!token) {
+              console.log(".. token error");
+              setError(messages.passwordError);
+            }
+          }
+        } else {
+          console.log("authentication failed?", authentication);
+        }
+      } catch (e) {
+        console.log("Authentication error:", e);
+        const errorMessage = e && e.message ? e.message : '';
+
+        if (errorMessage.match(ERROR_SERVER_UNREACHABLE)) {
+          return setError(messages.serverError);
+        }
+
+        if (errorMessage.match(ERROR_NETWORK_DISCONNECTED)) {
+          return setError(messages.networkError);
+        }
+        setError(messages.genericError);
+      }
+    }
+  };
+
+
 
   const component = useMemo(() => (
     config && (
-      <Authentication
-        messages={messages}
-        config={config}
-        authentication={authentication}
-        onAuthentication={update}
-      />
+      <LoginForm
+      config={config}
+      authentication={authentication}
+      actionText={messages.actionText}
+      errorText={error}
+      onSubmit={onSubmit}
+    />
     )
-  ), [authentication, config, messages, update]);
+  ), [authentication, config, messages, onSubmit]);
 
   const _config = (authentication && authentication.config) || config;
 
@@ -51,6 +142,7 @@ function useAuthentication({
     actions: { update, logout },
     component,
     config: _config,
+    messages: messages,
   };
   return response;
 };
@@ -79,6 +171,10 @@ useAuthentication.propTypes = {
     /** The id of the token to create/retrieve that is used for the app. */
     tokenid: PropTypes.string.isRequired,
   }),
+  /** Callback function to persist authentication. */
+  saveAuthentication: PropTypes.func,
+  /** Callback function to retrieve persisted authentication. */
+  loadAuthentication: PropTypes.func,
 };
 
 export default useAuthentication;

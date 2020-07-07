@@ -77,7 +77,7 @@ function LoginForm({
         />
         <FormControlLabel
           data-test="remember-checkbox"
-          label="Remember me"
+          label="Keep me logged in"
           control={
             <Checkbox color="primary" value="remember" disabled={!!user}
               id={'remember-' + Math.random()} onChange={updateFormData} />
