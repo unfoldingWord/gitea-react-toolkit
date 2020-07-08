@@ -1,4 +1,5 @@
-Once "remember me" is checked, it will not present a login. Refresh page to get back to a clean starting point without any saved authentication.
+Once "Keep me logged in" is checked, it will not present a login; rather a "logout" will be presented.
+Click "logout" to remove persisted credentials and to see the login again.
 
 ```js
 import { useContext } from 'react';
