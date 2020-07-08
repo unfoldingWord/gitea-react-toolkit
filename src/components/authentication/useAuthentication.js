@@ -55,15 +55,10 @@ function useAuthentication({
   }, [logout, onAuthentication]);
 
   useEffect(() => {
-    console.log("useEffect()")
     if (!authentication) {
-      console.log("loading auth");
       loadAuthentication && loadAuthentication().then(_authentication => {
         if (_authentication) {
-          console.log("... auth loaded:", _authentication)
           update(_authentication);
-        } else {
-          console.log("... auth not loaded")
         }
       });
     }
@@ -72,14 +67,11 @@ function useAuthentication({
   const onSubmit = async ({
     username, password, remember,
   }) => {
-    console.log("Authentication() onSubmit: username, password, remember",username, password, remember)
     if (authentication) {
-      console.log("Authentication() logging out");
       logout();
       update();
     } else {
       try {
-        console.log("Authentication() logging in")
         const authentication = await authenticate({
           username, password, config,
         });
@@ -89,16 +81,12 @@ function useAuthentication({
           const { user, token } = authentication;
 
           if (user && token) {
-            console.log("user, token OK:", user, token);
             setError();
             update(authentication);
           } else {
-            console.log("user, token error:", user, token);
             if (!user) {
-              console.log(".. user error");
               setError(messages.usernameError);
             } else if (!token) {
-              console.log(".. token error");
               setError(messages.passwordError);
             }
           }
