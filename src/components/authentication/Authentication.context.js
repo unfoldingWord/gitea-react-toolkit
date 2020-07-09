@@ -10,12 +10,14 @@ export function AuthenticationContextProvider({
   messages,
   authentication,
   onAuthentication,
+  loadAuthentication,
+  saveAuthentication,
   children,
 }) {
   const {
     state, actions, component, config,
   } = useAuthentication({
-    authentication, onAuthentication, config: _config, messages,
+    authentication, onAuthentication, config: _config, messages, loadAuthentication, saveAuthentication,
   });
   const context = {
     state,
@@ -55,4 +57,8 @@ AuthenticationContextProvider.propTypes = {
     /** The id of the token to create/retrieve that is used for the app. */
     tokenid: PropTypes.string.isRequired,
   }),
+  /** Callback function to persist authentication. */
+  saveAuthentication: PropTypes.func,
+  /** Callback function to retrieve persisted authentication. */
+  loadAuthentication: PropTypes.func,
 };

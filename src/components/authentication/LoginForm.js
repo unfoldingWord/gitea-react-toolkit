@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import useEffect from 'use-deep-compare-effect';
 import PropTypes from 'prop-types';
 import {
   Avatar,
@@ -19,7 +20,31 @@ function LoginForm({
   onSubmit,
 }) {
   const classes = useStyles();
-  const [formData, setFormData] = useState({});
+  const _authentication = authentication || {user: {}};
+  const _username = _authentication.user.username;
+  const _remember = _authentication.remember;
+  const [formData, setFormData] = useState({username: _username, remember: _remember});
+  const { username, password, remember } = formData;
+
+  useEffect(() => {
+    if (_authentication) {
+      let _formData = { ...formData };
+
+      if (_authentication.user.username) {
+        _formData.username = _authentication.user.username;
+      }
+      if (_authentication.remember) {
+        _formData.remember = _authentication.remember;
+      }
+      setFormData(_formData);
+    } else {
+      let _formData = { ...formData };
+      _formData.password = '';
+      setFormData(_formData);
+    }
+  }, [_authentication]);
+
+
 
   let user;
 
@@ -67,19 +92,19 @@ function LoginForm({
       <form className={classes.form}>
         <TextField data-test="username-input" name="username" type="text" label="Username" required
           variant="outlined" margin="normal" fullWidth autoComplete="username"
-          disabled={!!user} defaultValue={user ? user.username : ''}
+          disabled={!!user} defaultValue={username}
           onChange={updateFormData}
         />
         <TextField data-test="password-input" name="password" type="password" label="Password" required
           variant="outlined" margin="normal" fullWidth autoComplete="current-password"
-          disabled={!!user} defaultValue={user ? user.username : ''}
+          disabled={!!user} 
           onChange={updateFormData}
         />
         <FormControlLabel
           data-test="remember-checkbox"
-          label="Remember me"
+          label="Keep me logged in"
           control={
-            <Checkbox color="primary" value="remember" disabled={!!user}
+            <Checkbox color="primary" value="remember" disabled={!!user} checked={remember}
               id={'remember-' + Math.random()} onChange={updateFormData} />
           }
         />
