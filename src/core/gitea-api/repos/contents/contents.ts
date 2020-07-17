@@ -2,6 +2,7 @@ import Path from 'path';
 import base64 from 'base-64';
 import utf8 from 'utf8';
 
+import { getContentFromFile } from '../../../../components/file/helpers';
 import { ExtendConfig } from '../../http/http';
 import {
   apiPath, get, post, put, del,
@@ -36,6 +37,7 @@ interface PayloadOptions {
 interface ContentObject {
   path: string;
   sha: string;
+  content: string;
 }
 
 export const payload = ({
@@ -179,8 +181,10 @@ export const ensureContent = async ({
         owner, repo, filepath, config,
       });
 
+      const _content = await getContentFromFile(_contentObject);
+
       contentObject = await updateContent({
-        config, owner, repo, branch, filepath, content, message, author, sha: _contentObject.sha,
+        config, owner, repo, branch, filepath, content: _content, message, author, sha: _contentObject.sha,
       });
     } catch { // try to create the file if it doesn't exist in default or new branch
       contentObject = await createContent({
