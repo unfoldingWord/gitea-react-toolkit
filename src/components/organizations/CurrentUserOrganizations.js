@@ -1,7 +1,9 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, {
+  useState, useCallback, useEffect,
+} from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import { List, Typography } from '@material-ui/core';
+import { List, CircularProgress } from '@material-ui/core';
 
 import { Organizations } from '../';
 import { getCurrentUserOrgs } from '../../core';
@@ -26,9 +28,7 @@ function CurrentUserOrganizations({
   const [organizations, setOrganizations] = useState([]);
   const getData = useCallback(async () => {
     if (authentication && authentication.config) {
-      const userOrgs = await getCurrentUserOrgs({
-        config: authentication.config,
-      });
+      const userOrgs = await getCurrentUserOrgs({ config: authentication.config });
 
       if (userOrgs) {
         setOrganizations(userOrgs);
@@ -41,7 +41,7 @@ function CurrentUserOrganizations({
       getData();
     }
   }, [authentication, getData]);
-  return authentication ? (
+  return (authentication && (organization || organizations.length)) ? (
     <List className={classes.root}>
       <Organizations
         organization={organization}
@@ -52,7 +52,9 @@ function CurrentUserOrganizations({
       />
     </List>
   ) : (
-    <div />
+    <center>
+      <CircularProgress />
+    </center>
   );
 }
 
@@ -79,6 +81,10 @@ CurrentUserOrganizations.propTypes = {
   onOrganization: PropTypes.func.isRequired,
   /** Configuration required if paths are provided as URL. */
   config: PropTypes.shape({ server: PropTypes.string.isRequired }).isRequired,
+  messages: PropTypes.shape({
+    primaryError: PropTypes.string,
+    secondaryError: PropTypes.string,
+  }),
 };
 
 export default CurrentUserOrganizations;

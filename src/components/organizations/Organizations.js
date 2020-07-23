@@ -42,11 +42,13 @@ function Organizations({
         url={_url}
         onOrganization={updateOrganization}
         config={config}
+        messages={{ primaryError, secondaryError }}
       />
     ));
   } else {
     components = [
       <Organization
+        key={0}
         config={config}
         messages={{ primaryError, secondaryError }}
       />,
@@ -76,6 +78,10 @@ Organizations.propTypes = {
     username: PropTypes.string.isRequired,
     visibility: PropTypes.string.isRequired,
     website: PropTypes.string.isRequired,
+  }),
+  messages: PropTypes.shape({
+    primaryError: PropTypes.string,
+    secondaryError: PropTypes.string,
   }),
 };
 
