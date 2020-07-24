@@ -35,11 +35,10 @@ function Organization({
 }) {
   const classes = useStyles();
   const [org, setOrg] = useState(organization);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const getData = useCallback(async ({ config: _config, url: _url }) => {
     const data = await get({ config: _config, url: _url });
-    setLoading(false);
     setOrg(data);
   }, []);
 
@@ -50,13 +49,16 @@ function Organization({
     } else if (organization) {
       setOrg(organization);
     }
+    setLoading(false);
   }, [url, organization, config, getData]);
 
   const _onOrganization = useCallback(() => {
     onOrganization(org);
   }, [org, onOrganization]);
 
-  const { avatar_url, description, full_name, username, website } = org || {};
+  const {
+    avatar_url, description, full_name, username, website,
+  } = org || {};
 
   const primary =
     full_name ||
@@ -65,7 +67,6 @@ function Organization({
     (!org && primaryError);
   const secondary =
     description || (loading && secondaryLoading) || (!org && secondaryError);
-
   return (
     <ListItem
       selected={selected}
@@ -128,6 +129,12 @@ Organization.propTypes = {
   config: PropTypes.shape({ server: PropTypes.string.isRequired }),
   /** The selected organization */
   selected: PropTypes.bool,
+  messages: PropTypes.shape({
+    primaryError: PropTypes.string,
+    secondaryError: PropTypes.string,
+    primaryLoading: PropTypes.string,
+    secondaryLoading: PropTypes.string,
+  }),
 };
 
 export default Organization;
