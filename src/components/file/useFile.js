@@ -7,7 +7,7 @@ import {
   getContentFromFile, saveFile, ensureFile, deleteFile,
 } from './helpers';
 import {
-  FileCard, FileForm, useBlob, RepositoryContext,
+  FileCard, FileForm, useBlob, RepositoryContext, AuthenticationContext,
 } from '..';
 
 function useFile({
@@ -22,6 +22,8 @@ function useFile({
   const [file, setFile] = useState();
   const [blob, setBlob] = useState();
   const { actions: repositoryActions } = useContext(RepositoryContext);
+  const { state: contextAuthentication, config: contextConfig } = useContext(AuthenticationContext);
+
   const branch = repository && (repository.branch || repository.default_branch);
 
   const [deleted, setDeleted] = useState();
@@ -117,6 +119,7 @@ function useFile({
     if (!repository && file) {
       close();
     }
+    if (!contextAuthentication)  close();
   }, [repository, file, close]);
 
   useEffect(() => {
