@@ -53,7 +53,11 @@ function Organization({
   }, [url, organization, config, getData]);
 
   const _onOrganization = useCallback(() => {
-    onOrganization(org);
+    if ( org.permission === 'read' ) {
+      alert("Write Permissions are Required!\nContact the organization Admin")
+    } else {
+      onOrganization(org);
+    }
   }, [org, onOrganization]);
 
   const {
