@@ -35,7 +35,7 @@ function useAuthentication({
 
   const logout = useCallback((_auth) => {
     saveAuthentication && saveAuthentication();
-  }, []);
+  }, [saveAuthentication]);
 
   /*
   const update = useCallback(async (_auth) => {
@@ -47,24 +47,27 @@ function useAuthentication({
 */
   const update = useCallback((_auth) => {
     if (_auth) {
-      if (_auth.remember) {
+      if (_auth.remember && saveAuthentication) {
         saveAuthentication(_auth);
       }
     }
-    onAuthentication(_auth);
-  }, [logout, onAuthentication]);
+
+    if (onAuthentication) {
+      onAuthentication(_auth);
+    }
+  }, [onAuthentication, saveAuthentication]);
 
   useEffect(() => {
-    if (!authentication) {
-      loadAuthentication && loadAuthentication().then(_authentication => {
+    if (!authentication && loadAuthentication) {
+      loadAuthentication().then(_authentication => {
         if (_authentication) {
           update(_authentication);
         }
       });
     }
-  }, [authentication, update]);
+  }, [authentication, loadAuthentication, update]);
 
-  const onSubmit = async ({
+  const onSubmit = useCallback(async ({
     username, password, remember,
   }) => {
     if (authentication) {
@@ -91,10 +94,10 @@ function useAuthentication({
             }
           }
         } else {
-          console.log("authentication failed?", authentication);
+          console.log('authentication failed?', authentication);
         }
       } catch (e) {
-        console.log("Authentication error:", e);
+        console.log('Authentication error:', e);
         const errorMessage = e && e.message ? e.message : '';
 
         if (errorMessage.match(ERROR_SERVER_UNREACHABLE)) {
@@ -107,21 +110,21 @@ function useAuthentication({
         setError(messages.genericError);
       }
     }
-  };
+  }, [authentication, config, logout, messages.genericError, messages.networkError, messages.passwordError, messages.serverError, messages.usernameError, update]);
 
 
 
   const component = useMemo(() => (
     config && (
       <LoginForm
-      config={config}
-      authentication={authentication}
-      actionText={messages.actionText}
-      errorText={error}
-      onSubmit={onSubmit}
-    />
+        config={config}
+        authentication={authentication}
+        actionText={messages.actionText}
+        errorText={error}
+        onSubmit={onSubmit}
+      />
     )
-  ), [authentication, config, messages, onSubmit]);
+  ), [authentication, config, error, messages.actionText, onSubmit]);
 
   const _config = (authentication && authentication.config) || config;
 
