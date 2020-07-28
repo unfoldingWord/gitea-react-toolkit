@@ -54,7 +54,11 @@ function Organization({
 
   const _onOrganization = useCallback(() => {
     if ( org.permission === 'read' ) {
-      alert("Write Permissions are Required!\nContact the organization Admin")
+      alert(
+        "Your door43 user account doesn't have permission to edit the\n" +
+        "files in the organization you have chosen.\n" +
+        "Please contact your organization administrator and request write permissions."
+      );
     } else {
       onOrganization(org);
     }
