@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import useEffect from 'use-deep-compare-effect';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
@@ -11,8 +11,11 @@ import {
   IconButton,
   colors,
 } from '@material-ui/core';
+import path from 'path';
+import { AuthenticationContext } from '..';
+
 import { Code } from '@material-ui/icons';
-import { get } from '../../core';
+import { apiPath, get } from '../../core';
 
 const useStyles = makeStyles((theme) => ({
   avatar: { borderRadius: '20%' },
@@ -36,6 +39,7 @@ function Organization({
   const classes = useStyles();
   const [org, setOrg] = useState(organization);
   const [loading, setLoading] = useState(true);
+  const { state: contextAuthentication } = useContext(AuthenticationContext) || {};
 
   const getData = useCallback(async ({ config: _config, url: _url }) => {
     const data = await get({ config: _config, url: _url });
@@ -52,10 +56,43 @@ function Organization({
     setLoading(false);
   }, [url, organization, config, getData]);
 
-  const _onOrganization = useCallback(() => {
-    if ( org.permission === 'read' ) {
+  const _onOrganization = useCallback(async () => {
+
+    const teamsUrl = path.join(apiPath, 'orgs/'+org.username+'/teams');
+    let teamsResults = await get({ url: teamsUrl, config });
+    // if there are no teams, then go ahead and set it
+    if ( !teamsResults ) {
+      onOrganization(org);
+      return;
+    }
+
+    // if there are teams, then ensure user has write access
+    // first get the user (if logged in)
+    let user = contextAuthentication.user.login;
+    if ( !user ) {
+      onOrganization(org);
+      return;
+    }
+
+    // https://git.door43.org/api/v1/teams/172/members/cecil.new?access_token=PlaygroundTesting
+    // test for membership, looking for something other than "read"
+    let permission = 'read';
+    for ( let j=0; j < teamsResults.length; j++ ) {
+      let isTeamMemberUrl = path.join(apiPath, 'teams/'+teamsResults[j].id+'/members/'+user);
+      let teamMemberResult = await get({url: isTeamMemberUrl, config});
+      if ( teamMemberResult === null ) {
+        // not a team member
+        continue;
+      }
+      let _permission = teamsResults[j].permission;
+      if ( _permission !== 'read' ) {
+        permission = 'write';
+        break
+      }
+    }
+    if ( permission === 'read' ) {
       alert(
-        "Your door43 user account doesn't have permission to edit the\n" +
+        "Your door43 user account doesn't have permission to edit the " +
         "files in the organization you have chosen.\n" +
         "Please contact your organization administrator and request write permissions."
       );
