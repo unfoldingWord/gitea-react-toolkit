@@ -27,8 +27,8 @@ function CurrentUserOrganizations({
   const classes = useStyles();
   const [organizations, setOrganizations] = useState([]);
   const getData = useCallback(async () => {
-    if (authentication && authentication.config && authentication.user && authentication.user.login) {
-      const userOrgs = await getCurrentUserOrgs({ config: authentication.config, user: authentication.user.login });
+    if (authentication && authentication.config) {
+      const userOrgs = await getCurrentUserOrgs({ config: authentication.config });
 
       if (userOrgs) {
         setOrganizations(userOrgs);
