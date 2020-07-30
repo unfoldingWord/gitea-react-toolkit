@@ -49,6 +49,7 @@ function Organizations({
     components = [
       <Organization
         key={0}
+        organization={organization}
         config={config}
         messages={{ primaryError, secondaryError }}
       />,
