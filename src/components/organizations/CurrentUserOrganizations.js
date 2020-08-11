@@ -80,7 +80,7 @@ CurrentUserOrganizations.propTypes = {
   /** Function to call when organization is selected. */
   onOrganization: PropTypes.func.isRequired,
   /** Configuration required if paths are provided as URL. */
-  config: PropTypes.shape({ server: PropTypes.string.isRequired }).isRequired,
+  config: PropTypes.shape({ server: PropTypes.string.isRequired }),
   messages: PropTypes.shape({
     primaryError: PropTypes.string,
     secondaryError: PropTypes.string,

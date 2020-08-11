@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import useEffect from 'use-deep-compare-effect';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
@@ -11,8 +11,11 @@ import {
   IconButton,
   colors,
 } from '@material-ui/core';
+import path from 'path';
+import { AuthenticationContext } from '..';
+
 import { Code } from '@material-ui/icons';
-import { get } from '../../core';
+import { get, isSelectedOrgWritable} from '../../core';
 
 const useStyles = makeStyles((theme) => ({
   avatar: { borderRadius: '20%' },
@@ -36,6 +39,7 @@ function Organization({
   const classes = useStyles();
   const [org, setOrg] = useState(organization);
   const [loading, setLoading] = useState(true);
+  const { state: contextAuthentication } = useContext(AuthenticationContext) || {};
 
   const getData = useCallback(async ({ config: _config, url: _url }) => {
     const data = await get({ config: _config, url: _url });
@@ -52,8 +56,34 @@ function Organization({
     setLoading(false);
   }, [url, organization, config, getData]);
 
-  const _onOrganization = useCallback(() => {
-    onOrganization(org);
+  const _onOrganization = useCallback(async () => {
+    if ( org === undefined ) {
+      onOrganization(org);
+      return;
+    }
+
+    // first get the user (if logged in)
+    // if not logged in, go ahead and set the org
+    let user = contextAuthentication.user.login;
+    if ( !user ) {
+      onOrganization(org);
+      return;
+    }
+
+    // if user does not have write access to the org
+    // i.e., is only in teams with read access
+    // then show alert and do not set the org
+    // make the user pick another
+    const hasWritePermissions = await isSelectedOrgWritable({org,user,config});
+    if ( ! hasWritePermissions ) {
+      alert(
+        "Your door43 user account doesn't have permission to edit the " +
+        "files in the organization you have chosen.\n" +
+        "Please contact your organization administrator and request write permissions."
+      );
+    } else {
+      onOrganization(org);
+    }
   }, [org, onOrganization]);
 
   const {
