@@ -1,7 +1,7 @@
 module.exports = {
-  presets: [[
+  presets: [
     '@babel/preset-env',
-    { 'targets': { 'node': 'current' } },
-  ], '@babel/preset-react', '@babel/preset-typescript'],
-  plugins: ['istanbul']
+    '@babel/react',
+    '@babel/preset-typescript',
+  ],
 };

@@ -46,7 +46,7 @@
   "devDependencies": {
     "@babel/cli": "7.8.4",
     "@babel/core": "7.7.2",
-    "@babel/preset-env": "7.7.1",
+    "@babel/preset-env": "7.11.0",
     "@babel/preset-react": "7.0.0",
     "@babel/preset-typescript": "7.7.2",
     "@cypress/code-coverage": "1.14.0",
@@ -62,8 +62,7 @@
     "babel-eslint": "10.0.3",
     "babel-jest": "24.9.0",
     "babel-loader": "^8.0.6",
-    "babel-plugin-istanbul": "5.2.0",
-    "babel-plugin-transform-class-properties": "6.24.1",
+    "babel-plugin-istanbul": "6.0.0",
     "coveralls": "3.0.7",
     "cypress": "3.6.1",
     "eslint": "6.6.0",
