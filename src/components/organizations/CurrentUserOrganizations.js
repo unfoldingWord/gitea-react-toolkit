@@ -65,7 +65,7 @@ CurrentUserOrganizations.propTypes = {
     token: PropTypes.object.isRequired,
     config: PropTypes.object.isRequired,
     remember: PropTypes.bool,
-  }).isRequired,
+  }),
   /** The currently selected organization */
   organization: PropTypes.shape({
     avatar_url: PropTypes.string.isRequired,
