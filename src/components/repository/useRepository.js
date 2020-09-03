@@ -35,14 +35,11 @@ function useRepository({
 
   const update = useCallback((repo) => {
     if (onRepository) {
-      let _repo;
-
-      if (repo) {
-        _repo = { ...repo, branch };
-        const tree_url = repoTreeUrl(_repo);
-        _repo = { ..._repo, tree_url };
+      if (repo && (repo.branch || repo.default_branch) && repo.full_name) {
+        const tree_url = repoTreeUrl({ ...repo, branch });
+        const _repo = { ...repo, branch, tree_url };
+        onRepository(_repo);
       };
-      onRepository(_repo);
     };
   }, [branch, onRepository]);
 
