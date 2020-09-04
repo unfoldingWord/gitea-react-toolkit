@@ -16,7 +16,7 @@ describe('Application Bar', function () {
     cy.contains('Door43');
     cy.get('[data-test=repository-menu-modal] [data-test=repository-item]').eq(0).click();
     cy.get('[data-test=drawer-menu-button]').eq(0).click();
-    cy.get('[data-test=file-tree]', { timeout: 10000 }).children().should('have.length', 9);
+    cy.get('[data-test=file-tree]', { timeout: 10000 }).children().should('have.length', 8);
     cy.get('[data-test=drawer-menu-close-button]').click();
     cy.get('[data-test=application-bar]').should('contain.text', 'en_ta');
     cy.get('[data-test=repository-item-icon] svg').click();

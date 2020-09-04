@@ -1,11 +1,10 @@
 /// <reference types="cypress" />
 describe('Authentication', function () {
-
   before(() => {
     cy.clearLocalStorage();
   });
   beforeEach(() => {
-    cy.visit('/#!/Authentication%20/Authentication');
+    cy.visit('/#/Authentication%20?id=loginform');
   });
   it('should login with correct password', function () {
     cy.get('[data-test=username-input] input').eq(0).type(Cypress.env('TEST_USERNAME'));
