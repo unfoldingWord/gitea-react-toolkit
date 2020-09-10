@@ -49,7 +49,7 @@ function CurrentUserOrganizations({
       });
     }
   }, [authentication, getData]);
-  return (authentication && organizations?.length > 0) ? (
+  return (authentication && (organization || (organizations && organizations.length > 0))) ? (
     <List className={classes.root}>
       <Organizations
         organization={organization}
@@ -59,16 +59,16 @@ function CurrentUserOrganizations({
         messages={{ primaryError, secondaryError }}
       />
     </List>
-  ) : !loading && organizations?.length == 0 ? (
+  ) : !loading && (!organizations || organizations.length == 0) ? (
     <Typography data-test="login-error-text" component="p" style={{ color: 'red' }}>
-    No organizations found for this account
+      No organizations found for this account
     </Typography>
   )
-    : loading && (
-      <center>
-        <CircularProgress />
-      </center>
-    );
+      : loading && (
+        <center>
+          <CircularProgress />
+        </center>
+      );
 }
 
 CurrentUserOrganizations.propTypes = {
