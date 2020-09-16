@@ -17,7 +17,7 @@ function useFile({
   onFilepath,
   defaultContent,
   config,
-  create=false,
+  create = false,
 }) {
   const [file, setFile] = useState();
   const [blob, setBlob] = useState();
@@ -25,6 +25,7 @@ function useFile({
   const { state: contextAuthentication, config: contextConfig } = useContext(AuthenticationContext);
 
   const branch = repository && (repository.branch || repository.default_branch);
+  let _file = file;
 
   const [deleted, setDeleted] = useState();
 
@@ -36,8 +37,9 @@ function useFile({
 
   const { push: writeable } = (repository && repository.permissions) ? repository.permissions : {};
 
-  const update = useCallback((_file) => {
-    setFile(_file);
+  const update = useCallback((__file) => {
+    _file = __file;
+    setFile(__file);
   }, []);
 
   const read = useCallback(async (_filepath) => {
@@ -82,7 +84,7 @@ function useFile({
   const save = useCallback(async (content) => {
     if (writeable) {
       await saveFile({
-        authentication, repository, branch, file, content,
+        authentication, repository, branch, file: _file, content,
       });
       await load();
     }
@@ -119,7 +121,7 @@ function useFile({
     if (!repository && file) {
       close();
     }
-    if (!contextAuthentication)  close();
+    if (!contextAuthentication) close();
   }, [repository, file, close]);
 
   useEffect(() => {
