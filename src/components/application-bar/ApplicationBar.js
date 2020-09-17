@@ -49,8 +49,11 @@ function ApplicationBar({
 }
 
 ApplicationBar.propTypes = {
-  /** The title string to be displayed. */
-  title: PropTypes.string,
+  /** The title string or jsx to be displayed. */
+  title: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.element,
+  ]),
   /** Additional buttons to be displayed. */
   buttons: PropTypes.element,
   /** Component to render inside of the drawer menu. */

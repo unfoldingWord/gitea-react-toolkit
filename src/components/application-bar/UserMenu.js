@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import {
   IconButton,
   Avatar,
@@ -16,6 +16,13 @@ function UserMenu() {
   const [modal, setModal] = useState(false);
   const closeModal = () => setModal(false);
   const openModal = () => setModal(true);
+
+  useEffect(() => {
+    if (authentication && authentication.user) {
+      closeModal();
+    }
+    console.log('useEffect')
+  }, [authentication])
 
   const avatar = !(authentication && authentication.user) ? <AccountCircle fontSize="large" /> : (
     <Avatar data-test="user-menu-avatar" className={classes.avatar} src={authentication.user.avatar_url} />
