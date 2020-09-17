@@ -91,6 +91,7 @@ export const get = async ({
 }: Get): Promise<any> => {
   const _config = config ? extendConfig(config) : {};
   let response: any;
+
   try {
     if (noCache) {
       const _params = { noCache: Math.random(), ...params };
@@ -101,6 +102,7 @@ export const get = async ({
   } catch {
     await checkIfServerOnline(config.server);
   }
+
   const data = response ? response.data : null;
   return data;
 };
