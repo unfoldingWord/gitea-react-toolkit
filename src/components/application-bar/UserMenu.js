@@ -21,7 +21,6 @@ function UserMenu() {
     if (authentication && authentication.user) {
       closeModal();
     }
-    console.log('useEffect')
   }, [authentication])
 
   const avatar = !(authentication && authentication.user) ? <AccountCircle fontSize="large" /> : (
