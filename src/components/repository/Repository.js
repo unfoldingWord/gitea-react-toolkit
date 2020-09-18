@@ -26,6 +26,7 @@ function Repository({ url, repository, onRepository, config }) {
   const getData = useCallback(async () => {
     const data = await get({ url, config });
     setRepo(data);
+    return data;
   }, [config, url]);
 
   useEffect(() => {
@@ -33,7 +34,11 @@ function Repository({ url, repository, onRepository, config }) {
   }, [getData, repo.owner]);
 
   const _onRepository = useCallback(() => {
-    onRepository(repo);
+    if (repo && Object.keys(repo.owner).length) {
+      onRepository(repo);
+    } else {
+      getData().then(onRepository)
+    }
   }, [repo, onRepository]);
 
   const { owner, name, full_name, description, html_url, avatar_url } = repo;
