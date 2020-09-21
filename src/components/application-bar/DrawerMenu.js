@@ -48,10 +48,8 @@ function DrawerMenu({
           {children}
         </div>
         <Divider />
-        {
-          !hideRepoContents && components && components.browse &&
-          <Divider />
-        }
+        { !hideRepoContents && components && components.browse }
+        <Divider />
       </Drawer>
     </div>
   );
