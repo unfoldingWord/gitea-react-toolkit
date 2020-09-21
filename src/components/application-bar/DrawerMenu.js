@@ -15,6 +15,8 @@ import { FileContext } from '..';
 
 function DrawerMenu({
   children,
+  hideRepoContents,
+  closeOnListItemsClick,
 }) {
   const classes = useStyles();
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -42,9 +44,11 @@ function DrawerMenu({
           </IconButton>
         </div>
         <Divider />
-        {children}
+        <div id='list-items' onClick={closeOnListItemsClick ? toggleDrawer() : () => {}}>
+          {children}
+        </div>
         <Divider />
-        {components && components.browse}
+        { !hideRepoContents && components && components.browse }
         <Divider />
       </Drawer>
     </div>
@@ -54,6 +58,10 @@ function DrawerMenu({
 DrawerMenu.propTypes = {
   /** Component to render inside of the drawer menu. */
   children: PropTypes.element,
+  /** Set whether or not to hide the contents of the Repo in the Drawer. */
+  hideRepoContents: PropTypes.bool,
+  /** Set whether or not the list items close the drawer on OnClick event. */
+  closeOnListItemsClick: PropTypes.bool,
 };
 
 export default DrawerMenu;
