@@ -21,6 +21,7 @@ function ApplicationBar({
 }) {
   const classes = useStyles();
   const { state: file } = useContext(FileContext)
+  const { hideRepoContents = false, closeOnListItemsClick = false } = drawerMenuProps;
 
   return (
     <div className={classes.root}>
@@ -29,7 +30,10 @@ function ApplicationBar({
         className={classes.appBar}>
         <Toolbar data-test="application-bar">
           <div className={classes.menuButton}>
-            <DrawerMenu {...drawerMenuProps}>
+            <DrawerMenu 
+              hideRepoContents={hideRepoContents}
+              closeOnListItemsClick={closeOnListItemsClick}
+            >
               {drawerMenu}
             </DrawerMenu>
           </div>
@@ -48,6 +52,10 @@ function ApplicationBar({
     </div>
   );
 }
+
+ApplicationBar.defaultProps = {
+  drawerMenuProps: {},
+};
 
 ApplicationBar.propTypes = {
   /** The title string or jsx to be displayed. */
