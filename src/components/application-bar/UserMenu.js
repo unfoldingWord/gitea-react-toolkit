@@ -21,7 +21,7 @@ function UserMenu() {
     if (authentication && authentication.user) {
       closeModal();
     }
-  }, [authentication.user])
+  }, [authentication])
 
   const avatar = !(authentication && authentication.user) ? <AccountCircle fontSize="large" /> : (
     <Avatar data-test="user-menu-avatar" className={classes.avatar} src={authentication.user.avatar_url} />
