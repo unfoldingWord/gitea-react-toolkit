@@ -4,5 +4,9 @@ module.exports = {
     '@babel/react',
     '@babel/preset-typescript',
   ],
-  plugins: ['istanbul']
+  plugins: [
+  'istanbul', 
+  '@babel/plugin-proposal-nullish-coalescing-operator',
+  '@babel/plugin-proposal-optional-chaining',
+]
 };
