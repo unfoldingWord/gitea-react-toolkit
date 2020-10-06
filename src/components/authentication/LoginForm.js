@@ -20,10 +20,10 @@ function LoginForm({
   onSubmit,
 }) {
   const classes = useStyles();
-  const _authentication = authentication || {user: {}};
+  const _authentication = authentication || { user: {} };
   const _username = _authentication.user.username;
   const _remember = _authentication.remember;
-  const [formData, setFormData] = useState({username: _username, remember: _remember});
+  const [formData, setFormData] = useState({ username: _username, remember: _remember });
   const { username, password, remember } = formData;
 
   useEffect(() => {
@@ -97,7 +97,7 @@ function LoginForm({
         />
         <TextField data-test="password-input" name="password" type="password" label="Password" required
           variant="outlined" margin="normal" fullWidth autoComplete="current-password"
-          disabled={!!user} 
+          disabled={!!user}
           onChange={updateFormData}
         />
         <FormControlLabel
@@ -111,14 +111,14 @@ function LoginForm({
         <Button data-test={user ? 'logout-button' : 'submit-button'} type="button" fullWidth variant="contained"
           color='primary'
           className={classes.submit}
-          onClick={() => {
-            onSubmit(formData);
+          onClick={async () => {
+            await onSubmit(formData);
           }}>
           {(user) ? 'Logout' : actionText}
         </Button>
         {footer}
       </form>
-    </div>
+    </div >
   );
 };
 

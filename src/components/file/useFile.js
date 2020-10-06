@@ -17,7 +17,7 @@ function useFile({
   onFilepath,
   defaultContent,
   config,
-  create=false,
+  create = false,
 }) {
   const [file, setFile] = useState();
   const [blob, setBlob] = useState();
@@ -80,12 +80,10 @@ function useFile({
   }, [update, blobActions, onFilepath]);
 
   const save = useCallback(async (content) => {
-    if (writeable) {
-      await saveFile({
-        authentication, repository, branch, file, content,
-      });
-      await load();
-    }
+    await saveFile({
+      authentication, repository, branch, file, content,
+    });
+    await load();
   }, [writeable, authentication, repository, branch, file, load]);
 
   const dangerouslyDelete = useCallback(async () => {
@@ -119,7 +117,7 @@ function useFile({
     if (!repository && file) {
       close();
     }
-    if (!contextAuthentication)  close();
+    if (!contextAuthentication) close();
   }, [repository, file, close]);
 
   useEffect(() => {

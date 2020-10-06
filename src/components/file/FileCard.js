@@ -58,7 +58,7 @@ function FileCard({
       </CardContent>
       <CardActions>
         <div className={classes.actions}>
-          <IconButton className={classes.action} aria-label="Preview" onClick={() => setPreview(!preview) }>
+          <IconButton className={classes.action} aria-label="Preview" onClick={() => setPreview(!preview)}>
             {!preview ? <Pageview /> : <PageviewOutlined />}
           </IconButton>
           <IconButton

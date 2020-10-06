@@ -29,7 +29,7 @@ function useAuthentication({
     serverError: 'There is an issue with the server please try again.',
   };
 
-  if ( _messages !== undefined ) {
+  if (_messages !== undefined) {
     messages = _messages;
   }
 
@@ -47,8 +47,13 @@ function useAuthentication({
 */
   const update = useCallback((_auth) => {
     if (_auth) {
-      if (_auth.remember && saveAuthentication) {
-        saveAuthentication(_auth);
+      if (saveAuthentication) {
+        if (_auth.remember) {
+          saveAuthentication(_auth);
+        }
+        else {
+          saveAuthentication();
+        }
       }
     }
 
@@ -74,44 +79,52 @@ function useAuthentication({
       logout();
       update();
     } else {
-      try {
-        const authentication = await authenticate({
-          username, password, config,
-        });
-        authentication.remember = remember;
-
-        if (authentication) {
-          const { user, token } = authentication;
-
-          if (user && token) {
-            setError();
-            update(authentication);
-          } else {
-            if (!user) {
-              setError(messages.usernameError);
-            } else if (!token) {
-              setError(messages.passwordError);
-            }
-          }
-        } else {
-          console.log('authentication failed?', authentication);
-        }
-      } catch (e) {
-        console.log('Authentication error:', e);
-        const errorMessage = e && e.message ? e.message : '';
-
-        if (errorMessage.match(ERROR_SERVER_UNREACHABLE)) {
-          return setError(messages.serverError);
-        }
-
-        if (errorMessage.match(ERROR_NETWORK_DISCONNECTED)) {
-          return setError(messages.networkError);
-        }
-        setError(messages.genericError);
-      }
+      await onSubmitLogin({ username, password, remember });
     }
-  }, [authentication, config, logout, messages.genericError, messages.networkError, messages.passwordError, messages.serverError, messages.usernameError, update]);
+  }, [authentication, config, logout, update, onSubmitLogin]);
 
+  const onSubmitLogin = useCallback(async ({
+    username, password, remember,
+  }) => {
+    try {
+      const authentication = await authenticate({
+        username, password, config,
+      });
+      authentication.remember = remember;
+
+      if (authentication) {
+        const { user, token } = authentication;
+
+        if (user && token) {
+          setError();
+          update(authentication);
+        } else {
+          if (!user) {
+            setError(messages.usernameError);
+          } else if (!token) {
+            setError(messages.passwordError);
+          }
+        }
+      } else {
+        console.log('authentication failed?', authentication);
+      }
+    } catch (e) {
+      console.log('Authentication error:', e);
+      const errorMessage = e && e.message ? e.message : '';
+
+      if (errorMessage.match(ERROR_SERVER_UNREACHABLE)) {
+        return setError(messages.serverError);
+      }
+
+      if (errorMessage.match(ERROR_NETWORK_DISCONNECTED)) {
+        return setError(messages.networkError);
+      }
+      setError(messages.genericError);
+    }
+  }, [
+    config, logout, update,
+    messages.genericError, messages.networkError, messages.passwordError, messages.serverError, messages.usernameError,
+  ]);
 
 
   const component = useMemo(() => (
@@ -130,7 +143,7 @@ function useAuthentication({
 
   const response = {
     state: authentication,
-    actions: { update, logout },
+    actions: { update, logout, onLoginFormSubmit: onSubmit, onLoginFormSubmitLogin: onSubmitLogin },
     component,
     config: _config,
     messages: messages,
