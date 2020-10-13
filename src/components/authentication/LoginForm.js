@@ -111,9 +111,7 @@ function LoginForm({
         <Button data-test={user ? 'logout-button' : 'submit-button'} type="button" fullWidth variant="contained"
           color='primary'
           className={classes.submit}
-          onClick={async () => {
-            await onSubmit(formData);
-          }}>
+          onClick={() => onSubmit(formData)}>
           {(user) ? 'Logout' : actionText}
         </Button>
         {footer}
