@@ -138,7 +138,9 @@ export const updateContent = async ({
       contentObject = response.content;
     };
   } catch (error) {
-    throw new Error('Error updating file.');
+    // Allow original error to propogate.
+    // This allows switching based on error messages above.
+    throw error;
   };
   return contentObject;
 };

@@ -4,12 +4,12 @@ import React, {
 import PropTypes from 'prop-types';
 import deepFreeze from 'deep-freeze';
 import {
-  authenticate, ERROR_SERVER_UNREACHABLE, ERROR_NETWORK_DISCONNECTED,
+  authenticate, defaultErrorMessages, ERROR_SERVER_UNREACHABLE, ERROR_NETWORK_DISCONNECTED,
 } from '../../core';
 import { LoginForm } from '.';
 
 function useAuthentication({
-  messages: _messages,
+  messages,
   authentication: _authentication,
   onAuthentication,
   config,
@@ -20,17 +20,8 @@ function useAuthentication({
 
   const [error, setError] = useState();
 
-  let messages = {
-    actionText: 'Login',
-    genericError: 'Something went wrong, please try again.',
-    usernameError: 'Username does not exist.',
-    passwordError: 'Password is invalid.',
-    networkError: 'There is an issue with your network connection. Please try again.',
-    serverError: 'There is an issue with the server please try again.',
-  };
-
-  if (_messages !== undefined) {
-    messages = _messages;
+  if (!messages) {
+    messages = defaultErrorMessages;
   }
 
   const logout = useCallback((_auth) => {
@@ -110,22 +101,14 @@ function useAuthentication({
       }
     } catch (e) {
       console.log('Authentication error:', e);
-      const errorMessage = e && e.message ? e.message : '';
+      const friendlyError = parseError(e);
 
-      if (errorMessage.match(ERROR_SERVER_UNREACHABLE)) {
-        return setError(messages.serverError);
-      }
-
-      if (errorMessage.match(ERROR_NETWORK_DISCONNECTED)) {
-        return setError(messages.networkError);
-      }
-      setError(messages.genericError);
+      setError(friendlyError.errorMessage);
     }
   }, [
     config, logout, update,
     messages.genericError, messages.networkError, messages.passwordError, messages.serverError, messages.usernameError,
   ]);
-
 
   const component = useMemo(() => (
     config && (
