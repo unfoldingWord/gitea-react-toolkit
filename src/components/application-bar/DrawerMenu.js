@@ -27,6 +27,13 @@ function DrawerMenu({
   };
 
   const drawerClasses = { paper: classes.drawerPaper };
+
+  const onDrawerItemClick = () => {
+    if (closeOnListItemsClick) {
+      toggleDrawer()
+    }
+  }
+
   return (
     <div>
       <IconButton data-test="drawer-menu-button" color="inherit" aria-label="Menu" onClick={toggleDrawer} >
@@ -44,7 +51,7 @@ function DrawerMenu({
           </IconButton>
         </div>
         <Divider />
-        <div id='list-items' onClick={closeOnListItemsClick ? toggleDrawer() : () => {}}>
+        <div id='list-items' onClick={onDrawerItemClick}>
           {children}
         </div>
         <Divider />
