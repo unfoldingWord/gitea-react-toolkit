@@ -10,12 +10,14 @@ import {
   ListItemSecondaryAction,
   IconButton,
   colors,
+  Tooltip,
 } from '@material-ui/core';
 import path from 'path';
 import { AuthenticationContext } from '..';
 
 import { Code } from '@material-ui/icons';
 import { get, isSelectedOrgWritable} from '../../core';
+import { localString } from "../../core/localStrings";
 
 const useStyles = makeStyles((theme) => ({
   avatar: { borderRadius: '20%' },
@@ -87,7 +89,7 @@ function Organization({
   }, [org, onOrganization]);
 
   const {
-    avatar_url, description, full_name, username, website,
+    avatar_url, description, full_name, username,
   } = org || {};
 
   const primary =
@@ -97,6 +99,7 @@ function Organization({
     (!org && primaryError);
   const secondary =
     description || (loading && secondaryLoading) || (!org && secondaryError);
+  const orgUrl = `https://git.door43.org/${username}`;
   return (
     <ListItem
       selected={selected}
@@ -125,14 +128,16 @@ function Organization({
       />
       {org && (
         <ListItemSecondaryAction>
+          <Tooltip title={localString('OpenOrg')} arrow>
           <IconButton
             aria-label='Open Link'
             onClick={() => {
-              window.open(website, '_blank');
+              window.open(orgUrl, '_blank');
             }}
           >
             <Code />
           </IconButton>
+          </Tooltip>
         </ListItemSecondaryAction>
       )}
     </ListItem>
