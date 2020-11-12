@@ -11,7 +11,8 @@ module.exports = {
   "plugins": [
     "react",
     "chai-friendly",
-    "@typescript-eslint"
+    "@typescript-eslint",
+    'cypress',
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -92,7 +93,8 @@ module.exports = {
   "env": {
     "browser": true,
     "node": true,
-    "jest": true
+    "jest": true,
+    'cypress/globals': true,
   },
   "root": true
 }

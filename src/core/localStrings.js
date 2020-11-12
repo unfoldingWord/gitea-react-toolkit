@@ -1,12 +1,13 @@
-// 
-// Translate strings into different languages 
+//
+// Translate strings into different languages
 // Then use localString(id) to return the language specific string to use
 //
 const strings = {
     en:{
-        OpenRepo:"Go to Repo",
-        StringMissing:"String Id missing",
-        LangNotSupported: "Language not supported"
+        OpenRepo: "Go to Repo",
+        OpenOrg: "Go to Organization",
+        StringMissing: "String Id missing",
+        LangNotSupported:  "Language not supported"
     },
 };
 

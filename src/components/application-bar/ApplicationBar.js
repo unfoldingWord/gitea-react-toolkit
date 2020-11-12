@@ -17,6 +17,7 @@ function ApplicationBar({
   title,
   buttons,
   drawerMenu,
+  drawerMenuProps,
 }) {
   const classes = useStyles();
   const { state: file } = useContext(FileContext)
@@ -28,7 +29,7 @@ function ApplicationBar({
         className={classes.appBar}>
         <Toolbar data-test="application-bar">
           <div className={classes.menuButton}>
-            <DrawerMenu>
+            <DrawerMenu {...drawerMenuProps}>
               {drawerMenu}
             </DrawerMenu>
           </div>
@@ -48,13 +49,22 @@ function ApplicationBar({
   );
 }
 
+ApplicationBar.defaultProps = {
+  drawerMenuProps: {},
+};
+
 ApplicationBar.propTypes = {
-  /** The title string to be displayed. */
-  title: PropTypes.string,
+  /** The title string or jsx to be displayed. */
+  title: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.element,
+  ]),
   /** Additional buttons to be displayed. */
   buttons: PropTypes.element,
   /** Component to render inside of the drawer menu. */
   drawerMenu: PropTypes.element,
+  /** Drawer menu props. */
+  drawerMenuProps: PropTypes.object,
 };
 
 export default ApplicationBar;
