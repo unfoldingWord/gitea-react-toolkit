@@ -65,8 +65,13 @@ interface Get {
 }
 
 export const checkIfServerOnline = async (serverUrl): Promise<void> => {
-  if (!navigator.onLine) {
-    throw new Error(ERROR_NETWORK_DISCONNECTED);
+  if (typeof navigator !== 'undefined' )
+  {
+      if (navigator) {
+        if (!navigator.onLine) {
+          throw new Error(ERROR_NETWORK_DISCONNECTED);
+        }
+      }
   }
 
   try {
