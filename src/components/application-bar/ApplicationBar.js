@@ -15,6 +15,7 @@ import {
 
 function ApplicationBar({
   title,
+  build,
   buttons,
   drawerMenu,
   drawerMenuProps,
@@ -35,6 +36,7 @@ function ApplicationBar({
           </div>
           <Typography variant="h6" color="inherit" className={classes.grow} noWrap>
             {title}
+            {build && <Typography variant="caption" color="inherit" > build {build}</Typography>}
           </Typography>
           <Typography variant="subtitle2" color="inherit" className={classes.grow} noWrap>
             {file ? file.filepath : ''}
