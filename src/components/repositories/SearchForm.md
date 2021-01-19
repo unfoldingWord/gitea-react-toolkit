@@ -3,7 +3,6 @@ The SearchForm component will make a search api call and return the resulting re
 ```js
 import { useState } from 'react';
 import { Paper } from '@material-ui/core';
-import ReactJson from 'react-json-view';
 import { SearchForm } from 'gitea-react-toolkit';
 
 const [repos, setRepos] = useState([]);
@@ -20,7 +19,7 @@ const [repos, setRepos] = useState([]);
   </Paper>
   <h3>Search Results:</h3>
   <Paper style={{maxHeight: '300px', overflow: 'scroll'}}>
-    <ReactJson src={repos} />
+    <pre>{JSON.stringify(repos)}</pre>
   </Paper>
 </div>
 ```

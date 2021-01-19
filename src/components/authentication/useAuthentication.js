@@ -63,17 +63,6 @@ function useAuthentication({
     }
   }, [authentication, loadAuthentication, update]);
 
-  const onSubmit = useCallback(async ({
-    username, password, remember,
-  }) => {
-    if (authentication) {
-      logout();
-      update();
-    } else {
-      await onSubmitLogin({ username, password, remember });
-    }
-  }, [authentication, config, logout, update, onSubmitLogin]);
-
   const onSubmitLogin = useCallback(async ({
     username, password, remember,
   }) => {
@@ -109,6 +98,17 @@ function useAuthentication({
     config, logout, update,
     messages.genericError, messages.networkError, messages.passwordError, messages.serverError, messages.usernameError,
   ]);
+
+  const onSubmit = useCallback(async ({
+    username, password, remember,
+  }) => {
+    if (authentication) {
+      logout();
+      update();
+    } else {
+      await onSubmitLogin({ username, password, remember });
+    }
+  }, [authentication, config, logout, update, onSubmitLogin]);
 
   const component = useMemo(() => (
     config && (
