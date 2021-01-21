@@ -1,13 +1,14 @@
 import React, {
-  useState, useCallback, useEffect, useContext,
+  useState, useCallback, useContext,
 } from 'react';
 import PropTypes from 'prop-types';
+import useEffect from 'use-deep-compare-effect';
 
 import {
   getContentFromFile, saveFile, ensureFile, deleteFile,
 } from './helpers';
 import {
-  FileCard, FileForm, useBlob, RepositoryContext, AuthenticationContext,
+  FileCard, FileForm, useBlob, RepositoryContext,
 } from '..';
 
 function useFile({
@@ -16,14 +17,14 @@ function useFile({
   filepath,
   onFilepath,
   defaultContent,
-  config,
-  create = false,
+  config: _config,
+  create=false,
 }) {
   const [file, setFile] = useState();
   const [blob, setBlob] = useState();
-  const { actions: repositoryActions } = useContext(RepositoryContext);
-  const { state: contextAuthentication, config: contextConfig } = useContext(AuthenticationContext);
+  const { actions: { updateBranch }, config: repositoryConfig } = useContext(RepositoryContext);
 
+  const config = _config || repositoryConfig;
   const branch = repository && (repository.branch || repository.default_branch);
 
   const [deleted, setDeleted] = useState();
@@ -41,7 +42,9 @@ function useFile({
   }, []);
 
   const read = useCallback(async (_filepath) => {
-    onFilepath && await onFilepath(_filepath);
+    if (onFilepath) {
+      await onFilepath(_filepath);
+    };
   }, [onFilepath]);
 
   const load = useCallback(async () => {
@@ -49,6 +52,8 @@ function useFile({
       const _file = await ensureFile({
         filepath, defaultContent, authentication, config, repository, branch,
       });
+      // let content;
+      // content = await repositoryActions.fileFromZip(filepath);
       const content = await getContentFromFile(_file);
 
       update({
@@ -57,7 +62,9 @@ function useFile({
     }
   }, [authentication, branch, config, defaultContent, filepath, repository, update]);
 
-  const createFile = useCallback(async ({ branch: _branch, filepath: _filepath, defaultContent: _defaultContent }) => {
+  const createFile = useCallback(async ({
+    branch: _branch, filepath: _filepath, defaultContent: _defaultContent,
+  }) => {
     if (config && repository) {
       const _file = await ensureFile({
         authentication, config, repository,
@@ -67,15 +74,20 @@ function useFile({
       });
 
       if (_file) {
-        repositoryActions.updateBranch(_branch);
+        updateBranch(_branch);
         onFilepath(_filepath);
       };
     }
-  }, [authentication, config, repository]);
+  }, [authentication, config, repository, updateBranch, onFilepath]);
 
   const close = useCallback(() => {
-    if (blobActions && blobActions.close) blobActions.close();
-    if (onFilepath) onFilepath();
+    if (blobActions && blobActions.close) {
+      blobActions.close();
+    };
+
+    if (onFilepath) {
+      onFilepath();
+    };
     update();
   }, [update, blobActions, onFilepath]);
 
@@ -110,14 +122,13 @@ function useFile({
   const blobFilepath = blobState && blobState.filepath;
 
   useEffect(() => {
-    if (blobFilepath && onFilepath) onFilepath(blobFilepath);
+    if (blobFilepath && onFilepath) {
+      onFilepath(blobFilepath);
+    };
   }, [blobFilepath, onFilepath]);
 
   useEffect(() => { // if there is a file but no repository, close file.
-    if (!repository && file) {
-      close();
-    }
-    if (!contextAuthentication) close();
+    if (!repository && file) close();
   }, [repository, file, close]);
 
   useEffect(() => {

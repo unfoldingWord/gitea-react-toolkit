@@ -14,6 +14,9 @@ import {
   repositoryForks,
   createRepository,
   readRepository,
+  storeRepositoryZip,
+  removeRepositoryZip,
+  getFileFromRepositoryZip,
 } from './helpers';
 
 function useRepository({
@@ -32,6 +35,9 @@ function useRepository({
   const repository = __repository && deepFreeze(__repository);
   const { full_name } = repository || {};
   const user = authentication && authentication.user;
+
+  // Due to objects not memoizing in useCallback, deconstruction is necessary
+  // const { owner: { username: owner }, name: repo } = repository;
 
   const update = useCallback((repo) => {
     if (onRepository) {
@@ -86,6 +92,21 @@ function useRepository({
       update(_repository);
     };
   }, [config, repository, update]);
+
+  const storeZip = useCallback(async () => {
+    await storeRepositoryZip({ repository, config });
+  }, [repository, config]);
+
+  const removeZip = useCallback(async () =>{
+    await removeRepositoryZip({ repository, config });
+  }, [repository, config]);
+
+  const fileFromZip = useCallback(async (filepath) => {
+    const file = await getFileFromRepositoryZip({
+      repository, filepath, config,
+    });
+    return file;
+  }, [repository, config]);
 
   const forks = useCallback(() => {
     repositoryForks({ repository, config });
@@ -150,7 +171,7 @@ function useRepository({
     component = components.browse;
   } else if (config) {
     component = components.search;
-  }
+  };
 
   return {
     state: repository,
@@ -164,6 +185,9 @@ function useRepository({
       forks,
       updateBranch,
       read,
+      storeZip,
+      removeZip,
+      fileFromZip,
     },
     component,
     components,
