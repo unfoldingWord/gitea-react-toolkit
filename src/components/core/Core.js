@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import ReactJson from 'react-json-view';
 import { Paper, Button } from '@material-ui/core';
 
 import { useAuthentication } from '..';
@@ -37,9 +36,9 @@ function Core({
   }
 
   if (response) {
-    responseComponent = <ReactJson src={response} />;
+    responseComponent = <div>{JSON.stringify(response)}</div>;
   } else if (loading) {
-    responseComponent = <ReactJson src={{ pending: true }} />;
+    responseComponent = <div/>;
   } else if (!response && typeof (response) !== 'undefined' && !loading) {
     responseComponent = 'No response';
   }
@@ -47,7 +46,7 @@ function Core({
     <>
       <h3>Props</h3>
       <Paper>
-        <ReactJson src={props} />
+        <div>{JSON.stringify(props)}</div>
       </Paper>
       <h3>Response</h3>
       <Paper>
