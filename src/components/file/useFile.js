@@ -1,8 +1,8 @@
 import React, {
-  useState, useCallback, useContext,
+  useState, useCallback, useContext, useEffect,
 } from 'react';
 import PropTypes from 'prop-types';
-import useEffect from 'use-deep-compare-effect';
+import useDeepEffect from 'use-deep-compare-effect';
 
 import {
   getContentFromFile, saveFile, ensureFile, deleteFile,
@@ -127,7 +127,7 @@ function useFile({
     };
   }, [blobFilepath, onFilepath]);
 
-  useEffect(() => { // if there is a file but no repository, close file.
+  useDeepEffect(() => { // if there is a file but no repository, close file.
     if (!repository && file) close();
   }, [repository, file, close]);
 
