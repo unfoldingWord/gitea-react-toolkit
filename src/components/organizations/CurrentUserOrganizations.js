@@ -3,7 +3,9 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import { List, CircularProgress } from '@material-ui/core';
+import {
+  List, CircularProgress, Typography,
+} from '@material-ui/core';
 
 import { Organizations } from '../';
 import { getCurrentUserOrgs } from '../../core';
@@ -25,23 +27,29 @@ function CurrentUserOrganizations({
   } = {},
 }) {
   const classes = useStyles();
-  const [organizations, setOrganizations] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [organizations, setOrganizations] = useState(null);
   const getData = useCallback(async () => {
     if (authentication && authentication.config) {
       const userOrgs = await getCurrentUserOrgs({ config: authentication.config });
 
       if (userOrgs) {
         setOrganizations(userOrgs);
+      } else {
+        setOrganizations([]);
       }
     }
   }, [authentication]);
 
   useEffect(() => {
     if (authentication) {
-      getData();
+      setLoading(true);
+      getData().finally(() => {
+        setLoading(false);
+      });
     }
   }, [authentication, getData]);
-  return (authentication && (organization || organizations.length)) ? (
+  return (authentication && (organization || (organizations && organizations.length > 0))) ? (
     <List className={classes.root}>
       <Organizations
         organization={organization}
@@ -51,11 +59,16 @@ function CurrentUserOrganizations({
         messages={{ primaryError, secondaryError }}
       />
     </List>
-  ) : (
-    <center>
-      <CircularProgress />
-    </center>
-  );
+  ) : !loading && (!organizations || organizations.length == 0) ? (
+    <Typography data-test="login-error-text" component="p" style={{ color: 'red' }}>
+      No organizations found for this account
+    </Typography>
+  )
+      : loading && (
+        <center>
+          <CircularProgress />
+        </center>
+      );
 }
 
 CurrentUserOrganizations.propTypes = {

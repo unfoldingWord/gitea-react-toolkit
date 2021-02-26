@@ -18,7 +18,9 @@ function useBlob({
   const url = _url || (repository && repository.tree_url);
 
   const update = useCallback((_blob) => {
-    if (onBlob) onBlob(_blob);
+    if (onBlob) {
+      onBlob(_blob);
+    };
   }, [onBlob]);
 
   const close = useCallback(() => {

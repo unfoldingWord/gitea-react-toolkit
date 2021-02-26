@@ -21,21 +21,19 @@ function Component() {
 
 const [repository, setRepository] = React.useState();
 const [filepath, setFilepath] = React.useState();
-const [branch, setBranch] = React.useState('master');
 const config = {
   server: "https://bg.door43.org",
   tokenid:"PlaygroundTesting",
 };
 
-<AuthenticationContextProvider
->
+<AuthenticationContextProvider>
   <RepositoryContextProvider
     repository={repository}
     onRepository={setRepository}
     config={config}
-    defaultQuery=''
-    full_name='unfoldingWord/en_ta'
-    branch={branch}
+    defaultQuery='en_ta'
+    // full_name='unfoldingWord/en_ta'
+    branch='master'
   >
     <FileContextProvider
       filepath={filepath}

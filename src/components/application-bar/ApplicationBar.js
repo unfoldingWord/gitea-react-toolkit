@@ -15,8 +15,10 @@ import {
 
 function ApplicationBar({
   title,
+  build,
   buttons,
   drawerMenu,
+  drawerMenuProps,
 }) {
   const classes = useStyles();
   const { state: file } = useContext(FileContext)
@@ -28,12 +30,13 @@ function ApplicationBar({
         className={classes.appBar}>
         <Toolbar data-test="application-bar">
           <div className={classes.menuButton}>
-            <DrawerMenu>
+            <DrawerMenu {...drawerMenuProps}>
               {drawerMenu}
             </DrawerMenu>
           </div>
           <Typography variant="h6" color="inherit" className={classes.grow} noWrap>
             {title}
+            {build && <Typography variant="caption" color="inherit" > build {build}</Typography>}
           </Typography>
           <Typography variant="subtitle2" color="inherit" className={classes.grow} noWrap>
             {file ? file.filepath : ''}
@@ -48,13 +51,22 @@ function ApplicationBar({
   );
 }
 
+ApplicationBar.defaultProps = {
+  drawerMenuProps: {},
+};
+
 ApplicationBar.propTypes = {
-  /** The title string to be displayed. */
-  title: PropTypes.string,
+  /** The title string or jsx to be displayed. */
+  title: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.element,
+  ]),
   /** Additional buttons to be displayed. */
   buttons: PropTypes.element,
   /** Component to render inside of the drawer menu. */
   drawerMenu: PropTypes.element,
+  /** Drawer menu props. */
+  drawerMenuProps: PropTypes.object,
 };
 
 export default ApplicationBar;

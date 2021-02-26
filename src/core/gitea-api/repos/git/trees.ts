@@ -71,6 +71,6 @@ export const fetchTree = async ({
 export const repoTreeUrl = ({
   full_name, branch = '', default_branch = '',
 }) => {
-  const url = path.join(apiPath, 'repos', full_name, 'git', 'trees', branch || default_branch);
+  const url = path.join(apiPath, 'repos', (full_name || ''), 'git', 'trees', branch || default_branch || '');
   return url;
 };
