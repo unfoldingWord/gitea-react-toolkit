@@ -24,6 +24,7 @@ export const fetchFileFromServer = async ({username, repository, path, branch='m
 };
 
 export const getFile = async ({username, repository, path, branch, config}) => {
+  debugger;
   let file;
   const props = {username, repository, path, branch, config};
   file = await getFileFromZip(props);
