@@ -15,8 +15,8 @@ describe('Application Bar', function () {
     cy.get('[data-test=repository-menu-modal] [data-test=repository-item]', { timeout: 10000 }).should('have.length', 4);
     cy.contains('Door43');
     cy.get('[data-test=repository-menu-modal] [data-test=repository-item]').eq(0).click();
-    cy.wait(100);
-    cy.get('[data-test=drawer-menu-button]').eq(0).click();
+    cy.wait(500);
+    cy.get('[data-test=drawer-menu-button]', { timeout: 10000 }).eq(0).click();
     cy.wait(500);
     cy.get('[data-test=file-tree]', { timeout: 10000 }).children().should('have.length', 8);
     cy.get('[data-test=drawer-menu-close-button]').scrollIntoView();
@@ -40,8 +40,7 @@ describe('Application Bar', function () {
     cy.wait(100);
     cy.get('[data-test=user-menu-avatar]').eq(0).click();
     cy.wait(100);
-    cy.contains('Logout');
-    cy.get('body').click('top');
+    cy.get('[data-test=logout-button]').eq(0).click();
     cy.wait(500);
     cy.get('[data-test=user-menu-icon] img').should('exist');
   });
