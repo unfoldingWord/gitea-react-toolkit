@@ -37,8 +37,10 @@ describe('Application Bar', function () {
     cy.get('[data-test=submit-button]').eq(0).click();
     cy.wait(100);
     cy.get('[data-test=user-menu-avatar]').eq(0).click();
+    cy.wait(100);
     cy.contains('Logout');
     cy.get('body').click('top');
+    cy.wait(100);
     cy.get('[data-test=user-menu-icon] img').should('exist');
   });
 });
