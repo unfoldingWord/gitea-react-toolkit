@@ -46,6 +46,7 @@ jobs:
       - name: Run Tests
         run: yarn test;
       - name: Save Test Data
+        if: always()
         uses: actions/upload-artifact@v2
         with:
            name: Cypress Videos
