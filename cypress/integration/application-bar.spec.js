@@ -15,7 +15,7 @@ describe('Application Bar', function () {
     cy.get('[data-test=repository-menu-modal] [data-test=repository-item]', { timeout: 10000 }).should('have.length', 4);
     cy.contains('Door43');
     cy.get('[data-test=repository-menu-modal] [data-test=repository-item]').eq(0).click();
-    cy.wait(500);
+    cy.wait(500); // add delay for screen update
     cy.get('[data-test=drawer-menu-button]').eq(0).click();
     cy.get('[data-test=file-tree]', { timeout: 10000 }).children().should('have.length', 8);
     cy.get('[data-test=drawer-menu-close-button]').click();
