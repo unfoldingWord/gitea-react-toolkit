@@ -15,6 +15,7 @@ describe('Application Bar', function () {
     cy.get('[data-test=repository-menu-modal] [data-test=repository-item]', { timeout: 10000 }).should('have.length', 4);
     cy.contains('Door43');
     cy.get('[data-test=repository-menu-modal] [data-test=repository-item]').eq(0).click();
+    cy.wait(500);
     cy.get('[data-test=drawer-menu-button]').eq(0).click();
     cy.get('[data-test=file-tree]', { timeout: 10000 }).children().should('have.length', 8);
     cy.get('[data-test=drawer-menu-close-button]').click();
@@ -23,8 +24,7 @@ describe('Application Bar', function () {
     cy.get('[data-test=application-bar]').should('not.contain.text', 'en_ta');
   });
 
-  // TODO: re-enable later once the Cypress environment variables are set up
-  it.skip('should test signing in from application bar', () => {
+  it('should test signing in from application bar', () => {
     cy.get('[data-test=user-menu-icon]').eq(0).click();
     cy.wait(100);
     cy.get('[data-test=user-menu-icon] img').should('not.exist');
