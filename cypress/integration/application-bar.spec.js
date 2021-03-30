@@ -19,6 +19,8 @@ describe('Application Bar', function () {
     cy.get('[data-test=drawer-menu-button]').eq(0).click();
     cy.wait(500);
     cy.get('[data-test=file-tree]', { timeout: 10000 }).children().should('have.length', 8);
+    cy.get('[data-test=drawer-menu-close-button]').scrollIntoView();
+    cy.wait(500);
     cy.get('[data-test=drawer-menu-close-button]').click();
     cy.wait(100);
     cy.get('[data-test=application-bar]').should('contain.text', 'en_ta');
@@ -40,7 +42,7 @@ describe('Application Bar', function () {
     cy.wait(100);
     cy.contains('Logout');
     cy.get('body').click('top');
-    cy.wait(100);
+    cy.wait(500);
     cy.get('[data-test=user-menu-icon] img').should('exist');
   });
 });
