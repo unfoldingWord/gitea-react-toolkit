@@ -6,6 +6,7 @@ describe('Authentication', function () {
   beforeEach(() => {
     cy.visit('/#/Authentication%20?id=loginform');
   });
+
   it('should login with correct password', function () {
     cy.get('[data-test=username-input] input').eq(0).type(Cypress.env('TEST_USERNAME'));
     cy.get('[data-test=password-input] input').eq(0).type(Cypress.env('TEST_PASSWORD'));
