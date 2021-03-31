@@ -37,14 +37,21 @@ describe('Application Bar', function () {
     cy.get('[data-test=password-input] input').eq(0).type(Cypress.env('TEST_PASSWORD'));
     cy.get('[data-test=remember-checkbox]').eq(0).click();
     cy.get('[data-test=submit-button]').eq(0).click();
-    cy.wait(100);
-    cy.get('[data-test=user-menu-avatar]').eq(0).click();
     cy.wait(500);
-    cy.get('[data-test=logout-button]').should('exist');
-    // cy.contains('Logout');
+    cy.get('[data-test=user-menu-avatar] img', { timeout: 10000 }).should('exist');
+    // make sure login and logout are not shown
+    cy.get('[data-test=logout-button').should('not.exist');
+    cy.get('[data-test=submit-button').should('not.exist');
+    cy.get('[data-test=user-menu-icon]').eq(0).click();
+    cy.wait(500);
+    cy.get('[data-test=logout-button]', { timeout: 10000 }).should('exist');
+    cy.contains('Logout');
     cy.get('body').click('top');
     cy.wait(500);
-    cy.get('[data-test=user-menu-avatar] img').should('exist');
+    // make sure login and logout are not shown
+    cy.get('[data-test=logout-button', { timeout: 10000 }).should('not.exist');
+    cy.get('[data-test=submit-button').should('not.exist');
+    cy.get('[data-test=user-menu-avatar] img', { timeout: 10000 }).should('exist');
   });
 });
 
