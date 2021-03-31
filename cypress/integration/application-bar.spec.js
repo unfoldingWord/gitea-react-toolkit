@@ -32,13 +32,13 @@ describe('Application Bar', function () {
   it('should test signing in from application bar', () => {
     cy.get('[data-test=user-menu-icon]').eq(0).click();
     cy.wait(100);
-    cy.get('[data-test=user-menu-avatar] img').should('not.exist');
+    cy.get('[data-test=user-menu-avatar]').should('not.exist');
     cy.get('[data-test=username-input] input').eq(0).type(Cypress.env('TEST_USERNAME'));
     cy.get('[data-test=password-input] input').eq(0).type(Cypress.env('TEST_PASSWORD'));
     cy.get('[data-test=remember-checkbox]').eq(0).click();
     cy.get('[data-test=submit-button]').eq(0).click();
-    cy.wait(2000);
-    cy.get('[data-test=user-menu-avatar] img').should('exist');
+    cy.wait(10000);
+    cy.get('[data-test=user-menu-avatar]').should('exist');
     // make sure login and logout are not shown
     cy.get('[data-test=logout-button').should('not.exist');
     cy.get('[data-test=submit-button').should('not.exist');
@@ -51,7 +51,7 @@ describe('Application Bar', function () {
     // make sure login and logout are not shown
     cy.get('[data-test=logout-button').should('not.exist');
     cy.get('[data-test=submit-button').should('not.exist');
-    cy.get('[data-test=user-menu-avatar] img').should('exist');
+    cy.get('[data-test=user-menu-avatar]').should('exist');
   });
 });
 
