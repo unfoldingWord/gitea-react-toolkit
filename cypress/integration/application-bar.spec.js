@@ -37,7 +37,7 @@ describe('Application Bar', function () {
     cy.get('[data-test=password-input] input').eq(0).type(Cypress.env('TEST_PASSWORD'));
     cy.get('[data-test=remember-checkbox]').eq(0).click();
     cy.get('[data-test=submit-button]').eq(0).click();
-    cy.wait(10000);
+    cy.wait(5000);
     cy.get('[data-test=user-menu-avatar]').should('exist');
     // make sure login and logout are not shown
     cy.get('[data-test=logout-button').should('not.exist');
