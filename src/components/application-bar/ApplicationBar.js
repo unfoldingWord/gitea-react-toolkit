@@ -19,6 +19,7 @@ function ApplicationBar({
   buttons,
   drawerMenu,
   drawerMenuProps,
+  hideRepositoryMenu,
 }) {
   const classes = useStyles();
   const { state: file } = useContext(FileContext)
@@ -43,7 +44,7 @@ function ApplicationBar({
           </Typography>
           <div className={classes.grow} />
           {buttons}
-          <RepositoryMenu />
+          {!hideRepositoryMenu ? <RepositoryMenu /> : null}
           <UserMenu />
         </Toolbar>
       </AppBar>
@@ -53,6 +54,7 @@ function ApplicationBar({
 
 ApplicationBar.defaultProps = {
   drawerMenuProps: {},
+  hideRepositoryMenu: false,
 };
 
 ApplicationBar.propTypes = {
