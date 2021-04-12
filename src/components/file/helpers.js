@@ -74,3 +74,15 @@ export const saveFile = async ({
   });
   return response;
 };
+
+export const manifestFileComparer = async({
+  repository, item1, item2,
+}) => {
+  alert(JSON.stringify(repository));
+
+  return 0;
+
+  // contentObject = await readContent({
+  //   owner, repo, ref: branch, filepath, config,
+  // });
+};

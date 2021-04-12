@@ -28,6 +28,7 @@ function Tree({
   onBlob,
   depth,
   filepath,
+  comparer,
 }) {
   const classes = useStyles();
   const [_tree, setTree] = useState(tree || []);
@@ -40,7 +41,7 @@ function Tree({
   const [selectedPath, setSelectedPath] = useState(_selectedPath);
 
   const updateTree = async () => {
-    const __tree = await fetchTree({ url, config });
+    const __tree = await fetchTree({ url, config, comparer });
     setTree(__tree);
   };
 
