@@ -80,12 +80,15 @@ const REGEX_TSV_BOOK_ABBREVIATION = /^\w*_(\w*)\.tsv$/i;
 export const manifestFileComparer = ({
   repository, item1, item2,
 }) => {
+  const item1Path = item1?.path;
+  const item2Path = item2?.path;
+  
   let compare = 0;
 
-  if (item1 && item2 && repository && repository.books)
+  if (item1Path && item2Path && repository && repository.books)
   {
-    const book1Matches = item1.match(REGEX_TSV_BOOK_ABBREVIATION);
-    const book2Matches = item2.match(REGEX_TSV_BOOK_ABBREVIATION);
+    const book1Matches = item1Path.match(REGEX_TSV_BOOK_ABBREVIATION);
+    const book2Matches = item2Path.match(REGEX_TSV_BOOK_ABBREVIATION);
 
     const isTsvFiles = (book1Matches && book2Matches)?true:false;
     if (isTsvFiles)
@@ -134,7 +137,7 @@ export const manifestFileComparer = ({
       }
       else
       {
-        compare = item1.localeCompare(item2);
+        compare = item1Path.localeCompare(item2Path);
       }
     }
   }
