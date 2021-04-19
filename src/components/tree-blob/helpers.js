@@ -1,6 +1,6 @@
 import { get } from '../../core';
 
-export const fetchTree = async ({ url, config }) => {
+export const fetchTree = async ({ url, config, comparer }) => {
   const _config = {
     cache: {
       maxAge: 1 * 2 * 1000, // 2 sec cache override
@@ -8,7 +8,13 @@ export const fetchTree = async ({ url, config }) => {
     ...config,
   };
   const response = await get({ url, config: _config });
-  const { tree } = response;
+  let { tree } = response;
+
+  if (comparer)
+  {
+    tree = tree.sort(comparer);
+  }
+
   return tree;
 };
 

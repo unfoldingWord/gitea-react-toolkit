@@ -35,6 +35,7 @@ function TreeObject({
   onBlob,
   depth,
   filepath,
+  comparer,
 }) {
   const classes = useStyles();
   const _filepath = Path.join(filepath || '', path);
@@ -67,6 +68,7 @@ function TreeObject({
         onBlob={onBlob}
         depth={depth + 1}
         filepath={_filepath}
+        comparer={comparer}
       />
     </>
   );

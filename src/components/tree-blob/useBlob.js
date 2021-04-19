@@ -2,6 +2,8 @@ import React, { useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import deepFreeze from 'deep-freeze';
 
+import {manifestFileComparer} from '../file/helpers';
+
 import { Tree } from '.';
 
 function useBlob({
@@ -27,6 +29,10 @@ function useBlob({
     update();
   }, [update]);
 
+  const tsvManifestFileComparer = useCallback((item1,item2) => {
+    return manifestFileComparer({repository, item1, item2});
+  }, [manifestFileComparer]);
+  
   const browse = useMemo(() => {
     return (tree || url) ? (
       <Tree
@@ -35,9 +41,10 @@ function useBlob({
         config={config}
         selected={true}
         onBlob={update}
+        comparer={tsvManifestFileComparer}
       />
     ) : (<></>);
-  }, [tree, url, config, update]);
+  }, [tree, url, config, update, repository?.name]);
 
   return {
     state: blob,
