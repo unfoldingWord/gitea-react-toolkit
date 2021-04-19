@@ -75,14 +75,73 @@ export const saveFile = async ({
   return response;
 };
 
-export const manifestFileComparer = async({
+const REGEX_TSV_BOOK_ABBREVIATION = /^\w*_(\w*)\.tsv$/i;
+
+export const manifestFileComparer = ({
   repository, item1, item2,
 }) => {
-  alert(JSON.stringify(repository));
+  let compare = 0;
 
-  return 0;
+  if (item1 && item2 && repository && repository.books)
+  {
+    const book1Matches = item1.match(REGEX_TSV_BOOK_ABBREVIATION);
+    const book2Matches = item2.match(REGEX_TSV_BOOK_ABBREVIATION);
 
-  // contentObject = await readContent({
-  //   owner, repo, ref: branch, filepath, config,
-  // });
+    const isTsvFiles = (book1Matches && book2Matches)?true:false;
+    if (isTsvFiles)
+    {
+      const book1 = book1Matches[1];
+      const book2 = book2Matches[1];
+      
+      let iiBook1 = 0;
+      let iiBook2 = 0;
+      for (let ii=0; ii < repository.books.length; ii++)
+      {
+        if (repository.books[ii].toLowerCase() == book1.toLowerCase())
+        {
+          iiBook1 = ii;
+        }
+        if (repository.books[ii].toLowerCase() == book2.toLowerCase())
+        {
+          iiBook2 = ii;
+        }
+      }
+
+      if (iiBook1 < iiBook2)
+      {
+        compare = -1;
+      }
+      else if (iiBook2 < iiBook1)
+      {
+        compare = 1;
+      }
+      else
+      {
+        compare = 0;
+      }
+    }
+    else // BOTH are NOT TSV file: (could be manifest file).
+    {
+      if (book1Matches)
+      {
+        // Book1 is a TSV, but book2 is a non-TSV file.
+        return 1;
+      }
+      else if (book2Matches)
+      {
+        // Book2 is the TSV file; but book1 is NOT.
+        return -1;
+      }
+      else
+      {
+        compare = item1.localeCompare(item2);
+      }
+    }
+  }
+  else // item1/item2 don't exist:
+  {
+    compare = 0;
+  }
+
+  return compare;
 };

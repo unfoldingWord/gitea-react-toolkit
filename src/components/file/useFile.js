@@ -174,8 +174,6 @@ function useFile({
     if (create) {
       component = components.create;
     } else {
-      alert("!! browse\n\n" + JSON.stringify(repository));
-      console.log(repository);
       component = components.browse;
     }
   }
