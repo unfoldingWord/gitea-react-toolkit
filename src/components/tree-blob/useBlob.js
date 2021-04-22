@@ -31,7 +31,7 @@ function useBlob({
 
   const tsvManifestFileComparer = useCallback((item1,item2) => {
     return manifestFileComparer({repository, item1, item2});
-  }, [manifestFileComparer]);
+  }, [repository, repository?.books, manifestFileComparer]);
   
   const browse = useMemo(() => {
     return (tree || url) ? (
