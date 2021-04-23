@@ -7,6 +7,7 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 
 import {
   getContentFromFile, saveFile, ensureFile, deleteFile,
+  runOnOpenValidation,
 } from './helpers';
 import {
   FileCard, FileForm, useBlob, RepositoryContext,
@@ -20,6 +21,7 @@ function useFile({
   defaultContent,
   config: _config,
   create=false,
+  onOpenValidation,
 }) {
   const [file, setFile] = useState();
   const [blob, setBlob] = useState();
@@ -55,6 +57,7 @@ function useFile({
       });
       // let content;
       // content = await repositoryActions.fileFromZip(filepath);
+      onOpenValidation && runOnOpenValidation({file: _file, onValidate: onOpenValidation});
       const content = await getContentFromFile(_file);
 
       update({

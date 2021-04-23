@@ -148,3 +148,15 @@ export const manifestFileComparer = ({
 
   return compare;
 };
+
+/*
+  On Open Validation Helpers
+  There is one function per type of resource
+  The type of resource is determined by its 
+  filename.
+*/
+
+export const runOnOpenValidation = ({file,onValidate}) => {
+  console.log("runOnOpenValidation() file:",file);
+  onValidate();
+}
