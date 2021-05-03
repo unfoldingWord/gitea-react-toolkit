@@ -83,6 +83,7 @@ export const createContent = async ({
       contentObject = response.content;
     }
   } catch (error) {
+    console.log("createContent() throwing error:", error);
     throw new Error('Error creating file.');
   };
   return contentObject;
