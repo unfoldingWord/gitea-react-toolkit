@@ -39,6 +39,7 @@ interface ContentObject {
   path: string;
   sha: string;
   content: string;
+  html_url: string;
 }
 
 export const payload = ({
@@ -189,12 +190,8 @@ export const ensureContent = async ({
     const _content:string = await getContentFromFile(contentObject);
     let notices: string[] = [];
     if ( onOpenValidation ) {
-      console.log("ensureContent() onOpenValidation defined");
-      notices = onOpenValidation(filepath, _content,'a link');
-    } else {
-      console.log("ensureContent() not defined onOpenValidation()");
+      notices = onOpenValidation(filepath, _content,contentObject.html_url);
     }
-    console.log("ensureContent() after onOpenValidation", notices);
   } catch {
     try { // try to update the file in case it is in the default branch
       // NOTE: if the file is in the master branch of the target
@@ -213,9 +210,18 @@ export const ensureContent = async ({
       //
       // the below can throw an error, so it will go to the catch for create to be done
       const _content = await getContentFromFile(_contentObject);
-      contentObject = await updateContent({
-        config, owner, repo, branch, filepath, content: _content, message, author, sha: _contentObject.sha,
-      });
+      let notices: string[] = [];
+      if ( onOpenValidation ) {
+        notices = onOpenValidation(filepath, _content,_contentObject.html_url);
+      }
+      if ( notices.length === 0 ) {
+        // only update if no notices
+        contentObject = await updateContent({
+          config, owner, repo, branch, filepath, content: _content, message, author, sha: _contentObject.sha,
+        });
+      } else {
+        contentObject = _contentObject;
+      }
     } catch { // try to create the file if it doesn't exist in default or new branch
       contentObject = await createContent({
         config, owner, repo, branch, filepath, content, message, author,
