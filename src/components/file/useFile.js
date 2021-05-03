@@ -52,14 +52,13 @@ function useFile({
 
   const load = useCallback(async () => {
     if (config && repository && filepath) {
+      console.log("load() repository, filepath:",repository,filepath);
       const _file = await ensureFile({
-        filepath, defaultContent, authentication, config, repository, branch,
+        filepath, defaultContent, authentication, config, repository, branch, onOpenValidation,
       });
       // let content;
       // content = await repositoryActions.fileFromZip(filepath);
-      onOpenValidation && runOnOpenValidation({file: _file, onValidate: onOpenValidation});
       const content = await getContentFromFile(_file);
-
       update({
         ..._file, branch, content, filepath: _file.path,
       });
@@ -67,14 +66,16 @@ function useFile({
   }, [authentication, branch, config, defaultContent, filepath, repository, update]);
 
   const createFile = useCallback(async ({
-    branch: _branch, filepath: _filepath, defaultContent: _defaultContent,
+    branch: _branch, filepath: _filepath, defaultContent: _defaultContent, onOpenValidation,
   }) => {
     if (config && repository) {
+      console.log("createFile() repository, filepath:",repository,filepath);
       const _file = await ensureFile({
         authentication, config, repository,
         branch: _branch,
         filepath: _filepath,
         defaultContent: _defaultContent,
+        onOpenValidation,
       });
 
       if (_file) {
