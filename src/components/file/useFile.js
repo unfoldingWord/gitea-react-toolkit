@@ -7,7 +7,6 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 
 import {
   getContentFromFile, saveFile, ensureFile, deleteFile,
-  runOnOpenValidation,
 } from './helpers';
 import {
   FileCard, FileForm, useBlob, RepositoryContext,
@@ -52,7 +51,6 @@ function useFile({
 
   const load = useCallback(async () => {
     if (config && repository && filepath) {
-      console.log("load() repository, filepath:",repository,filepath);
       const _file = await ensureFile({
         filepath, defaultContent, authentication, config, repository, branch, onOpenValidation,
       });
@@ -69,7 +67,6 @@ function useFile({
     branch: _branch, filepath: _filepath, defaultContent: _defaultContent, onOpenValidation,
   }) => {
     if (config && repository) {
-      console.log("createFile() repository, filepath:",repository,filepath);
       const _file = await ensureFile({
         authentication, config, repository,
         branch: _branch,
