@@ -18,6 +18,7 @@ interface ModifyContentOptions {
   message: string;
   author: Author;
   sha?: string;
+  onOpenValidation?: (filename: string, content: string, url: string) => never;
 };
 
 interface Author {
@@ -38,6 +39,7 @@ interface ContentObject {
   path: string;
   sha: string;
   content: string;
+  html_url: string;
 }
 
 export const payload = ({
@@ -167,27 +169,59 @@ export const deleteContent = async ({
 };
 
 export const ensureContent = async ({
-  config, owner, repo, branch, filepath, content, message, author,
+  config, owner, repo, branch, filepath, content, message, author, onOpenValidation,
 }: ModifyContentOptions): Promise<ContentObject> => {
   let contentObject: ContentObject;
 
   try { // try to read the file
+    // NOTE: when a source file is fetched for translation, the following readConent
+    // should always succeed since the file was selected from a UI which
+    // is showing files that exist.
+    //
+    // OTOH, if the file is the target this will return null (the first time), 
+    // throwing the error. When the error is thrown, the catch will fire.
     contentObject = await readContent({
       owner, repo, ref: branch, filepath, config,
     });
-
     if (!contentObject) throw new Error('File does not exist in branch');
+    //
+    // add on open validation checks here for source side or existing branch content
+    //
+    const _content:string = await getContentFromFile(contentObject);
+    let notices: string[] = [];
+    if ( onOpenValidation ) {
+      notices = onOpenValidation(filepath, _content,contentObject.html_url);
+    }
   } catch {
     try { // try to update the file in case it is in the default branch
+      // NOTE: if the file is in the master branch of the target
+      // the following readConcent will succeed
+      // Otherwise it returns null; if null then the getContentFromFile
+      // will throw an error (probably from trying to decode null or
+      // if by url, a 404 is returned and get throws an error)
+      // In this case, the catch() will create the content from the source
+      // the "updateContent" will cause the existing target content in master
+      // to be used. createContent will be called at some point during the update
       const _contentObject = await readContent({
         owner, repo, filepath, config,
       });
-
+      //
+      // add on open validation checks here for when target repo has data, but there is no user branch
+      //
+      // the below can throw an error, so it will go to the catch for create to be done
       const _content = await getContentFromFile(_contentObject);
-
-      contentObject = await updateContent({
-        config, owner, repo, branch, filepath, content: _content, message, author, sha: _contentObject.sha,
-      });
+      let notices: string[] = [];
+      if ( onOpenValidation ) {
+        notices = onOpenValidation(filepath, _content,_contentObject.html_url);
+      }
+      if ( notices.length === 0 ) {
+        // only update if no notices
+        contentObject = await updateContent({
+          config, owner, repo, branch, filepath, content: _content, message, author, sha: _contentObject.sha,
+        });
+      } else {
+        contentObject = _contentObject;
+      }
     } catch { // try to create the file if it doesn't exist in default or new branch
       contentObject = await createContent({
         config, owner, repo, branch, filepath, content, message, author,

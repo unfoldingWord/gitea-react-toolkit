@@ -3,7 +3,7 @@ import {
 } from '../..';
 
 export const ensureFile = async ({
-  config, authentication, repository, branch, filepath, defaultContent, message,
+  config, authentication, repository, branch, filepath, defaultContent, message, onOpenValidation,
 }) => {
   const _config = (authentication) ? authentication.config : { ...config };
   const { owner: { username: owner }, name: repo } = repository;
@@ -19,6 +19,7 @@ export const ensureFile = async ({
   const file = await ensureContent({
     config: _config, owner, repo, branch, filepath,
     content: defaultContent, message: _message, author,
+    onOpenValidation,
   });
   return file;
 };
@@ -38,6 +39,8 @@ export const deleteFile = async ({
   return deleted;
 };
 
+// NOTE: something in this function can throw an error.
+// thus it needs to be wrapped in a try / catch.
 export const getContentFromFile = async (file) => {
   const {
     content, encoding, download_url, git_url,
