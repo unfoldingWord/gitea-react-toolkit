@@ -62,6 +62,7 @@ interface Get {
   url: string;
   params?: object;
   noCache?: number | boolean;
+  fullResponse?: boolean;
 }
 
 export const checkIfServerOnline = async (serverUrl): Promise<void> => {
@@ -87,8 +88,16 @@ export const checkIfServerOnline = async (serverUrl): Promise<void> => {
   };
 };
 
+/**
+ * do http get
+ * @param {string} url
+ * @param {object} params
+ * @param {object} config - config parameters
+ * @param {boolean} [noCache] optional flag to disable caching
+ * @param {boolean} [fullResponse] optional flag to return full response, useful if you want specifics such as http codes
+ */
 export const get = async ({
-  url, params, config, noCache,
+  url, params, config, noCache, fullResponse,
 }: Get): Promise<any> => {
   const _config = config ? extendConfig(config) : {};
   let response: any;
@@ -104,6 +113,9 @@ export const get = async ({
     await checkIfServerOnline(config.server);
   }
 
+  if (fullResponse) {
+      return response;
+  }
   const data = response ? response.data : null;
   return data;
 };
