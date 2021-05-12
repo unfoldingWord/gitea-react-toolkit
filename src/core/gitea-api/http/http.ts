@@ -92,7 +92,7 @@ export const checkIfServerOnline = async (serverUrl): Promise<void> => {
  * do http get
  * @param {string} url
  * @param {object} params
- * @param {object} config - config parameters
+ * @param {APIConfig|ExtendConfig} config - config parameters
  * @param {boolean} [noCache] optional flag to disable caching
  * @param {boolean} [fullResponse] optional flag to return full http response including data and statusCode, useful if you want specifics such as http codes
  */
