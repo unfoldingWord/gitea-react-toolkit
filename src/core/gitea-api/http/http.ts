@@ -94,7 +94,7 @@ export const checkIfServerOnline = async (serverUrl): Promise<void> => {
  * @param {object} params
  * @param {object} config - config parameters
  * @param {boolean} [noCache] optional flag to disable caching
- * @param {boolean} [fullResponse] optional flag to return full response, useful if you want specifics such as http codes
+ * @param {boolean} [fullResponse] optional flag to return full http response, useful if you want specifics such as http codes
  */
 export const get = async ({
   url, params, config, noCache, fullResponse,
