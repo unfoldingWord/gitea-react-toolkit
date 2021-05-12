@@ -13,11 +13,18 @@ export function AuthenticationContextProvider({
   loadAuthentication,
   saveAuthentication,
   children,
+  onError,
 }) {
   const {
     state, actions, component, config,
   } = useAuthentication({
-    authentication, onAuthentication, config: _config, messages, loadAuthentication, saveAuthentication,
+    authentication,
+    onAuthentication,
+    config: _config,
+    messages,
+    loadAuthentication,
+    saveAuthentication,
+    onError,
   });
   const context = {
     state,
@@ -61,4 +68,6 @@ AuthenticationContextProvider.propTypes = {
   saveAuthentication: PropTypes.func,
   /** Callback function to retrieve persisted authentication. */
   loadAuthentication: PropTypes.func,
+  /** optional callback for error */
+  onError: PropTypes.func,
 };
