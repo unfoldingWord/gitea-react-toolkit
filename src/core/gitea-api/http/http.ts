@@ -114,7 +114,7 @@ export const get = async ({
   }
 
   if (fullResponse) {
-      return response;
+    return response;
   }
   const data = response ? response.data : null;
   return data;

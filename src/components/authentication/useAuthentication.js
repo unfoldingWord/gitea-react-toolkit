@@ -4,7 +4,11 @@ import React, {
 import PropTypes from 'prop-types';
 import deepFreeze from 'deep-freeze';
 import {
-  authenticate, defaultErrorMessages, ERROR_SERVER_UNREACHABLE, ERROR_NETWORK_DISCONNECTED,
+  authenticate,
+  defaultErrorMessages,
+  parseError,
+  ERROR_SERVER_UNREACHABLE,
+  ERROR_NETWORK_DISCONNECTED,
 } from '../../core';
 import { LoginForm } from '.';
 
@@ -15,6 +19,7 @@ function useAuthentication({
   config,
   loadAuthentication,
   saveAuthentication,
+  onError,
 }) {
   const authentication = _authentication && deepFreeze(_authentication);
 
@@ -93,6 +98,7 @@ function useAuthentication({
       const friendlyError = parseError(e);
 
       setError(friendlyError.errorMessage);
+      onError && onError(friendlyError)
     }
   }, [
     config, logout, update,
@@ -162,6 +168,8 @@ useAuthentication.propTypes = {
   saveAuthentication: PropTypes.func,
   /** Callback function to retrieve persisted authentication. */
   loadAuthentication: PropTypes.func,
+  /** Callback function on error. */
+  onError: PropTypes.func,
 };
 
 export default useAuthentication;
