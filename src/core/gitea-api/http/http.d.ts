@@ -7,6 +7,7 @@ export interface APIConfig {
   tokenid?: string;
   headers?: object;
   token?: string | TokenConfigWithHeaders;
+  noCache?: boolean;
 }
 
 export interface CoreOptions {

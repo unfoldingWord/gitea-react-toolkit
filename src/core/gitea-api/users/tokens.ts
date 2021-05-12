@@ -19,16 +19,16 @@ export interface TokenConfigWithHeaders {
 }
 
 interface GetTokens {
-  (args: { username: string; config: TokenConfig, noCache: boolean }): Promise<AuthToken[]>;
+  (args: { username: string; config: TokenConfig }): Promise<AuthToken[]>;
 }
 
 // requires config.headers with authorization
-export const getTokens: GetTokens = async ({ username, config, noCache }) => {
+export const getTokens: GetTokens = async ({ username, config }) => {
   let tokens;
   const url = Path.join(apiPath, 'users', username, 'tokens');
 
   try {
-    tokens = await get({ url, config, noCache });
+    tokens = await get({ url, config });
   } catch {
     tokens = null;
   }
@@ -36,7 +36,7 @@ export const getTokens: GetTokens = async ({ username, config, noCache }) => {
 };
 
 interface CreateToken {
-  (args: { username: string; config: TokenConfigWithHeaders, noCache: boolean }): Promise<AuthToken[]>;
+  (args: { username: string; config: TokenConfigWithHeaders }): Promise<AuthToken[]>;
 }
 
 // requires config.headers with authorization
@@ -80,8 +80,8 @@ export const deleteToken: DeleteToken = async ({
 
 
 // requires config.headers with authorization
-export const ensureToken: CreateToken = async ({ username, config, noCache }) => {
-  const tokens = await getTokens({ username, config, noCache });
+export const ensureToken: CreateToken = async ({ username, config }) => {
+  const tokens = await getTokens({ username, config });
 
   if (tokens) {
     const tokenMatches = tokens.filter(_token => _token.name === config.tokenid);

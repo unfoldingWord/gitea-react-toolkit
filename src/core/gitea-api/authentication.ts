@@ -67,9 +67,13 @@ export const authenticate: Authenticate = async ({
 
   if (username && password) {
     let authHeaders = authorizationHeaders({ username, password });
-    _config = { ...config, headers: { ...config.headers, ...authHeaders } };
-    user = await getUser({ username, config: _config, noCache: true });
-    token = await ensureToken({ username, config: _config, noCache: true });
+    _config = {
+        ...config,
+        headers: { ...config.headers, ...authHeaders },
+        noCache: true,
+    };
+    user = await getUser({ username, config: _config });
+    token = await ensureToken({ username, config: _config });
     authHeaders = authorizationHeaders({ token });
     _config = { ...config, headers: { ...config.headers, ...authHeaders } };
   }

@@ -85,7 +85,7 @@ export const checkIfServerOnline = async (serverUrl): Promise<void> => {
     } else {
       throw e;
     }
-  };
+  }
 };
 
 /**
@@ -94,7 +94,7 @@ export const checkIfServerOnline = async (serverUrl): Promise<void> => {
  * @param {object} params
  * @param {object} config - config parameters
  * @param {boolean} [noCache] optional flag to disable caching
- * @param {boolean} [fullResponse] optional flag to return full http response, useful if you want specifics such as http codes
+ * @param {boolean} [fullResponse] optional flag to return full http response including data and statusCode, useful if you want specifics such as http codes
  */
 export const get = async ({
   url, params, config, noCache, fullResponse,
@@ -103,7 +103,7 @@ export const get = async ({
   let response: any;
 
   try {
-    if (noCache) {
+    if (noCache || config.noCache) {
       const _params = { noCache: Math.random(), ...params };
       response = await axios.get(url, { ..._config, params: _params });
     } else {

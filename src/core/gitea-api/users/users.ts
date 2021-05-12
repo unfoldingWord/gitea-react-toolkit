@@ -4,16 +4,15 @@ import {
   apiPath, get, ERROR_SERVER_UNREACHABLE, ERROR_NETWORK_DISCONNECTED,
 } from '../http/http';
 
-export const getUser = async ({ username, config, noCache }: {
+export const getUser = async ({ username, config }: {
   username: string;
   config: APIConfig;
-  noCache: boolean;
 }): Promise<{ id: object } | null> => {
   let user = null;
   const url = Path.join(apiPath, 'users', username);
 
   try {
-    user = await get({ url, config, noCache });
+    user = await get({ url, config });
   } catch (e) {
     const errorMessage = e && e.message ? e.message : '';
 
