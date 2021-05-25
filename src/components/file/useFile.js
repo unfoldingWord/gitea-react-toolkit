@@ -11,6 +11,7 @@ import {
 import {
   FileCard, FileForm, useBlob, RepositoryContext,
 } from '..';
+import {fetchCatalogContent} from './dcsCatalogNextApis';
 
 function useFile({
   authentication,
@@ -57,8 +58,13 @@ function useFile({
       // let content;
       // content = await repositoryActions.fileFromZip(filepath);
       const content = await getContentFromFile(_file);
+      const prodTag = repository.catalog?.prod?.branch_or_tag_name;
+      let _publishedContent;
+      if ( prodTag ) {
+        _publishedContent = await fetchCatalogContent('unfoldingword', repository.name, prodTag, filepath);
+      }
       update({
-        ..._file, branch, content, filepath: _file.path,
+        ..._file, branch, content, filepath: _file.path, publishedContent: _publishedContent,
       });
     }
   }, [authentication, branch, config, defaultContent, filepath, repository, update]);
