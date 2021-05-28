@@ -90,10 +90,9 @@ function getServerError(errorMessage, response) {
  *      server was online.
  *
  * @param {string} serverUrl - base path for server (e.g. 'https://git.door43.org')
- * @param {ExtendConfig} config - axios compatible config parameters
+ * @param {ExtendConfig} config - optional axios compatible config parameters
  */
 export const checkIfServerOnline = async (serverUrl, config: ExtendConfig= {}): Promise<void> => {
-  console.log(`checkIfServerOnline - checking for network connection`) //TODO
   if (!navigator.onLine) {
     throw getServerError(ERROR_NETWORK_DISCONNECTED, null);
   }
