@@ -74,9 +74,9 @@ interface Get {
  */
 function getServerError(errorMessage, response) {
   const error = new Error(errorMessage);
-  error[ERROR_SERVER_DISCONNECT_ERROR] = true // flag that this error was while checking if server was online
+  error[ERROR_SERVER_DISCONNECT_ERROR] = true; // flag that this error was from checking if server was online
   if (response) { // if we have response, add it
-    error['response'] = response
+    error['response'] = response;
   }
   return error;
 }
@@ -97,9 +97,9 @@ export const checkIfServerOnline = async (serverUrl, config: ExtendConfig= {}): 
     throw getServerError(ERROR_NETWORK_DISCONNECTED, null);
   }
 
-  console.log(`checkIfServerOnline - checking if server responds`) //TODO
   let response;
   try {
+      // checking if server responds
     response = await axios.get(`${serverUrl}/${apiPath}/version`, config);
   } catch (e) {
     const errorMessage = e && e.message ? e.message : '';
@@ -139,9 +139,9 @@ export const get = async ({
     } else {
       response = await api.get(url, { ..._config, params });
     }
-  } catch {
-    console.log(`get - caught exception`)
+  } catch (e) {
     await checkIfServerOnline(config.server, config);
+    response = e?.response; // if server online, return error response
   }
 
   if (fullResponse) {
