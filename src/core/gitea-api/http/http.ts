@@ -7,6 +7,7 @@ export const apiPath = 'api/v1';
 const DEFAULT_MAX_AGE = 1000;
 const SERVER_ONLINE_STATUS = 200;
 export const ERROR_SERVER_UNREACHABLE = 'ERR_SERVER_UNREACHABLE';
+export const ERROR_SERVER_DISCONNECT_ERROR = 'ERROR_SERVER_DISCONNECT_ERROR';
 export const ERROR_NETWORK_DISCONNECTED = 'ERR_NETWORK_DISCONNECTED';
 export const ERROR_NETWORK_ERROR = 'Network Error';
 
@@ -65,26 +66,55 @@ interface Get {
   fullResponse?: boolean;
 }
 
-export const checkIfServerOnline = async (serverUrl): Promise<void> => {
+/**
+ * create error object from errorMessage and flag that it was from checking network connection status.  Also add http
+ *      response if given
+ * @param {string} errorMessage
+ * @param {object} response - http response
+ */
+function getServerError(errorMessage, response) {
+  const error = new Error(errorMessage);
+  error[ERROR_SERVER_DISCONNECT_ERROR] = true; // flag that this error was from checking if server was online
+  if (response) { // if we have response, add it
+    error['response'] = response;
+  }
+  return error;
+}
+
+/**
+ * Make sure that we are still connected to the server.  First checks that we are connected to local network.  If not,
+ *      it throws an exception.  If local network is connected it tries to verify that server is up.  If server is
+ *      not up, it throws an exception.
+ *    Note - when axios returns exception, it adds the response to error.  And we add flag
+ *      ERROR_SERVER_DISCONNECT_ERROR to error to simplify determining that it was an error checking that
+ *      server was online.
+ *
+ * @param {string} serverUrl - base path for server (e.g. 'https://git.door43.org')
+ * @param {ExtendConfig} config - optional axios compatible config parameters
+ */
+export const checkIfServerOnline = async (serverUrl, config: ExtendConfig= {}): Promise<void> => {
   if (!navigator.onLine) {
-    throw new Error(ERROR_NETWORK_DISCONNECTED);
+    throw getServerError(ERROR_NETWORK_DISCONNECTED, null);
   }
 
+  let response;
   try {
-    const response = await axios.get(`${serverUrl}/${apiPath}/version`);
-    const serverIsResponding = response.status === SERVER_ONLINE_STATUS;
-
-    if (!serverIsResponding) {
-      throw new Error(ERROR_SERVER_UNREACHABLE);
-    }
+      // checking if server responds
+    response = await axios.get(`${serverUrl}/${apiPath}/version`, config);
   } catch (e) {
     const errorMessage = e && e.message ? e.message : '';
 
     if (errorMessage.match(/network error/ig)) {
-      throw new Error(ERROR_SERVER_UNREACHABLE);
+      throw getServerError(ERROR_SERVER_UNREACHABLE, e?.response);
     } else {
+      e[ERROR_SERVER_DISCONNECT_ERROR] = true // flag that this error was while checking if server was online
       throw e;
     }
+  }
+
+  const serverIsResponding = response?.status === SERVER_ONLINE_STATUS;
+  if (!serverIsResponding) {
+    throw getServerError(ERROR_SERVER_UNREACHABLE, response);
   }
 };
 
@@ -92,7 +122,7 @@ export const checkIfServerOnline = async (serverUrl): Promise<void> => {
  * do http get
  * @param {string} url
  * @param {object} params
- * @param {APIConfig|ExtendConfig} config - config parameters
+ * @param {APIConfig|ExtendConfig} config - axios compatible config parameters
  * @param {boolean} [noCache] optional flag to disable caching
  * @param {boolean} [fullResponse] optional flag to return full http response including data and statusCode, useful if you want specifics such as http codes
  */
@@ -109,8 +139,11 @@ export const get = async ({
     } else {
       response = await api.get(url, { ..._config, params });
     }
-  } catch {
-    await checkIfServerOnline(config.server);
+  } catch (e) {
+    await checkIfServerOnline(config.server, config);
+    if (fullResponse) {
+      response = e?.response; // if server online, get error response
+    }
   }
 
   if (fullResponse) {
