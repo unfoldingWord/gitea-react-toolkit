@@ -85,8 +85,9 @@ function getServerError(errorMessage, response) {
  * Make sure that we are still connected to the server.  First checks that we are connected to local network.  If not,
  *      it throws an exception.  If local network is connected it tries to verify that server is up.  If server is
  *      not up, it throws an exception.
- *    Note - exception is thrown if error talking to server.  Axios adds response to error.  And we add flag
- *      ERROR_SERVER_DISCONNECT_ERROR to simplify determining that it was an error checking that server was online.
+ *    Note - when axios returns exception, it adds the response to error.  And we add flag
+ *      ERROR_SERVER_DISCONNECT_ERROR to error to simplify determining that it was an error checking that
+ *      server was online.
  *
  * @param {string} serverUrl - base path for server (e.g. 'https://git.door43.org')
  * @param {ExtendConfig} config - axios compatible config parameters
@@ -141,7 +142,9 @@ export const get = async ({
     }
   } catch (e) {
     await checkIfServerOnline(config.server, config);
-    response = e?.response; // if server online, return error response
+    if (fullResponse) {
+      response = e?.response; // if server online, get error response
+    }
   }
 
   if (fullResponse) {
