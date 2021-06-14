@@ -141,8 +141,16 @@ export const get = async ({
     }
   } catch (e) {
     await checkIfServerOnline(config.server, config);
+    // will arrive here if server is online
     if (fullResponse) {
-      response = e?.response; // if server online, get error response
+      if (e?.response) { // if http error, get response
+        response = e?.response;
+      } else { // this is not http error, so get what we can from exception
+        response = {
+            statusText: e?.toString(),
+            status: 1,
+        }
+      }
     }
   }
 
