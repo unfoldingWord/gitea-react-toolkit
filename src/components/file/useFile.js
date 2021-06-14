@@ -17,6 +17,7 @@ function useFile({
   repository,
   filepath,
   onFilepath,
+  loadDefaultCachedContentFile,
   defaultContent,
   config: _config,
   create=false,
@@ -54,14 +55,47 @@ function useFile({
       const _file = await ensureFile({
         filepath, defaultContent, authentication, config, repository, branch, onOpenValidation,
       });
+
+      console.log("ensureFile:");
+      console.log(_file);
+
+      let defaultCachedContentFile;
+      if (loadDefaultCachedContentFile) { 
+        defaultCachedContentFile = await loadDefaultCachedContentFile();
+      }
+      
+      console.log("GRT defaultContent");
+      console.log(defaultContent);
+      console.log("GRT defaultCachedContent");
+      console.log(defaultCachedContentFile);
+      console.log("GRT ensureFile");
+
+      if (defaultCachedContentFile)
+      {
+        console.log(defaultCachedContentFile.sha);
+      }
+      if (_file) {
+        console.log(_file.sha);
+      }
+
       // let content;
       // content = await repositoryActions.fileFromZip(filepath);
-      const content = await getContentFromFile(_file);
+
+      //const content = await getContentFromFile(_file);
+
+      // Allow app to provide CACHED ("offline" content);
+      let content;
+      if (defaultCachedContentFile && defaultCachedContentFile.content && defaultCachedContentFile.sha == _file.sha) {
+        content = defaultCachedContentFile.content;
+      } else {
+        content = await getContentFromFile(_file);
+      }
+
       update({
         ..._file, branch, content, filepath: _file.path,
       });
     }
-  }, [authentication, branch, config, defaultContent, filepath, repository, update]);
+  }, [authentication, branch, config, defaultContent, loadDefaultCachedContentFile, filepath, repository, update]);
 
   const createFile = useCallback(async ({
     branch: _branch, filepath: _filepath, defaultContent: _defaultContent, onOpenValidation,
