@@ -3,12 +3,11 @@
 import Path from 'path';
 import localforage from 'localforage';
 import { setup } from 'axios-cache-adapter';
+import { extendConfig } from '../../core/gitea-api/http/http'
 
-const SERVER_URL = process.env.REACT_APP_DOOR43_SERVER_URL;
-//const SERVER_URL = 'https://qa.door43.org';
-const baseURL = SERVER_URL+'/';
 
-export async function fetchCatalogContent(username, repository, tag, filepath) {
+export async function fetchCatalogContent(username, repository, tag, filepath, config) {
+  const _config = config ? extendConfig(config) : {};
 
   // example: https://qa.door43.org/unfoldingWord/en_tn/raw/tag/v47/en_tn_65-3JN.tsv
   // might need this instead:
@@ -17,7 +16,7 @@ export async function fetchCatalogContent(username, repository, tag, filepath) {
   const uri = Path.join(username,repository,'raw','tag', tag, filepath);
   let _data;
   try {
-    const { data } = await Door43Api.get(uri, {});
+    const { data } = await Door43Api.get(uri, { ..._config });
  
     if ( data ) {
       // success
@@ -41,7 +40,6 @@ const cacheStore = localforage.createInstance({
 
 // API for http requests
 const Door43Api = setup({
-  baseURL: baseURL,
   cache: {
     store: cacheStore,
     maxAge: 5 * 60 * 1000, // 5-minutes

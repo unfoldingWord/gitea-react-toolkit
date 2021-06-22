@@ -61,7 +61,7 @@ function useFile({
       const prodTag = repository.catalog?.prod?.branch_or_tag_name;
       let _publishedContent;
       if ( prodTag ) {
-        _publishedContent = await fetchCatalogContent('unfoldingword', repository.name, prodTag, filepath);
+        _publishedContent = await fetchCatalogContent('unfoldingword', repository.name, prodTag, filepath, config);
       }
       update({
         ..._file, branch, content, filepath: _file.path, publishedContent: _publishedContent,
