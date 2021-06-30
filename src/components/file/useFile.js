@@ -1,6 +1,6 @@
 import React, {
   useState, useCallback, useContext,
-  useEffect,
+  useEffect, useMemo
 } from 'react';
 import PropTypes from 'prop-types';
 import useDeepCompareEffect from 'use-deep-compare-effect';
@@ -24,6 +24,7 @@ function useFile({
   onOpenValidation,
 }) {
   const [file, setFile] = useState();
+  const [isChanged, setIsChanged] = useState();
   const [blob, setBlob] = useState();
   const { actions: { updateBranch }, config: repositoryConfig } = useContext(RepositoryContext);
 
@@ -43,6 +44,10 @@ function useFile({
   const update = useCallback((_file) => {
     setFile(_file);
   }, []);
+
+  useMemo(() => {
+    setIsChanged(false);
+  }, [file, deleted, closed]);
 
   const read = useCallback(async (_filepath) => {
     if (onFilepath) {
@@ -102,8 +107,9 @@ function useFile({
   const save = useCallback(async (content) => {
     await saveFile({
       authentication, repository, branch, file, content,
+    }).then(() => {
+      load();
     });
-    await load();
   }, [writeable, authentication, repository, branch, file, load]);
 
   const dangerouslyDelete = useCallback(async () => {
@@ -153,6 +159,7 @@ function useFile({
     save,
     close,
     dangerouslyDelete,
+    setIsChanged,
   };
 
   const components = {
@@ -187,6 +194,7 @@ function useFile({
 
   return {
     state: file,
+    stateValues: {isChanged},
     actions,
     component,
     components,

@@ -24,7 +24,7 @@ export function FileContextProvider({
   const { state: contextRepository, config: contextConfig } = useContext(RepositoryContext);
 
   const {
-    state, actions, component, components, config,
+    state, stateValues, actions, component, components, config,
   } = useFile({
     config: _config || contextConfig,
     authentication: _authentication || contextAuthentication,
@@ -34,6 +34,7 @@ export function FileContextProvider({
 
   const context = {
     state,
+    stateValues,
     actions,
     component,
     components,
