@@ -59,7 +59,7 @@ function useFile({
     setFile(_file);
   }, []);
 
-  useMemo(() => {
+  useEffect(() => {
     setIsChanged(false);
   }, [file, deleted, closed]);
 
