@@ -22,10 +22,13 @@ function useFile({
   config: _config,
   create=false,
   onOpenValidation,
+  onConfirmClose,
 }) {
   const [file, setFile] = useState();
-  const [isChanged, setIsChanged] = useState();
+  const [isChanged, setIsChanged] = useState(false);
   const [blob, setBlob] = useState();
+  const [_onConfirmClose, setOnConfirmClose] = useState(onConfirmClose);
+
   const { actions: { updateBranch }, config: repositoryConfig } = useContext(RepositoryContext);
 
   const config = _config || repositoryConfig;
@@ -33,10 +36,21 @@ function useFile({
 
   const [deleted, setDeleted] = useState();
 
+  const _setBlob = useCallback((blob) => {
+    if (isChanged && _onConfirmClose) {
+      if (_onConfirmClose())
+      {
+        setBlob(blob);
+      }
+    } else{
+      setBlob(blob);
+    }
+  },[isChanged, blob, setBlob, _onConfirmClose]);
+
   const {
     state: blobState, actions: blobActions, components: blobComponents,
   } = useBlob({
-    blob, onBlob: setBlob, config, repository, filepath,
+    blob, onBlob: _setBlob, config, repository, filepath,
   });
 
   const { push: writeable } = (repository && repository.permissions) ? repository.permissions : {};
@@ -160,6 +174,8 @@ function useFile({
     close,
     dangerouslyDelete,
     setIsChanged,
+    onConfirmClose: _onConfirmClose,
+    setOnConfirmClose,
   };
 
   const components = {
