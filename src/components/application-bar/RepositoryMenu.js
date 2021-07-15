@@ -23,7 +23,7 @@ function RepositoryMenu() {
     component: repositoryComponent,
   } = useContext(RepositoryContext) || {};
   
-  const { stateValues: fileStateValues, actions: fileActions } = useContext(FileContext) || {};
+  const { state: file, stateValues: fileStateValues, actions: fileActions } = useContext(FileContext) || {};
 
   const {
     name,
@@ -33,7 +33,7 @@ function RepositoryMenu() {
   } = repository || {};
 
   const _onDelete = useCallback(() => {
-    if (actions?.close) {
+    if (file && actions?.close) {
       if (fileActions?.onConfirmClose) {
         if (fileActions.onConfirmClose())
         {
@@ -45,7 +45,7 @@ function RepositoryMenu() {
         actions.close();
       }
     }
-  },[actions.close, fileActions.onConfirmClose]);
+  },[actions.close, file, fileActions.onConfirmClose]);
 
   const handleOpen = useCallback(() => {
     setModal(true);

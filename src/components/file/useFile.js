@@ -36,7 +36,7 @@ function useFile({
   const [deleted, setDeleted] = useState();
 
   const _setBlob = useCallback((_blob) => {
-    if (blob && onConfirmClose) {
+    if (blob && _blob && onConfirmClose) {
       if (onConfirmClose())
       {
         setBlob(_blob);
