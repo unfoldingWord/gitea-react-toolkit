@@ -34,7 +34,7 @@ function RepositoryMenu() {
 
   const _onDelete = useCallback(() => {
     if (actions?.close) {
-      if (fileStateValues?.isChanged && fileActions?.onConfirmClose) {
+      if (fileActions?.onConfirmClose) {
         if (fileActions.onConfirmClose())
         {
           actions.close();
@@ -45,7 +45,7 @@ function RepositoryMenu() {
         actions.close();
       }
     }
-  },[actions.close, fileStateValues.isChanged, fileActions.onConfirmClose]);
+  },[actions.close, fileActions.onConfirmClose]);
 
   const handleOpen = useCallback(() => {
     setModal(true);

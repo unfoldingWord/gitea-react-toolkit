@@ -35,16 +35,16 @@ function useFile({
 
   const [deleted, setDeleted] = useState();
 
-  const _setBlob = useCallback((blob) => {
-    if (blob && isChanged && onConfirmClose) {
+  const _setBlob = useCallback((_blob) => {
+    if (blob && onConfirmClose) {
       if (onConfirmClose())
       {
-        setBlob(blob);
+        setBlob(_blob);
       }
     } else{
-      setBlob(blob);
+      setBlob(_blob);
     }
-  },[isChanged, blob, file, setBlob, onConfirmClose]);
+  },[blob, setBlob, onConfirmClose]);
 
   const {
     state: blobState, actions: blobActions, components: blobComponents,
