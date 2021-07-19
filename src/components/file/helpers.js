@@ -71,6 +71,11 @@ export const saveFile = async ({
   const { path: filepath, sha } = file;
   const _message = message || `Edit '${filepath}' using '${tokenid}'`;
 
+  console.log({
+    config, owner, repo, branch, filepath,
+    content, message: _message, author, sha,
+  })
+
   const response = await updateContent({
     config, owner, repo, branch, filepath,
     content, message: _message, author, sha,
