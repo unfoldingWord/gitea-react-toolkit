@@ -22,7 +22,7 @@ export default function useEdit({
   const { name: tokenid } = token
   const _message = message || `Edit '${filepath}' using '${tokenid}'`;
 
-  function onSaveEdit() {
+  async function onSaveEdit() {
     try {
       setState((prevState) => ({
         ...prevState,
