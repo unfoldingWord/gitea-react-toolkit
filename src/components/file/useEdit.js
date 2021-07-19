@@ -19,7 +19,7 @@ export default function useEdit({
     error: null,
   })
   const [editResponse, setEditResponse] = useState(null)
-  const { name: tokenid } = token
+  const { name: tokenid } = token || {}
   const _message = message || `Edit '${filepath}' using '${tokenid}'`;
 
   async function onSaveEdit() {
