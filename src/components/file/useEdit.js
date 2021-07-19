@@ -10,8 +10,8 @@ export default function useEdit({
   branch,
   author,
   content,
+  message,
   filepath,
-  message: _message,
 }) {
   const [{ isEditing, isError, error }, setState] = useState({
     isEditing: false,
