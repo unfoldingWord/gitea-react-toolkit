@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ensureContent } from '../..';
+import { ensureContent, updateContent } from '../..';
 
 export default function useEdit({
   sha,
@@ -13,12 +13,12 @@ export default function useEdit({
   message,
   filepath,
 }) {
-  const [{ isEditing, isError, error }, setState] = useState({
+  const [{ isEditing, isError, error, editResponse }, setState] = useState({
+    editResponse: null,
     isEditing: false,
     isError: false,
     error: null,
   })
-  const [editResponse, setEditResponse] = useState(null)
   const { name: tokenid } = token || {}
   const _message = message || `Edit '${filepath}' using '${tokenid}'`;
 
@@ -26,11 +26,12 @@ export default function useEdit({
     try {
       setState((prevState) => ({
         ...prevState,
+        editResponse: null,
         isEditing: true,
         isError: false,
       }))
 
-      const response = await ensureContent({
+      const response = await updateContent({
         sha,
         repo,
         owner,
@@ -42,7 +43,10 @@ export default function useEdit({
         message: _message,
       });
 
-      setEditResponse(response)
+      setState((prevState) => ({
+        ...prevState,
+        editResponse: response,
+      }))
     } catch (error) {
       setState((prevState) => ({
         ...prevState,
