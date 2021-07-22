@@ -140,7 +140,9 @@ export const get = async ({
       response = await api.get(url, { ..._config, params });
     }
   } catch (e) {
-    await checkIfServerOnline(config.server, config);
+    if (!config.skipNetworkCheck) {
+      await checkIfServerOnline(config.server, config);
+    }
     // will arrive here if server is online
     if (fullResponse) {
       if (e?.response) { // if http error, get response
