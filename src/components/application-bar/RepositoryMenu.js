@@ -12,7 +12,7 @@ import {
 import { FolderShared } from '@material-ui/icons';
 
 import { useStyles } from './useStyles';
-import { RepositoryContext } from '..';
+import { RepositoryContext, FileContext } from '..';
 
 function RepositoryMenu() {
   const classes = useStyles();
@@ -22,6 +22,8 @@ function RepositoryMenu() {
     actions,
     component: repositoryComponent,
   } = useContext(RepositoryContext) || {};
+  
+  const { state: file, stateValues: fileStateValues, actions: fileActions } = useContext(FileContext) || {};
 
   const {
     name,
@@ -29,6 +31,21 @@ function RepositoryMenu() {
     owner,
     full_name,
   } = repository || {};
+
+  const _onDelete = useCallback(() => {
+    if (file && actions?.close) {
+      if (fileActions?.onConfirmClose) {
+        if (fileActions.onConfirmClose())
+        {
+          actions.close();
+        }
+      }
+      else
+      {
+        actions.close();
+      }
+    }
+  },[actions.close, file, fileActions.onConfirmClose]);
 
   const handleOpen = useCallback(() => {
     setModal(true);
@@ -44,7 +61,7 @@ function RepositoryMenu() {
         data-test="repository-item-icon"
         avatar={avatarComponent}
         label={name}
-        onDelete={actions && actions.close}
+        onDelete={_onDelete}
         color="primary"
       />
     );

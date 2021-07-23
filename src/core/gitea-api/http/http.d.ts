@@ -8,6 +8,7 @@ export interface APIConfig {
   headers?: object;
   token?: string | TokenConfigWithHeaders;
   noCache?: boolean;
+  skipNetworkCheck?: boolean;
 }
 
 export interface CoreOptions {
