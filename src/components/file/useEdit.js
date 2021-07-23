@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { ensureContent, updateContent } from '../..';
 
 export default function useEdit({
@@ -22,7 +22,7 @@ export default function useEdit({
   const { name: tokenid } = token || {}
   const _message = message || `Edit '${filepath}' using '${tokenid}'`;
 
-  async function onSaveEdit() {
+  const onSaveEdit = useCallback(async () => {
     try {
       setState((prevState) => ({
         ...prevState,
@@ -59,7 +59,7 @@ export default function useEdit({
         isEditing: false,
       }))
     }
-  }
+  }, [sha, repo, owner, config, branch, author, content, filepath, _message])
 
   return {
     error,
