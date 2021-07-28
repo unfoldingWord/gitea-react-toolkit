@@ -118,10 +118,6 @@ export const updateContent = async ({
   config, owner, repo, branch, filepath, content, message, author, sha,
 }: ModifyContentOptions): Promise<ContentObject> => {
   const url = Path.join(apiPath, 'repos', owner, repo, 'contents', filepath);
-  console.log('updateContent', {
-    url, config, owner, repo, branch, filepath, content, message, author, sha,
-  });
-  
   let contentObject: ContentObject;
 
   try {
@@ -179,7 +175,6 @@ export const ensureContent = async ({
   config, owner, repo, branch, filepath, content, message, author, onOpenValidation,
 }: ModifyContentOptions): Promise<ContentObject> => {
   let contentObject: ContentObject;
-  console.log('ensureContent');
 
   try { // try to read the file
     // NOTE: when a source file is fetched for translation, the following readConent
