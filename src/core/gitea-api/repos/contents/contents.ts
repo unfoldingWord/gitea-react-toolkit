@@ -130,7 +130,9 @@ export const updateContent = async ({
         url, payload: _payload, config,
       });
       contentObject = response.content;
-    } catch {
+    } catch (e) {
+      console.warn('Branch doesnt exists. Thus, creating new branch', e);
+
       const _payload = payload({
         new_branch: branch, content, message, author, sha,
       });
