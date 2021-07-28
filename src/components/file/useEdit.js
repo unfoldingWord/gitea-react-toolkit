@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react';
-import { ensureContent, updateContent } from '../..';
+import { useState } from 'react';
+import { updateContent } from '../..';
 
 export default function useEdit({
   sha,
@@ -22,44 +22,51 @@ export default function useEdit({
   const { name: tokenid } = token || {}
   const _message = message || `Edit '${filepath}' using '${tokenid}'`;
 
-  const onSaveEdit = useCallback(async () => {
+  async function onSaveEdit(_branch) {
     try {
-      setState((prevState) => ({
-        ...prevState,
-        editResponse: null,
-        isEditing: true,
-        isError: false,
-      }))
-
-      const response = await updateContent({
-        sha,
-        repo,
-        owner,
-        config,
-        branch,
-        author,
-        content,
-        filepath,
-        message: _message,
-      });
-
-      setState((prevState) => ({
-        ...prevState,
-        editResponse: response,
-      }))
+      if (content) {
+        setState((prevState) => ({
+          ...prevState,
+          editResponse: null,
+          isEditing: true,
+          isError: false,
+        }))
+  
+        const response = await updateContent({
+          sha,
+          repo,
+          owner,
+          config,
+          author,
+          content,
+          filepath,
+          message: _message,
+          // Use branch passed to function or branch passed to custom hook. 
+          branch: _branch || branch,
+        });
+  
+        setState((prevState) => ({
+          ...prevState,
+          editResponse: response,
+        }))
+        return true
+      } else {
+        console.warn('Content value is empty')
+      }
     } catch (error) {
       setState((prevState) => ({
         ...prevState,
         isError: true,
         error,
       }))
+      return false
     } finally {
       setState((prevState) => ({
         ...prevState,
         isEditing: false,
       }))
     }
-  }, [sha, repo, owner, config, branch, author, content, filepath, _message])
+  }
 
   return {
     error,
