@@ -1,4 +1,4 @@
-// default build config (used for everything but production)
+// build config for production (on publish)
 module.exports = {
   presets: [
     '@babel/preset-env',
@@ -6,7 +6,6 @@ module.exports = {
     '@babel/preset-typescript',
   ],
   plugins: [
-  'istanbul',
   '@babel/plugin-proposal-nullish-coalescing-operator',
   '@babel/plugin-proposal-optional-chaining',
 ]
