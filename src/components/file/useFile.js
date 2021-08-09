@@ -1,6 +1,6 @@
 import React, {
   useState, useCallback, useContext,
-  useEffect,
+  useEffect, useMemo
 } from 'react';
 import PropTypes from 'prop-types';
 import useDeepCompareEffect from 'use-deep-compare-effect';
@@ -11,6 +11,7 @@ import {
 import {
   FileCard, FileForm, useBlob, RepositoryContext,
 } from '..';
+import {fetchCatalogContent} from './dcsCatalogNextApis';
 
 function useFile({
   authentication,
@@ -23,9 +24,12 @@ function useFile({
   onOpenValidation,
   onLoadCache,
   onSaveCache,
+  onConfirmClose,
 }) {
   const [file, setFile] = useState();
+  const [isChanged, setIsChanged] = useState(false);
   const [blob, setBlob] = useState();
+
   const { actions: { updateBranch }, config: repositoryConfig } = useContext(RepositoryContext);
 
   const config = _config || repositoryConfig;
@@ -33,10 +37,21 @@ function useFile({
 
   const [deleted, setDeleted] = useState();
 
+  const _setBlob = useCallback((_blob) => {
+    if (blob && _blob && onConfirmClose) {
+      if (onConfirmClose())
+      {
+        setBlob(_blob);
+      }
+    } else{
+      setBlob(_blob);
+    }
+  },[blob, setBlob, onConfirmClose]);
+
   const {
     state: blobState, actions: blobActions, components: blobComponents,
   } = useBlob({
-    blob, onBlob: setBlob, config, repository, filepath,
+    blob, onBlob: _setBlob, config, repository, filepath,
   });
 
   const { push: writeable } = (repository && repository.permissions) ? repository.permissions : {};
@@ -44,6 +59,10 @@ function useFile({
   const update = useCallback((_file) => {
     setFile(_file);
   }, []);
+
+  useEffect(() => {
+    setIsChanged(false);
+  }, [file, deleted, closed]);
 
   const read = useCallback(async (_filepath) => {
     if (onFilepath) {
@@ -85,7 +104,6 @@ function useFile({
 
       // let content;
       // content = await repositoryActions.fileFromZip(filepath);
-
       //const content = await getContentFromFile(_file);
 
       // Allow app to provide CACHED ("offline" content);
@@ -93,22 +111,18 @@ function useFile({
       // Might be STALE (sha has changed on DCS).
       // (NOTE: STALE cache would mean THIS user edited the same file in another browser.)
       let content;
-      if (defaultCachedContentFile 
-          && defaultCachedContentFile.content 
-          && defaultCachedContentFile.sha 
-          && defaultCachedContentFile.html_url 
-          && defaultCachedContentFile.filepath 
-          && defaultCachedContentFile.timestamp 
+      if (defaultCachedContentFile && defaultCachedContentFile.content && defaultCachedContentFile.sha 
+          && defaultCachedContentFile.html_url && defaultCachedContentFile.filepath && defaultCachedContentFile.timestamp 
           && defaultCachedContentFile.sha == _file.sha
           && defaultCachedContentFile.html_url == _file.html_url
       ) {
+        // Load autosaved content:
         content = defaultCachedContentFile.content;
       } else {
         if (_file && _file.content 
             && defaultCachedContentFile && defaultCachedContentFile.content 
             && defaultCachedContentFile.filepath && defaultCachedContentFile.sha
             && defaultCachedContentFile.timestamp) {
-          console.log("alert");
           console.log(_file);
           console.log(defaultCachedContentFile);
           alert(
@@ -118,10 +132,17 @@ function useFile({
           );
         }
         content = await getContentFromFile(_file);
+
+        // Check catalog next:
+        const prodTag = repository.catalog?.prod?.branch_or_tag_name;
+        let _publishedContent;
+        if ( prodTag ) {
+          _publishedContent = await fetchCatalogContent('unfoldingword', repository.name, prodTag, filepath, config);
+        }
       }
 
       update({
-        ..._file, branch, content, filepath: _file.path,
+        ..._file, branch, content, filepath: _file.path, publishedContent: _publishedContent,
       });
     }
   }, [authentication, branch, config, defaultContent, onLoadCache, filepath, repository, update]);
@@ -229,6 +250,8 @@ function useFile({
     onLoadCache,
     close,
     dangerouslyDelete,
+    setIsChanged,
+    onConfirmClose,
   };
 
   const components = {
@@ -263,6 +286,7 @@ function useFile({
 
   return {
     state: file,
+    stateValues: {isChanged},
     actions,
     component,
     components,
