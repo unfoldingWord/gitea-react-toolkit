@@ -111,10 +111,12 @@ function useFile({
       // Might be STALE (sha has changed on DCS).
       // (NOTE: STALE cache would mean THIS user edited the same file in another browser.)
       let content;
+      let _publishedContent;
+
       if (defaultCachedContentFile && defaultCachedContentFile.content && defaultCachedContentFile.sha 
           && defaultCachedContentFile.html_url && defaultCachedContentFile.filepath && defaultCachedContentFile.timestamp 
-          && defaultCachedContentFile.sha == _file.sha
-          && defaultCachedContentFile.html_url == _file.html_url
+          && defaultCachedContentFile.sha === _file.sha
+          && defaultCachedContentFile.html_url === _file.html_url
       ) {
         // Load autosaved content:
         content = defaultCachedContentFile.content;
@@ -131,11 +133,11 @@ function useFile({
             "Edited: " + defaultCachedContentFile.timestamp.toLocaleString() + "."
           );
         }
+        // Get SERVER content: Overwrite cache:
         content = await getContentFromFile(_file);
 
         // Check catalog next:
         const prodTag = repository.catalog?.prod?.branch_or_tag_name;
-        let _publishedContent;
         if ( prodTag ) {
           _publishedContent = await fetchCatalogContent('unfoldingword', repository.name, prodTag, filepath, config);
         }
