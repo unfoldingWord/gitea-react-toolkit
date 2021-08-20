@@ -25,9 +25,10 @@ export default function useEdit({
   async function onSaveEdit(_branch) {
     try {
       if (content) {
-        if (branch == 'master' || _branch == 'master') {
-          throw new Error(`Should not save edits in master branch, branch = ${branch}`)
-        }
+        console.log({ _branch, branch })
+        // if (branch == 'master' || _branch == 'master') {
+        //   throw new Error(`Should not save edits in master branch, branch = ${branch}`)
+        // }
 
         setState((prevState) => ({
           ...prevState,
@@ -36,23 +37,39 @@ export default function useEdit({
           isError: false,
         }))
   
-        const response = await updateContent({
-          sha,
-          repo,
-          owner,
-          config,
-          author,
-          content,
-          filepath,
-          message: _message,
-          // Use branch passed to function or branch passed to custom hook. 
-          branch: _branch || branch,
-        });
+        let response = null
+        
+        if (branch !== 'master' || _branch !== 'master') {
+          response = await updateContent({
+            sha,
+            repo,
+            owner,
+            config,
+            author,
+            content,
+            filepath,
+            message: _message,
+            // Use branch passed to function or branch passed to custom hook. 
+            branch: _branch || branch,
+          });
+        } else {
+          response = {
+            error: 'Attempted to save to master branch'
+          }
+
+          setState((prevState) => ({
+            ...prevState,
+            editResponse: response,
+          }))
+
+          return false
+        }
   
         setState((prevState) => ({
           ...prevState,
           editResponse: response,
         }))
+
         return true
       } else {
         console.warn('Content value is empty')
