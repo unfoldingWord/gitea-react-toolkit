@@ -25,11 +25,6 @@ export default function useEdit({
   async function onSaveEdit(_branch) {
     try {
       if (content) {
-        console.log({ _branch, branch })
-        // if (branch == 'master' || _branch == 'master') {
-        //   throw new Error(`Should not save edits in master branch, branch = ${branch}`)
-        // }
-
         setState((prevState) => ({
           ...prevState,
           editResponse: null,
