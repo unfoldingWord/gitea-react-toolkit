@@ -1,6 +1,6 @@
 {
   "name": "gitea-react-toolkit",
-  "version": "1.11.0-rc0",
+  "version": "1.11.0-rc1",
   "license": "MIT",
   "description": "A Gitea API React Toolkit Component Library",
   "homepage": "https://gitea-react-toolkit.netlify.com/",
