@@ -45,7 +45,7 @@ function RepositoryMenu() {
         actions.close();
       }
     }
-  },[actions.close, file, fileActions.onConfirmClose]);
+  },[actions.close, file, fileActions?.onConfirmClose]);
 
   const handleOpen = useCallback(() => {
     setModal(true);
