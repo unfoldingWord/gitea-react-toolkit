@@ -29,6 +29,7 @@
     "test:e2e": "NODE_ENV=test start-test 6060 cypress:run && nyc report --reporter=json-summary",
     "test:unit": "NODE_ENV=test jest ./src/core --coverage && cat ./coverage/lcov.info | coveralls",
     "test": "nyc --exclude-after-remap=false npm run test:e2e",
+    "testJestEnzyme": "jest --watch -c ./jest.enzyme.config.js",
     "create-coverage-badge": "bash scripts/create-badge-json.sh"
   },
   "browserslist": [
@@ -74,6 +75,7 @@
     "eslint-plugin-cypress": "^2.11.1",
     "eslint-plugin-mdx": "1.0.1",
     "eslint-plugin-react": "7.19.0",
+    "identity-obj-proxy": "^3.0.0",
     "istanbul-lib-coverage": "2.0.5",
     "jest": "24.9.0",
     "lorem-ipsum": "2.0.1",
