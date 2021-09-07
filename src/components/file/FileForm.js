@@ -59,6 +59,9 @@ FileForm.propTypes = {
   submitText: PropTypes.string,
   /** Function run when submit button is clicked */
   onSubmit: PropTypes.func.isRequired,
+  branch: PropTypes.string,
+  filepath: PropTypes.string,
+  defaultContent: PropTypes.string,
 };
 
 FileForm.defaultProps = { submitText: 'Submit' };
