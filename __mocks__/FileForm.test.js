@@ -15,6 +15,13 @@ const setupWrapper = (props = {}) => {
     return shallow(<FileForm {...setupProps}/>)
 }
 
+const mockSetBranch = jest.fn();
+
+jest.mock('react', () => ({
+    ...jest.requireActual('react'),
+    useState: (initialState) => [initialState, mockSetBranch]
+}))
+
 const findByAttribute = (wrapper, attribute) => wrapper.find(`[data-test='${attribute}']`)
 
 // render tests
@@ -60,3 +67,31 @@ test('PropTypes', () => {
     let propError = checkPropTypes(FileForm.propTypes, expectedProps, 'prop', FileForm.name);
     expect(propError).toBeUndefined();
 });
+
+
+// input text 
+describe('text input change',() => {
+    test('update the state with the input value of branch', () => {
+        const wrapper = setupWrapper();
+        const textField = findByAttribute(wrapper, 'branch-textField');
+        const mockEvent = { target: { value: 'branch' } };
+        textField.simulate('change', mockEvent);
+        expect(mockSetBranch).toBeCalledWith('branch')
+    });
+
+    test('update the state with the input value of filepath', () => {
+        const wrapper = setupWrapper();
+        const textField = findByAttribute(wrapper, 'filepath-textField');
+        const mockEvent = { target: { value: 'filepath' } };
+        textField.simulate('change', mockEvent);
+        expect(mockSetBranch).toBeCalledWith('filepath')
+    });
+
+    test('update the state with the input value of defaultContent', () => {
+        const wrapper = setupWrapper();
+        const textField = findByAttribute(wrapper, 'defaultContent-textField');
+        const mockEvent = { target: { value: 'defaultContent' } };
+        textField.simulate('change', mockEvent);
+        expect(mockSetBranch).toBeCalledWith('defaultContent')
+    });
+})
