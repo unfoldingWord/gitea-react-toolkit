@@ -8,9 +8,12 @@ Enzyme.configure({
     adapter: new Adapter(),
 });
 
-const setupWrapper = () => shallow(<FileForm
-    onSubmit={() => { }}
-/>)
+const defaultProps = { onSubmit: () => {} }
+
+const setupWrapper = (props = {}) => {
+    const setupProps = {...defaultProps, ...props}
+    return shallow(<FileForm {...setupProps}/>)
+}
 
 const findByAttribute = (wrapper, attribute) => wrapper.find(`[data-test='${attribute}']`)
 
