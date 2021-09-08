@@ -60,7 +60,7 @@ function RepositoryMenu() {
       <Chip
         data-test="repository-item-icon"
         avatar={avatarComponent}
-        label={name}
+        label={<Tooltip aria-label="chip">name</Tooltip>}
         onDelete={_onDelete}
         color="primary"
       />
