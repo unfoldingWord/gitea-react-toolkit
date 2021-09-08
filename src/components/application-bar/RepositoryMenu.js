@@ -61,7 +61,7 @@ function RepositoryMenu() {
         data-test="repository-item-icon"
         aria-label="repository-item-icon"
         avatar={avatarComponent}
-        label={<span id="repository-item-chip" data-test="repository-item-chip">{name}</span>}
+        label={<span data-test="repository-item-chip">{name}</span>}
         onDelete={_onDelete}
         color="primary"
       />
