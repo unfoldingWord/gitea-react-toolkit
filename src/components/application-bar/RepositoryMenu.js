@@ -59,8 +59,9 @@ function RepositoryMenu() {
     button = (
       <Chip
         data-test="repository-item-icon"
+        aria-label="repository-item-icon"
         avatar={avatarComponent}
-        label={<Tooltip aria-label="chip">name</Tooltip>}
+        label={<span id="repository-item-chip" data-test="repository-item-chip">{name}</span>}
         onDelete={_onDelete}
         color="primary"
       />
