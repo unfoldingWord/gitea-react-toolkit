@@ -26,7 +26,7 @@ export const storeZipFromRepo = async ({
   });
 
   try {
-    const zip = await get(uri);
+    const zip = await fetch(uri);
 
     if (zip.status === 200 || zip.status === 0) {
       const zipArrayBuffer = await zip.arrayBuffer(); // blob storage not supported on mobile
@@ -61,7 +61,7 @@ export const getZip = async ({
 }) => {
   let zip;
   const uri = zipUri({
-    owner, repo, branch, config,
+    owner, repo, branch, server: config.server,
   });
   const zipBlob = await zipStore.getItem(uri);
 
@@ -91,7 +91,7 @@ export const getFileFromRepoZip = async ({
   owner, repo, branch, filepath, config,
 }) => {
   let file;
-  const zip = getZip({
+  const zip = await getZip({
     owner, repo, branch, config,
   });
 
