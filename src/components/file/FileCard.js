@@ -106,6 +106,11 @@ FileCard.propTypes = {
     }),
     name: PropTypes.string.isRequired,
     avatar_url: PropTypes.string,
+    permissions: PropTypes.shape({
+      push: PropTypes.bool,
+    }).isRequired,
+    full_name: PropTypes.string.isRequired,
+    default_branch: PropTypes.string.isRequired, 
   }).isRequired,
   /** Pass a previously returned file object to bypass the selection. */
   file: PropTypes.shape({
@@ -115,6 +120,9 @@ FileCard.propTypes = {
     content: PropTypes.string,
     branch: PropTypes.string,
     filepath: PropTypes.string,
+    save: PropTypes.func.isRequired,
+    dangerouslyDelete: PropTypes.func.isRequired,
+    close: PropTypes.func.isRequired
   }),
   /** Pass a previously returned authentication object to bypass login. */
   authentication: PropTypes.shape({
