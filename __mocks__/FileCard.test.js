@@ -33,17 +33,44 @@ const defaultProps = {
         dangerouslyDelete: () => {},
         close: () => {}
     },
-    authentication: {
-        user: 'user',
-        token: 'token',
-        config: 'config',
-    }
+    isAuthenticated: true
 }
 
 const setupWrapper = (props = {}) => {
     const setupProps = {...defaultProps, ...props}
     return shallow(<FileCard {...setupProps}/>)
 }
+
+test('FileForm PropTypes', () => {
+    const conformingProps = {
+        repository: {
+            owner: {
+                username: 'username',
+                avatar_url: 'avatar_url',
+            },
+            name: 'name',
+            avatar_url: 'avatar_url',
+            permissions: {
+                push: true,
+            },
+            full_name: 'full_name',
+            default_branch: 'default_branch'
+        },
+        file:{
+            name: 'file.name',
+            path: 'file.path',
+            sha: 'file.sha',
+            content: 'file.content',
+            branch: 'file.branch',
+            filepath: 'filepath',
+            save: () => {},
+            dangerouslyDelete: () => {},
+            close: () => {}
+        },
+        isAuthenticated: true,
+    }
+    checkProps(FileCard, conformingProps);
+});
 
 // render tests
 describe('render fileCard elements',() => {
