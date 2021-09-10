@@ -54,6 +54,7 @@ function FileCard({
           <BlockEditable
             preview={preview}
             markdown={markdown}
+            // NEED HELP
             onEdit={setMarkdown}
             editable={isAuthenticated}
             data-test="blockEditable"

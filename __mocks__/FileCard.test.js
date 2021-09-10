@@ -41,6 +41,13 @@ const setupWrapper = (props = {}) => {
     return shallow(<FileCard {...setupProps}/>)
 }
 
+const mockSetPreview = jest.fn();
+
+jest.mock('react', () => ({
+    ...jest.requireActual('react'),
+    useState: (initialState) => [initialState, mockSetPreview]
+}))
+
 test('FileForm PropTypes', () => {
     const conformingProps = {
         repository: {
@@ -115,4 +122,14 @@ describe('render fileCard elements',() => {
         const closeButton = findByAttribute(wrapper, 'closeButton');
         expect(closeButton.length).toBe(1);
     });
+});
+
+test('switch the preview state', () => {
+    const wrapper = setupWrapper();
+    const blockEditable = findByAttribute(wrapper, 'blockEditable');
+    expect(blockEditable.props().preview).toBeTruthy();
+    const previewButton = findByAttribute(wrapper, 'previewButton');
+    previewButton.simulate('click');
+    expect(mockSetPreview).toBeCalledWith(false);
+    // NEED HELP
 });
