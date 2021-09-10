@@ -40,11 +40,14 @@ function FileCard({
   const branch = (file && file.branch) ? file.branch : repository.default_branch;
 
   return (
-    <Card>
+    <Card
+      data-test="component-fileCard"
+    >
       <CardHeader
         avatar={<Avatar src={avatarUrl} />}
         title={<strong>{file && file.path}</strong>}
         subheader={repository.full_name + '/' + branch}
+        data-test="cardHeader"
       />
       <CardContent>
         <Paper>
@@ -53,12 +56,18 @@ function FileCard({
             markdown={markdown}
             onEdit={setMarkdown}
             editable={isAuthenticated}
+            data-test="blockEditable"
           />
         </Paper>
       </CardContent>
       <CardActions>
         <div className={classes.actions}>
-          <IconButton className={classes.action} aria-label="Preview" onClick={() => setPreview(!preview)}>
+          <IconButton 
+            className={classes.action}
+            aria-label="Preview"
+            onClick={() => setPreview(!preview)}
+            data-test="previewButton"
+          >
             {!preview ? <Pageview /> : <PageviewOutlined />}
           </IconButton>
           <IconButton
@@ -68,6 +77,7 @@ function FileCard({
             onClick={() => {
               if (changed) file.save(markdown);
             }}
+            data-test="saveButton"
           >
             {changed ? <Save /> : <SaveOutlined />}
           </IconButton>
@@ -82,12 +92,14 @@ function FileCard({
 
               if (confirmation) file.dangerouslyDelete();
             }}
+            data-test="deleteButton"
           >
             <DeleteSweepOutlined />
           </IconButton>
           <IconButton
             title="Close Repository"
             onClick={file.close}
+            data-test="closeButton"
           >
             <CancelOutlined />
           </IconButton>
