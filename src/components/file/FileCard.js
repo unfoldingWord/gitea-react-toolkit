@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function FileCard({
-  authentication,
+  isAuthenticated,
   repository,
   file,
 }) {
@@ -52,7 +52,7 @@ function FileCard({
             preview={preview}
             markdown={markdown}
             onEdit={setMarkdown}
-            editable={!!authentication}
+            editable={isAuthenticated}
           />
         </Paper>
       </CardContent>
@@ -125,11 +125,7 @@ FileCard.propTypes = {
     close: PropTypes.func.isRequired
   }),
   /** Pass a previously returned authentication object to bypass login. */
-  authentication: PropTypes.shape({
-    user: PropTypes.object.isRequired,
-    token: PropTypes.object.isRequired,
-    config: PropTypes.object.isRequired,
-  }),
+  isAuthenticated: PropTypes.bool,
 };
 
 export default FileCard;
