@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -27,14 +27,14 @@ function FileCard({
   file,
 }) {
   const classes = useStyles();
-  const [preview, setPreview] = useState(true);
-  const [markdown, setMarkdown] = useState(file ? file.content : '');
+  const [preview, setPreview] = React.useState(true);
+  const [markdown, setMarkdown] = React.useState('');
   const changed = (markdown !== (file && file.content));
   const avatarUrl = repository.avatar_url || repository.owner.avatar_url;
   const access = repository.permissions.push;
 
   useEffect(() => {
-    setMarkdown(file && file.content);
+    setMarkdown(file && file.content ? file.content : '');
   }, [file]);
 
   const branch = (file && file.branch) ? file.branch : repository.default_branch;
@@ -54,7 +54,6 @@ function FileCard({
           <BlockEditable
             preview={preview}
             markdown={markdown}
-            // NEED HELP
             onEdit={setMarkdown}
             editable={isAuthenticated}
             data-test="blockEditable"

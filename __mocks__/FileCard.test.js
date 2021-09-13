@@ -41,12 +41,6 @@ const setupWrapper = (props = {}) => {
     return shallow(<FileCard {...setupProps}/>)
 }
 
-const mockSetPreview = jest.fn();
-
-jest.mock('react', () => ({
-    ...jest.requireActual('react'),
-    useState: (initialState) => [initialState, mockSetPreview]
-}))
 
 test('FileForm PropTypes', () => {
     const conformingProps = {
@@ -124,12 +118,22 @@ describe('render fileCard elements',() => {
     });
 });
 
-test('switch the preview state', () => {
+test('switch the preview state from true to false', () => {
+    const mockSetPreview = jest.fn();
+    jest.spyOn(React, 'useState').mockImplementation(() => [true, mockSetPreview])
     const wrapper = setupWrapper();
     const blockEditable = findByAttribute(wrapper, 'blockEditable');
     expect(blockEditable.props().preview).toBeTruthy();
     const previewButton = findByAttribute(wrapper, 'previewButton');
     previewButton.simulate('click');
     expect(mockSetPreview).toBeCalledWith(false);
-    // NEED HELP
+});
+
+test('switch the preview state from false to true', () => {
+    const mockSetPreview = jest.fn();
+    jest.spyOn(React, 'useState').mockImplementation(() => [false, mockSetPreview])
+    const wrapper = setupWrapper();
+    const previewButton = findByAttribute(wrapper, 'previewButton');
+    previewButton.simulate('click');
+    expect(mockSetPreview).toBeCalledWith(true);
 });
