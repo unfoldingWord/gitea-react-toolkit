@@ -84,6 +84,9 @@ test('FileForm PropTypes', () => {
 
 // render tests
 describe('render fileCard elements',() => {
+    beforeEach(()=>{
+        useState.mockImplementation(jest.requireActual('react').useState);
+    })
     test('render fileCard', () => {
         const wrapper = setupWrapper();
         const fileCard = findByAttribute(wrapper, 'component-fileCard');
