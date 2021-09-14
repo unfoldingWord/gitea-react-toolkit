@@ -130,6 +130,27 @@ describe('render fileCard elements',() => {
     });
 });
 
+
+// conditional rendering
+describe('conditional rendering',() => {
+    beforeEach(()=>{
+        useState.mockImplementation(jest.requireActual('react').useState);
+    })
+    test('conditional rendering preview', () => {
+        const wrapper = setupWrapper();
+        let previewIcon = findByAttribute(wrapper, 'previewIcon');
+        let previewIconOutlined = findByAttribute(wrapper, 'previewIconOutlined');
+        expect(previewIcon.length).toBe(0);
+        expect(previewIconOutlined.length).toBe(1);
+        const previewButton = findByAttribute(wrapper, 'previewButton');
+        previewButton.simulate('click');
+        previewIcon = findByAttribute(wrapper, 'previewIcon');
+        previewIconOutlined = findByAttribute(wrapper, 'previewIconOutlined');
+        expect(previewIcon.length).toBe(1);
+        expect(previewIconOutlined.length).toBe(0);
+    });
+});
+
 describe('switch the preview state',() => {    
     test('switch the preview state from true to false', () => {
         useState.mockReturnValue([true, mockSetPreview]);
@@ -144,7 +165,6 @@ describe('switch the preview state',() => {
     test('switch the preview state from false to true', () => {
         useState.mockReturnValue([false, mockSetPreview]);
         const wrapper = setupWrapper();
-        const blockEditable = findByAttribute(wrapper, 'blockEditable');
         const previewButton = findByAttribute(wrapper, 'previewButton');
         previewButton.simulate('click');
         expect(mockSetPreview).toBeCalledWith(true);

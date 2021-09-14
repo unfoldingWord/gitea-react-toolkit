@@ -68,7 +68,11 @@ function FileCard({
             onClick={() => setPreview(!preview)}
             data-test="previewButton"
           >
-            {!preview ? <Pageview /> : <PageviewOutlined />}
+            {
+              !preview ?
+                <Pageview data-test="previewIcon"/> :
+                <PageviewOutlined data-test="previewIconOutlined"/>
+            }
           </IconButton>
           <IconButton
             className={classes.action}
