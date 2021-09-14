@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -27,8 +27,8 @@ function FileCard({
   file,
 }) {
   const classes = useStyles();
-  const [preview, setPreview] = React.useState(true);
-  const [markdown, setMarkdown] = React.useState('');
+  const [preview, setPreview] = useState(true);
+  const [markdown, setMarkdown] = useState('');
   const changed = (markdown !== (file && file.content));
   const avatarUrl = repository.avatar_url || repository.owner.avatar_url;
   const access = repository.permissions.push;
