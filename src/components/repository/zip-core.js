@@ -40,7 +40,7 @@ export const storeZipFromRepo = async ({
     });
 
     if (zip.status === 200 || zip.status === 0) {
-      const zipArrayBuffer = zip.data; // blob storage not supported on mobile
+      const zipArrayBuffer = zip.data;
       const uri = zipUri({
         owner, repo, branch, server,
       });
