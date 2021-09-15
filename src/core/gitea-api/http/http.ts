@@ -133,7 +133,7 @@ export const get = async ({
   let response: any;
 
   try {
-    if (noCache || config.noCache) { // also check config for noCache
+    if (noCache || _config.noCache) { // also check config for noCache
       const _params = { noCache: Math.random(), ...params };
       response = await axios.get(url, { ..._config, params: _params });
     } else {

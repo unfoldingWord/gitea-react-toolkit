@@ -34,15 +34,15 @@ export const getFile = async ({username, repository, path, branch, config}) => {
 export async function repositoryExists({username, repository, config}) {
   const uid = await getUID({username});
   const params = { q: repository, uid };
-  const uri = Path.join(apiPath, 'repos', `search`);
-  const {data: repos} = await get({uri, params, config});
+  const url = Path.join(apiPath, 'repos', `search`);
+  const {data: repos} = await get({url, params, config});
   const repo = repos.filter(repo => repo.name === repository)[0];
   return !!repo;
 };
 
 export async function getUID({username, config}) {
-  const uri = Path.join(apiPath, 'users', username);
-  const user = await get({uri, config});
+  const url = Path.join(apiPath, 'users', username);
+  const user = await get({url, config});
   const {id: uid} = user;
   return uid;
 }
