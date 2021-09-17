@@ -44,6 +44,7 @@ function FileForm({
           onClick={() => onSubmit({
             branch, filepath, defaultContent,
           })}
+          data-testid="button"
         >
           {submitText}
         </Button>
