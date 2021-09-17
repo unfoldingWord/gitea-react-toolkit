@@ -7,8 +7,8 @@ import { checkProps } from './testUtils';
 const defaultProps = { onSubmit: () => {} }
 
 // render tests
-describe('FileForm',() => {
-    test('render fileForm', () => {
+describe('TextField',() => {
+    test('TextField are inside the document', () => {
         render(<FileForm {...defaultProps} />);
         const branchTextField = screen.getByTestId('branch-textField');
         expect(branchTextField).toBeInTheDocument();
@@ -19,7 +19,7 @@ describe('FileForm',() => {
         const defaultContentTextField = screen.getByTestId('defaultContent-textField');
         expect(defaultContentTextField).toBeInTheDocument();
     });
-    test('text inputs changes', () => {
+    test('TextField handle input change correctly', () => {
         render(<FileForm {...defaultProps} />);
         const branchTextField = screen.getByTestId('branch-textField');
         fireEvent.change(branchTextField, {target: {value: 'branch'}});
