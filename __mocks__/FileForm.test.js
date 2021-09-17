@@ -64,7 +64,7 @@ describe('submit button',() => {
         const button = screen.getByTestId('button');
         expect(button).toBeDisabled();
     });
-    test('submit button is is enabled after typing the branch and the filePath', () => {
+    test('submit button enabled/disable according to the input value of the branch and the filePath', () => {
         render(<FileForm {...defaultProps} />);
         const button = screen.getByTestId('button');
         const branchTextField = screen.getByTestId('branch-textField');
@@ -72,6 +72,11 @@ describe('submit button',() => {
         fireEvent.change(filepathTextField, {target: {value: 'filepath'}});
         fireEvent.change(branchTextField, {target: {value: 'branch'}});
         expect(button).toBeEnabled();
+        fireEvent.change(filepathTextField, {target: {value: ''}});
+        expect(button).toBeDisabled();
+        fireEvent.change(branchTextField, {target: {value: 'branch'}});
+        fireEvent.change(filepathTextField, {target: {value: ''}});
+        expect(button).toBeDisabled();
     });
 });
 
