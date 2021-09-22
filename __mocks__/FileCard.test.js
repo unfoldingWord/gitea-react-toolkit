@@ -154,7 +154,7 @@ describe('previewIcon', () => {
 })
 
 describe('saveButton', () => {
-    test('saveButton is inside the document and visible', () => {
+    test('saveButton is inside the document and visible and disabled initialy', () => {
         render(<FileCard {...defaultProps} />);
         const saveButton = screen.getByTestId('saveButton');
         expect(saveButton).toBeInTheDocument();
@@ -172,6 +172,33 @@ describe('saveButton', () => {
         saveButton = screen.getByTestId('saveButton');
         expect(saveButton).toBeDisabled();
     });
+
+    test('saveButton is enabled when the text change and the push permission is granted', () => {
+        render(<FileCard {...defaultProps} />);
+        const blockEditable = screen.getByTestId('blockEditable');
+        fireEvent.change(blockEditable, {target: {value: 'changed text'}});
+        const saveButton = screen.getByTestId('saveButton');
+        expect(saveButton).toBeEnabled();
+    });
+
+    test('saveButton is disabled whenpush permission is not granted event it the text change or not', () => {
+        const updatedProps = {
+            ...defaultProps, 
+            repository: {...defaultProps.repository,
+                permissions: {
+                    ...defaultProps.repository.permissions, push: false
+                }
+            }
+        }
+        render(<FileCard {...updatedProps} />);
+        const saveButton = screen.getByTestId('saveButton');
+        expect(saveButton).toBeDisabled();
+        const blockEditable = screen.getByTestId('blockEditable');
+        fireEvent.change(blockEditable, {target: {value: 'changed text'}});
+        expect(saveButton).toBeDisabled();
+    });
+
+
 })
 
 describe('saveIcon', () => {
