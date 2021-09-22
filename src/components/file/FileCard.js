@@ -41,22 +41,21 @@ function FileCard({
 
   return (
     <Card
-      data-test="component-fileCard"
+      data-testid="component-fileCard"
     >
       <CardHeader
         avatar={<Avatar src={avatarUrl} />}
         title={<strong>{file && file.path}</strong>}
         subheader={repository.full_name + '/' + branch}
-        data-test="cardHeader"
+        data-testid="cardHeader"
       />
       <CardContent>
-        <Paper>
+        <Paper data-testid="BlockEditable">
           <BlockEditable
             preview={preview}
             markdown={markdown}
             onEdit={setMarkdown}
             editable={isAuthenticated}
-            data-test="blockEditable"
           />
         </Paper>
       </CardContent>
@@ -66,12 +65,12 @@ function FileCard({
             className={classes.action}
             aria-label="Preview"
             onClick={() => setPreview(!preview)}
-            data-test="previewButton"
+            data-testid="previewButton"
           >
             {
               !preview ?
-                <Pageview data-test="previewIcon"/> :
-                <PageviewOutlined data-test="previewIconOutlined"/>
+                <Pageview data-testid="previewIcon"/> :
+                <PageviewOutlined data-testid="previewIconOutlined"/>
             }
           </IconButton>
           <IconButton
@@ -81,9 +80,13 @@ function FileCard({
             onClick={() => {
               if (changed) file.save(markdown);
             }}
-            data-test="saveButton"
+            data-testid="saveButton"
           >
-            {changed ? <Save /> : <SaveOutlined />}
+            {
+              changed ? 
+              <Save data-testid="saveIcon" /> : 
+              <SaveOutlined data-testid="saveIconOutlined" />
+            }
           </IconButton>
           <IconButton
             className={classes.action}
@@ -96,14 +99,14 @@ function FileCard({
 
               if (confirmation) file.dangerouslyDelete();
             }}
-            data-test="deleteButton"
+            data-testid="deleteButton"
           >
             <DeleteSweepOutlined />
           </IconButton>
           <IconButton
             title="Close Repository"
             onClick={file.close}
-            data-test="closeButton"
+            data-testid="closeButton"
           >
             <CancelOutlined />
           </IconButton>

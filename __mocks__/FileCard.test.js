@@ -1,21 +1,29 @@
 import React from "react";
-import Enzyme, {shallow} from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import FileCard from '../src/components/file/FileCard';
-import { findByAttribute, checkProps } from './testUtils';
+import { checkProps } from './testUtils';
+import { authenticate } from '../src/core/gitea-api/authentication';
 
-Enzyme.configure({
-    adapter: new Adapter(),
-});
 
-const mockSetPreview = jest.fn();
 
-jest.mock('react', () => ({
-    ...jest.requireActual('react'),
-    useState: jest.fn(),
-}))
 
-import { useState } from 'react';
+jest.mock('markdown-translatable/dist/components/block-editable/BlockEditable', () => 
+({preview, markdown, onEdit, editable}) => (
+    <input
+        data-testid="blockEditable"
+        value={markdown}
+        onChange={(event) => {
+            if(editable){
+                onEdit(event.target.value)
+            }
+        }}
+        readOnly
+    />
+));
+
+
+
 
 const defaultProps = {
     repository: {
@@ -43,11 +51,6 @@ const defaultProps = {
         close: () => {}
     },
     isAuthenticated: true
-}
-
-const setupWrapper = (props = {}) => {
-    const setupProps = {...defaultProps, ...props}
-    return shallow(<FileCard {...setupProps}/>)
 }
 
 
@@ -82,91 +85,71 @@ test('FileForm PropTypes', () => {
     checkProps(FileCard, conformingProps);
 });
 
-// render tests
-describe('render fileCard elements',() => {
-    beforeEach(()=>{
-        useState.mockImplementation(jest.requireActual('react').useState);
-    })
-    test('render fileCard', () => {
-        const wrapper = setupWrapper();
-        const fileCard = findByAttribute(wrapper, 'component-fileCard');
-        expect(fileCard.length).toBe(1);
+describe('cardHeader',() => {
+    test('cardHeader is inside the document and visible', () => {
+        render(<FileCard {...defaultProps} />);
+        const cardHeader = screen.getByTestId('cardHeader');
+        expect(cardHeader).toBeInTheDocument();
+        expect(cardHeader).toBeVisible();
+    });
+})
+
+describe('blockEditable', () => {
+    test('blockEditable is inside the document', () => {
+        render(<FileCard {...defaultProps} />);
+        const blockEditable = screen.getByTestId('blockEditable');
+        expect(blockEditable).toBeInTheDocument();
     });
 
-    test('render cardHeader', () => {
-        const wrapper = setupWrapper();
-        const cardHeader = findByAttribute(wrapper, 'cardHeader');
-        expect(cardHeader.length).toBe(1);
+    test('blockEditable is editable when user is authenticated', () => {
+        render(<FileCard {...defaultProps} />);
+        const blockEditable = screen.getByTestId('blockEditable');
+        fireEvent.change(blockEditable, {target: {value: 'changed text'}});
+        expect(blockEditable.value).toBe('changed text');
     });
 
-    test('render blockEditable', () => {
-        const wrapper = setupWrapper();
-        const blockEditable = findByAttribute(wrapper, 'blockEditable');
-        expect(blockEditable.length).toBe(1);
+    test('blockEditable is not editable when user is not authenticated', () => {
+        const updatedProps = {...defaultProps, isAuthenticated: false}
+        render(<FileCard {...updatedProps} />);
+        const blockEditable = screen.getByTestId('blockEditable');
+        fireEvent.change(blockEditable, {target: {value: 'changed text'}});
+        expect(blockEditable.value).toBe(defaultProps.file.content);
+    });
+})
+
+describe('previewButton', () => {
+    test('previewButton is inside the document and visible', () => {
+        render(<FileCard {...defaultProps} />);
+        const previewButton = screen.getByTestId('previewButton');
+        expect(previewButton).toBeInTheDocument();
+        expect(previewButton).toBeVisible();
+    });
+})
+
+describe('previewIcon', () => {
+    test('Initially previewIconOutlined is inside the document and visible and previewIcon is not', () => {
+        render(<FileCard {...defaultProps} />);
+        const previewIconOutlined = screen.queryByTestId('previewIconOutlined');
+        expect(previewIconOutlined).toBeInTheDocument();
+        expect(previewIconOutlined).toBeVisible();
+        const previewIcon = screen.queryByTestId('previewIcon');
+        expect(previewIcon).toBeNull();
     });
 
-    test('render previewButton', () => {
-        const wrapper = setupWrapper();
-        const previewButton = findByAttribute(wrapper, 'previewButton');
-        expect(previewButton.length).toBe(1);
-    });
-
-    test('render saveButton', () => {
-        const wrapper = setupWrapper();
-        const saveButton = findByAttribute(wrapper, 'saveButton');
-        expect(saveButton.length).toBe(1);
-    });
-
-    test('render deleteButton', () => {
-        const wrapper = setupWrapper();
-        const deleteButton = findByAttribute(wrapper, 'deleteButton');
-        expect(deleteButton.length).toBe(1);
-    });
-
-    test('render closeButton', () => {
-        const wrapper = setupWrapper();
-        const closeButton = findByAttribute(wrapper, 'closeButton');
-        expect(closeButton.length).toBe(1);
-    });
-});
-
-
-// conditional rendering
-describe('conditional rendering',() => {
-    beforeEach(()=>{
-        useState.mockImplementation(jest.requireActual('react').useState);
-    })
-    test('conditional rendering preview', () => {
-        const wrapper = setupWrapper();
-        let previewIcon = findByAttribute(wrapper, 'previewIcon');
-        let previewIconOutlined = findByAttribute(wrapper, 'previewIconOutlined');
-        expect(previewIcon.length).toBe(0);
-        expect(previewIconOutlined.length).toBe(1);
-        const previewButton = findByAttribute(wrapper, 'previewButton');
-        previewButton.simulate('click');
-        previewIcon = findByAttribute(wrapper, 'previewIcon');
-        previewIconOutlined = findByAttribute(wrapper, 'previewIconOutlined');
-        expect(previewIcon.length).toBe(1);
-        expect(previewIconOutlined.length).toBe(0);
-    });
-});
-
-describe('switch the preview state',() => {    
-    test('switch the preview state from true to false', () => {
-        useState.mockReturnValue([true, mockSetPreview]);
-        const wrapper = setupWrapper();
-        const blockEditable = findByAttribute(wrapper, 'blockEditable');
-        expect(blockEditable.props().preview).toBeTruthy();
-        const previewButton = findByAttribute(wrapper, 'previewButton');
-        previewButton.simulate('click');
-        expect(mockSetPreview).toBeCalledWith(false);
-    });
-
-    test('switch the preview state from false to true', () => {
-        useState.mockReturnValue([false, mockSetPreview]);
-        const wrapper = setupWrapper();
-        const previewButton = findByAttribute(wrapper, 'previewButton');
-        previewButton.simulate('click');
-        expect(mockSetPreview).toBeCalledWith(true);
+    test('switch from previewIconOutlined to previewIcon and vice versa', () => {
+        render(<FileCard {...defaultProps} />);
+        const previewButton = screen.getByTestId('previewButton');
+        fireEvent.click(previewButton)
+        let previewIconOutlined = screen.queryByTestId('previewIconOutlined');
+        expect(previewIconOutlined).toBeNull();
+        let previewIcon = screen.queryByTestId('previewIcon');
+        expect(previewIcon).toBeInTheDocument();
+        expect(previewIcon).toBeVisible();
+        fireEvent.click(previewButton)
+        previewIconOutlined = screen.queryByTestId('previewIconOutlined');
+        expect(previewIconOutlined).toBeInTheDocument();
+        expect(previewIconOutlined).toBeVisible();
+        previewIcon = screen.queryByTestId('previewIcon');
+        expect(previewIcon).toBeNull();
     });
 })
