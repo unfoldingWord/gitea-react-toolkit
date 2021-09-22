@@ -3,13 +3,12 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import FileCard from '../src/components/file/FileCard';
 import { checkProps } from './testUtils';
-import { authenticate } from '../src/core/gitea-api/authentication';
 
 
 
 
 jest.mock('markdown-translatable/dist/components/block-editable/BlockEditable', () => 
-({preview, markdown, onEdit, editable}) => (
+({markdown, onEdit, editable}) => (
     <input
         data-testid="blockEditable"
         value={markdown}
@@ -151,5 +150,54 @@ describe('previewIcon', () => {
         expect(previewIconOutlined).toBeVisible();
         previewIcon = screen.queryByTestId('previewIcon');
         expect(previewIcon).toBeNull();
+    });
+})
+
+describe('saveButton', () => {
+    test('saveButton is inside the document and visible', () => {
+        render(<FileCard {...defaultProps} />);
+        const saveButton = screen.getByTestId('saveButton');
+        expect(saveButton).toBeInTheDocument();
+        expect(saveButton).toBeVisible();
+        expect(saveButton).toBeDisabled();
+    });
+
+    test('switch saveButton from enable to disable and vice versa', () => {
+        render(<FileCard {...defaultProps} />);
+        const blockEditable = screen.getByTestId('blockEditable');
+        fireEvent.change(blockEditable, {target: {value: 'changed text'}});
+        let saveButton = screen.getByTestId('saveButton');
+        expect(saveButton).toBeEnabled();
+        fireEvent.change(blockEditable, {target: {value: defaultProps.file.content}});
+        saveButton = screen.getByTestId('saveButton');
+        expect(saveButton).toBeDisabled();
+    });
+})
+
+describe('saveIcon', () => {
+    test('Initially saveIconOutlined is inside the document and visible and saveIcon is not', () => {
+        render(<FileCard {...defaultProps} />);
+        const saveIconOutlined = screen.queryByTestId('saveIconOutlined');
+        expect(saveIconOutlined).toBeInTheDocument();
+        expect(saveIconOutlined).toBeVisible();
+        const saveIcon = screen.queryByTestId('saveIcon');
+        expect(saveIcon).toBeNull();
+    });
+
+    test('switch from saveIconOutlined to saveIcon and vice versa', () => {
+        render(<FileCard {...defaultProps} />);
+        const blockEditable = screen.getByTestId('blockEditable');
+        fireEvent.change(blockEditable, {target: {value: 'changed text'}});
+        let saveIconOutlined = screen.queryByTestId('saveIconOutlined');
+        expect(saveIconOutlined).toBeNull();
+        let saveIcon = screen.queryByTestId('saveIcon');
+        expect(saveIcon).toBeInTheDocument();
+        expect(saveIcon).toBeVisible();
+        fireEvent.change(blockEditable, {target: {value: defaultProps.file.content}});
+        saveIconOutlined = screen.queryByTestId('saveIconOutlined');
+        expect(saveIconOutlined).toBeInTheDocument();
+        expect(saveIconOutlined).toBeVisible();
+        saveIcon = screen.queryByTestId('saveIcon');
+        expect(saveIcon).toBeNull();
     });
 })

@@ -81,6 +81,7 @@ function FileCard({
               if (changed) file.save(markdown);
             }}
             data-testid="saveButton"
+            disabled={!changed}
           >
             {
               changed ? 
