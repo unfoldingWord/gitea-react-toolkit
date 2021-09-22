@@ -76,12 +76,11 @@ function FileCard({
           <IconButton
             className={classes.action}
             aria-label="Save"
-            disabled={!access}
+            disabled={!access || !changed}
             onClick={() => {
               if (changed) file.save(markdown);
             }}
             data-testid="saveButton"
-            disabled={!changed}
           >
             {
               changed ? 
