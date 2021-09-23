@@ -228,3 +228,33 @@ describe('saveIcon', () => {
         expect(saveIcon).toBeNull();
     });
 })
+
+
+describe('Delete button', () => {
+    test('Delete button is inside the document and visible', () => {
+        render(<FileCard {...defaultProps} />);
+        const deleteButton = screen.queryByTestId('deleteButton');
+        expect(deleteButton).toBeInTheDocument();
+        expect(deleteButton).toBeVisible();
+    });
+
+    test('Delete button is enabled when push permissions is granted', () => {
+        render(<FileCard {...defaultProps} />);
+        const deleteButton = screen.queryByTestId('deleteButton');
+        expect(deleteButton).toBeEnabled();
+    });
+
+    test('Delete button is disabled when push permissions is not granted', () => {
+        const updatedProps = {
+            ...defaultProps, 
+            repository: {...defaultProps.repository,
+                permissions: {
+                    ...defaultProps.repository.permissions, push: false
+                }
+            }
+        }
+        render(<FileCard {...updatedProps} />);
+        const deleteButton = screen.queryByTestId('deleteButton');
+        expect(deleteButton).toBeDisabled();
+    });
+})
