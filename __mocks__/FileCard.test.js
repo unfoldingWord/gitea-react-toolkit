@@ -258,3 +258,13 @@ describe('Delete button', () => {
         expect(deleteButton).toBeDisabled();
     });
 })
+
+describe('closeButton', () => {
+    test('closeButton is inside the document and visible and enabled', () => {
+        render(<FileCard {...defaultProps} />);
+        const closeButton = screen.queryByTestId('closeButton');
+        expect(closeButton).toBeInTheDocument();
+        expect(closeButton).toBeVisible();
+        expect(closeButton).toBeEnabled();
+    });
+})
