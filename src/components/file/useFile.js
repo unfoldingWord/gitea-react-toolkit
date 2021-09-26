@@ -60,7 +60,7 @@ function useFile({
 
   useEffect(() => {
     setIsChanged(false);
-  }, [file, deleted, closed]);
+  }, [file, deleted]);
 
   const read = useCallback(async (_filepath) => {
     if (onFilepath) {
