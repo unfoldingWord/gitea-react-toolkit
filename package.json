@@ -29,7 +29,7 @@
     "test:e2e": "NODE_ENV=test start-test 6060 cypress:run && nyc report --reporter=json-summary",
     "test:unit": "NODE_ENV=test jest ./src/core --coverage && cat ./coverage/lcov.info | coveralls",
     "test": "nyc --exclude-after-remap=false npm run test:e2e",
-    "testJestEnzyme": "jest --watch -c ./jest.enzyme.config.js --verbose",
+    "testJestReactTestingLibrary": "jest --watch -c ./jest.enzyme.config.js --verbose",
     "create-coverage-badge": "bash scripts/create-badge-json.sh"
   },
   "browserslist": [
