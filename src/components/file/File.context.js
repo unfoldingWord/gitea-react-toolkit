@@ -19,6 +19,8 @@ export function FileContextProvider({
   create,
   onOpenValidation,
   children,
+  onLoadCache,
+  onSaveCache,
   onConfirmClose,
 }) {
   const { state: contextAuthentication } = useContext(AuthenticationContext);
@@ -31,6 +33,7 @@ export function FileContextProvider({
     authentication: _authentication || contextAuthentication,
     repository: _repository || contextRepository,
     filepath, onFilepath, defaultContent, create, onOpenValidation, onConfirmClose,
+    onLoadCache, onSaveCache,
   });
 
   const context = {
