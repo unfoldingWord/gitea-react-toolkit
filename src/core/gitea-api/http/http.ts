@@ -133,14 +133,16 @@ export const get = async ({
   let response: any;
 
   try {
-    if (noCache || config.noCache) { // also check config for noCache
+    if (noCache || _config.noCache) { // also check config for noCache
       const _params = { noCache: Math.random(), ...params };
       response = await axios.get(url, { ..._config, params: _params });
     } else {
       response = await api.get(url, { ..._config, params });
     }
   } catch (e) {
-    await checkIfServerOnline(config.server, config);
+    if (!config.skipNetworkCheck) {
+      await checkIfServerOnline(config.server, config);
+    }
     // will arrive here if server is online
     if (fullResponse) {
       if (e?.response) { // if http error, get response

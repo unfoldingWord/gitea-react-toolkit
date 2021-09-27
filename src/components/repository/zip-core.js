@@ -17,25 +17,39 @@ export const zipUri = ({
   return zipUri;
 };
 
+function zipUriSubPath(owner, repo, branch) {
+  const url = Path.join(owner, repo, 'archive', `${branch}.zip`);
+  return url;
+}
+
 export const storeZipFromRepo = async ({
   owner, repo, branch, server,
 }) => {
   let response;
-  const uri = zipUri({
-    owner, repo, branch, server,
-  });
+  const url = zipUriSubPath(owner, repo, branch);
 
   try {
-    const zip = await get(uri);
+    const zip = await get({
+      url,
+      config: {
+        server,
+        responseType: 'arraybuffer',
+      },
+      noCache: true,
+      fullResponse: true,
+    });
 
     if (zip.status === 200 || zip.status === 0) {
-      const zipArrayBuffer = await zip.arrayBuffer(); // blob storage not supported on mobile
+      const zipArrayBuffer = zip.data;
+      const uri = zipUri({
+        owner, repo, branch, server,
+      });
       await zipStore.setItem(uri, zipArrayBuffer);
       response = true;
     }
   } catch (error) {
     response = false;
-  };
+  }
   return response;
 };
 
@@ -61,7 +75,7 @@ export const getZip = async ({
 }) => {
   let zip;
   const uri = zipUri({
-    owner, repo, branch, config,
+    owner, repo, branch, server: config.server,
   });
   const zipBlob = await zipStore.getItem(uri);
 
@@ -91,7 +105,7 @@ export const getFileFromRepoZip = async ({
   owner, repo, branch, filepath, config,
 }) => {
   let file;
-  const zip = getZip({
+  const zip = await getZip({
     owner, repo, branch, config,
   });
 
