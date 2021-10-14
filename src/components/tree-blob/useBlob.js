@@ -14,11 +14,17 @@ function useBlob({
   // filepath, TODO: use filepath to pre-select blob;
   tree,
   url: _url,
+  releaseFlag,
 }) {
   const blob = __blob && deepFreeze(__blob);
 
-  const url = _url || (repository && repository.tree_url);
-
+  let url = _url || (repository && repository.tree_url);
+  console.log("releaseFlag?",releaseFlag);
+  if ( releaseFlag && repository?.catalog?.prod?.branch_or_tag_name ) {
+    // p.replace(regex, 'ferret')
+    url = url.replace(/master$/,repository.catalog.prod.branch_or_tag_name);
+  }
+  console.log("url=",url);
   const update = useCallback((_blob) => {
     if (onBlob) {
       onBlob(_blob);

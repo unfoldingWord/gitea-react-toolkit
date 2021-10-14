@@ -25,6 +25,7 @@ function useFile({
   onLoadCache,
   onSaveCache,
   onConfirmClose,
+  releaseFlag,
 }) {
   const [file, setFile] = useState();
   const [isChanged, setIsChanged] = useState(false);
@@ -34,7 +35,6 @@ function useFile({
 
   const config = _config || repositoryConfig;
   const branch = repository && (repository.branch || repository.default_branch);
-
   const [deleted, setDeleted] = useState();
 
   const _setBlob = useCallback((_blob) => {
@@ -51,7 +51,7 @@ function useFile({
   const {
     state: blobState, actions: blobActions, components: blobComponents,
   } = useBlob({
-    blob, onBlob: _setBlob, config, repository, filepath,
+    blob, onBlob: _setBlob, config, repository, filepath, releaseFlag,
   });
 
   const { push: writeable } = (repository && repository.permissions) ? repository.permissions : {};

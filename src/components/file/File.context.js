@@ -22,6 +22,7 @@ export function FileContextProvider({
   onLoadCache,
   onSaveCache,
   onConfirmClose,
+  releaseFlag,
 }) {
   const { state: contextAuthentication } = useContext(AuthenticationContext);
   const { state: contextRepository, config: contextConfig } = useContext(RepositoryContext);
@@ -33,7 +34,7 @@ export function FileContextProvider({
     authentication: _authentication || contextAuthentication,
     repository: _repository || contextRepository,
     filepath, onFilepath, defaultContent, create, onOpenValidation, onConfirmClose,
-    onLoadCache, onSaveCache,
+    onLoadCache, onSaveCache, releaseFlag,
   });
 
   const context = {
@@ -92,4 +93,5 @@ FileContextProvider.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
   ]).isRequired,
+  releaseFlag: PropTypes.bool,
 };
