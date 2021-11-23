@@ -33,7 +33,7 @@ function RepositoryMenu() {
   } = repository || {};
 
   const _onDelete = useCallback(() => {
-    if (file && actions?.close) {
+    if (actions?.close) {
       if (fileActions?.onConfirmClose) {
         if (fileActions.onConfirmClose())
         {
@@ -58,6 +58,7 @@ function RepositoryMenu() {
 
     button = (
       <Chip
+        id={`chip_${name}`}
         data-test="repository-item-icon"
         aria-label="repository-item-icon"
         avatar={avatarComponent}
