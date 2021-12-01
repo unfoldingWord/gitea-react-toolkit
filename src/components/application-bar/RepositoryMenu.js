@@ -9,7 +9,9 @@ import {
   Paper,
   Chip,
 } from '@material-ui/core';
+// import CancelIcon from '@mui/icons-material/Cancel';
 import { FolderShared } from '@material-ui/icons';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 import { useStyles } from './useStyles';
 import { RepositoryContext, FileContext } from '..';
@@ -63,6 +65,7 @@ function RepositoryMenu() {
         aria-label="repository-item-icon"
         avatar={avatarComponent}
         label={<span data-test="repository-item-chip">{name}</span>}
+        deleteIcon={<CancelIcon id={`deleteIcon_${name}`} />}
         onDelete={_onDelete}
         color="primary"
       />
