@@ -77,8 +77,8 @@ export async function getLanguageIdsByResource({username, resourceId}) {
   let languageIds = [];
   const uid = await getUID({username});
   const params = {q: resourceId, uid, limit: 50, exclusive: true};
-  const uri = Path.join(apiPath, `repos/search`);
-  const repos = await get({uri, params});
+  const url = Path.join(apiPath, `repos/search`);
+  const repos = await get({url, params});
   if (repos && repos.data) {
     languageIds = repos.data.map(repo => repo.name.split('_')[0]);
   }
