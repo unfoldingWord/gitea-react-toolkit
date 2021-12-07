@@ -38,13 +38,8 @@ function useFile({
   const [deleted, setDeleted] = useState();
 
   const _setBlob = useCallback(async (_blob) => {
-    console.log('typeof onConfirmClose', typeof onConfirmClose)
-    console.log({ blob, _blob})
-    
     if (blob && _blob && typeof onConfirmClose == 'function') {
-      console.log('inside if')
       const confirm = await onConfirmClose()
-      console.log('confirm', confirm)
 
       if (confirm) {
         setBlob(_blob);
