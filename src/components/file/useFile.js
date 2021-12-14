@@ -179,6 +179,12 @@ function useFile({
     update();
   }, [update, blobActions, onFilepath]);
 
+  const saveCache = useCallback(async (content) => {
+    if (onSaveCache) {
+      await onSaveCache({authentication, repository, branch, file, content});
+    }
+  }, [writeable, authentication, repository, branch, file, onSaveCache]);
+
   const save = useCallback(async (content) => {
     console.log("GRT save // will save file");
     await saveFile({
@@ -195,12 +201,6 @@ function useFile({
       }
     );
   }, [writeable, authentication, repository, branch, file, load, saveFile, saveCache]);
-
-  const saveCache = useCallback(async (content) => {
-    if (onSaveCache) {
-      await onSaveCache({authentication, repository, branch, file, content});
-    }
-  }, [writeable, authentication, repository, branch, file, onSaveCache]);
 
   const dangerouslyDelete = useCallback(async () => {
     if (writeable) {
