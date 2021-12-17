@@ -37,10 +37,11 @@ function useFile({
   const branch = repository && (repository.branch || repository.default_branch);
   const [deleted, setDeleted] = useState();
 
-  const _setBlob = useCallback((_blob) => {
-    if (blob && _blob && onConfirmClose) {
-      if (onConfirmClose())
-      {
+  const _setBlob = useCallback(async (_blob) => {
+    if (blob && _blob && typeof onConfirmClose == 'function') {
+      const confirm = await onConfirmClose()
+
+      if (confirm) {
         setBlob(_blob);
       }
     } else{
