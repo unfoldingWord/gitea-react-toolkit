@@ -9,7 +9,9 @@ import {
   Paper,
   Chip,
 } from '@material-ui/core';
+// import CancelIcon from '@mui/icons-material/Cancel';
 import { FolderShared } from '@material-ui/icons';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 import { useStyles } from './useStyles';
 import { RepositoryContext, FileContext } from '..';
@@ -33,7 +35,7 @@ function RepositoryMenu() {
   } = repository || {};
 
   const _onDelete = useCallback(() => {
-    if (file && actions?.close) {
+    if (actions?.close) {
       if (fileActions?.onConfirmClose) {
         if (fileActions.onConfirmClose())
         {
@@ -58,10 +60,12 @@ function RepositoryMenu() {
 
     button = (
       <Chip
+        id={`chip_${name}`}
         data-test="repository-item-icon"
         aria-label="repository-item-icon"
         avatar={avatarComponent}
         label={<span data-test="repository-item-chip">{name}</span>}
+        deleteIcon={<CancelIcon id={`deleteIcon_${name}`} />}
         onDelete={_onDelete}
         color="primary"
       />
