@@ -37,10 +37,11 @@ function useFile({
   const branch = repository && (repository.branch || repository.default_branch);
   const [deleted, setDeleted] = useState();
 
-  const _setBlob = useCallback((_blob) => {
-    if (blob && _blob && onConfirmClose) {
-      if (onConfirmClose())
-      {
+  const _setBlob = useCallback(async (_blob) => {
+    if (blob && _blob && typeof onConfirmClose == 'function') {
+      const confirm = await onConfirmClose()
+
+      if (confirm) {
         setBlob(_blob);
       }
     } else{
@@ -179,6 +180,12 @@ function useFile({
     update();
   }, [update, blobActions, onFilepath]);
 
+  const saveCache = useCallback(async (content) => {
+    if (onSaveCache) {
+      await onSaveCache({authentication, repository, branch, file, content});
+    }
+  }, [writeable, authentication, repository, branch, file, onSaveCache]);
+
   const save = useCallback(async (content) => {
     console.log("GRT save // will save file");
     await saveFile({
@@ -195,12 +202,6 @@ function useFile({
       }
     );
   }, [writeable, authentication, repository, branch, file, load, saveFile, saveCache]);
-
-  const saveCache = useCallback(async (content) => {
-    if (onSaveCache) {
-      await onSaveCache({authentication, repository, branch, file, content});
-    }
-  }, [writeable, authentication, repository, branch, file, onSaveCache]);
 
   const dangerouslyDelete = useCallback(async () => {
     if (writeable) {
