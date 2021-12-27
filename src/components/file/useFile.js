@@ -77,63 +77,24 @@ function useFile({
         filepath, defaultContent, authentication, config, repository, branch, onOpenValidation,
       });
 
-      console.log("ensureFile:");
-      console.log(_file);
+      console.log("ensureFile:", _file);
 
       let defaultCachedContentFile;
-      // if (loadDefaultCachedContentFile) { 
-      //   console.log("_file.html_url");
-      //   console.log(_file.html_url);
-      //   defaultCachedContentFile = await loadDefaultCachedContentFile(_file.html_url);
-      // }
-      console.log("GRT // onLoadCache!", _file, _file.html_url);
       if (onLoadCache && _file && _file.html_url)
       {
-        defaultCachedContentFile = await onLoadCache({authentication, repository, branch, html_url: _file.html_url});
+        defaultCachedContentFile = await onLoadCache({authentication, repository, branch, html_url: _file.html_url, file: _file});
       }
       
-      console.log("GRT defaultContent", '|', defaultContent);
-      console.log("GRT defaultCachedContent", '|', defaultCachedContentFile);
+      // console.log("GRT defaultContent", '|', defaultContent);
+      // console.log("GRT defaultCachedContent", '|', defaultCachedContentFile);
 
-      if (defaultCachedContentFile)
-      {
-        console.log(defaultCachedContentFile.sha);
-      }
-      if (_file) {
-        console.log(_file.sha);
-      }
-
-      // let content;
-      // content = await repositoryActions.fileFromZip(filepath);
-      //const content = await getContentFromFile(_file);
-
-      // Allow app to provide CACHED ("offline" content);
-      // Might be different BRANCH (different user) or different FILE.
-      // Might be STALE (sha has changed on DCS).
-      // (NOTE: STALE cache would mean THIS user edited the same file in another browser.)
       let content;
       let _publishedContent;
 
-      if (defaultCachedContentFile && defaultCachedContentFile.content && defaultCachedContentFile.sha 
-          && defaultCachedContentFile.html_url && defaultCachedContentFile.filepath && defaultCachedContentFile.timestamp 
-          && defaultCachedContentFile.sha === _file.sha
-          && defaultCachedContentFile.html_url === _file.html_url
-      ) {
+      if (defaultCachedContentFile && defaultCachedContentFile.content) {
         // Load autosaved content:
         content = defaultCachedContentFile.content;
       } else {
-        if (_file && _file.content 
-            && defaultCachedContentFile && defaultCachedContentFile.content 
-            && defaultCachedContentFile.filepath && defaultCachedContentFile.sha
-            && defaultCachedContentFile.timestamp) {
-          console.log(_file);
-          console.log(defaultCachedContentFile);
-          alert(
-            "A previous file was autosaved. The autosaved file will be overwritten.\n\n" +
-            "File: " + defaultCachedContentFile.filepath + ".\n" +
-            "Edited: " + defaultCachedContentFile.timestamp.toLocaleString() + "."
-          );
-        }
         // Get SERVER content: Overwrite cache:
         content = await getContentFromFile(_file);
 
@@ -148,8 +109,10 @@ function useFile({
         ..._file, branch, content, filepath: _file.path, publishedContent: _publishedContent,
       });
     }
-  }, [authentication, branch, config, defaultContent, onLoadCache, filepath, repository, update]);
-
+  }, [config, repository, filepath, onLoadCache, ensureFile, update,
+      defaultContent, authentication, branch, onOpenValidation
+  ]);
+  
   const createFile = useCallback(async ({
     branch: _branch, filepath: _filepath, defaultContent: _defaultContent, onOpenValidation,
   }) => {
@@ -187,17 +150,14 @@ function useFile({
   }, [writeable, authentication, repository, branch, file, onSaveCache]);
 
   const save = useCallback(async (content) => {
-    console.log("GRT save // will save file");
+    //console.log("GRT save // will save file");
     await saveFile({
       authentication, repository, branch, file, content,
     }).then(
       // Empty cache if user has saved this file
       // (save() will not happen for "OFFLINE" system files)
       async() => {
-        console.log("GRT save // will EMPTY cache");
         await saveCache(null); 
-        
-        console.log("GRT save // will load file");
         await load();
       }
     );

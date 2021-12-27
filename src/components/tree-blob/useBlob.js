@@ -19,12 +19,12 @@ function useBlob({
   const blob = __blob && deepFreeze(__blob);
 
   let url = _url || (repository && repository.tree_url);
-  console.log("releaseFlag?",releaseFlag);
+  //console.log("releaseFlag?",releaseFlag);
   if ( releaseFlag && repository?.catalog?.prod?.branch_or_tag_name ) {
     // p.replace(regex, 'ferret')
     url = url.replace(/master$/,repository.catalog.prod.branch_or_tag_name);
   }
-  console.log("url=",url);
+  //console.log("url=",url);
   const update = useCallback((_blob) => {
     if (onBlob) {
       onBlob(_blob);
