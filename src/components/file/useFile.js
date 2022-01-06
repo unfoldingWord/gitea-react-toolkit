@@ -74,45 +74,95 @@ function useFile({
     };
   }, [onFilepath]);
 
+  const _ensureFile = useDeepCompareCallback(async () => {
+    console.log("ensureFile:", _file);
+    const _file = await ensureFile({
+      authentication,
+      branch,
+      config,
+      defaultContent,
+      filepath,
+      repository,
+      onOpenValidation,
+    });
+    return _file;
+  }, [
+    authentication,
+    branch,
+    config,
+    defaultContent,
+    filepath,
+    repository,
+    onOpenValidation,
+  ]);
+
+  const _onLoadCache = useDeepCompareCallback( async (_file) => {
+    let cachedFile;
+    if (onLoadCache && _file && _file.html_url) {
+      cachedFile = await onLoadCache({
+        authentication,
+        repository,
+        branch,
+        html_url: _file.html_url,
+        file: _file
+      });
+    };
+    return cachedFile;
+  }, [
+    authentication,
+    repository,
+    branch,
+  ]);
+
+  const _fetchCatalogContent = useDeepCompareCallback( async ({prodTag}) => {
+    const publishedContent = await fetchCatalogContent(
+      'unfoldingword',
+      repository.name,
+      prodTag,
+      filepath,
+      config,
+    );
+    return publishedContent;
+  }, [
+    repository,
+    filepath,
+    config,
+  ]);
+
   const load = useDeepCompareCallback(async () => {
     if (config && repository && filepath) {
-      const _file = await ensureFile({
-        filepath, defaultContent, authentication, config, repository, branch, onOpenValidation,
-      });
+      const _file = await _ensureFile();
 
-      console.log("ensureFile:", _file);
-
-      let defaultCachedContentFile;
-      if (onLoadCache && _file && _file.html_url) {
-        defaultCachedContentFile = await onLoadCache({authentication, repository, branch, html_url: _file.html_url, file: _file});
-      }
-      
+      const cachedFile = await _onLoadCache({file: _file});
       // console.log("GRT defaultContent", '|', defaultContent);
       // console.log("GRT defaultCachedContent", '|', defaultCachedContentFile);
-
-      let content;
+      // Load autosaved content:
+      let content = cachedFile?.content;
       let _publishedContent;
 
-      if (defaultCachedContentFile && defaultCachedContentFile.content) {
-        // Load autosaved content:
-        content = defaultCachedContentFile.content;
+      if (!content) {
       } else {
         // Get SERVER content: Overwrite cache:
         content = await getContentFromFile(_file);
-
         // Check catalog next:
         const prodTag = repository.catalog?.prod?.branch_or_tag_name;
         if ( prodTag ) {
-          _publishedContent = await fetchCatalogContent('unfoldingword', repository.name, prodTag, filepath, config);
+          _publishedContent = await _fetchCatalogContent({prodTag});
         }
-      }
+      };
 
       update({
         ..._file, branch, content, filepath: _file.path, publishedContent: _publishedContent,
       });
-    }
-  }, [config, repository, filepath, onLoadCache, ensureFile, update,
-      defaultContent, authentication, branch, onOpenValidation
+    };
+  }, [
+    branch,
+    config,
+    _ensureFile,
+    _onLoadCache,
+    filepath,
+    repository,
+    update,
   ]);
   
   const createFile = useDeepCompareCallback(async ({
