@@ -22,29 +22,32 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function FileCard({
-  authentication,
+  isAuthenticated,
   repository,
   file,
 }) {
   const classes = useStyles();
   const [preview, setPreview] = useState(true);
-  const [markdown, setMarkdown] = useState(file ? file.content : '');
+  const [markdown, setMarkdown] = useState('');
   const changed = (markdown !== (file && file.content));
   const avatarUrl = repository.avatar_url || repository.owner.avatar_url;
   const access = repository.permissions.push;
 
   useEffect(() => {
-    setMarkdown(file && file.content);
+    setMarkdown(file && file.content ? file.content : '');
   }, [file]);
 
   const branch = (file && file.branch) ? file.branch : repository.default_branch;
 
   return (
-    <Card>
+    <Card
+      data-test="component-fileCard"
+    >
       <CardHeader
         avatar={<Avatar src={avatarUrl} />}
         title={<strong>{file && file.path}</strong>}
         subheader={repository.full_name + '/' + branch}
+        data-test="cardHeader"
       />
       <CardContent>
         <Paper>
@@ -52,14 +55,24 @@ function FileCard({
             preview={preview}
             markdown={markdown}
             onEdit={setMarkdown}
-            editable={!!authentication}
+            editable={isAuthenticated}
+            data-test="blockEditable"
           />
         </Paper>
       </CardContent>
       <CardActions>
         <div className={classes.actions}>
-          <IconButton className={classes.action} aria-label="Preview" onClick={() => setPreview(!preview)}>
-            {!preview ? <Pageview /> : <PageviewOutlined />}
+          <IconButton 
+            className={classes.action}
+            aria-label="Preview"
+            onClick={() => setPreview(!preview)}
+            data-test="previewButton"
+          >
+            {
+              !preview ?
+                <Pageview data-test="previewIcon"/> :
+                <PageviewOutlined data-test="previewIconOutlined"/>
+            }
           </IconButton>
           <IconButton
             className={classes.action}
@@ -68,6 +81,7 @@ function FileCard({
             onClick={() => {
               if (changed) file.save(markdown);
             }}
+            data-test="saveButton"
           >
             {changed ? <Save /> : <SaveOutlined />}
           </IconButton>
@@ -82,12 +96,14 @@ function FileCard({
 
               if (confirmation) file.dangerouslyDelete();
             }}
+            data-test="deleteButton"
           >
             <DeleteSweepOutlined />
           </IconButton>
           <IconButton
             title="Close Repository"
             onClick={file.close}
+            data-test="closeButton"
           >
             <CancelOutlined />
           </IconButton>
@@ -106,6 +122,11 @@ FileCard.propTypes = {
     }),
     name: PropTypes.string.isRequired,
     avatar_url: PropTypes.string,
+    permissions: PropTypes.shape({
+      push: PropTypes.bool,
+    }).isRequired,
+    full_name: PropTypes.string.isRequired,
+    default_branch: PropTypes.string.isRequired, 
   }).isRequired,
   /** Pass a previously returned file object to bypass the selection. */
   file: PropTypes.shape({
@@ -115,13 +136,12 @@ FileCard.propTypes = {
     content: PropTypes.string,
     branch: PropTypes.string,
     filepath: PropTypes.string,
+    save: PropTypes.func.isRequired,
+    dangerouslyDelete: PropTypes.func.isRequired,
+    close: PropTypes.func.isRequired
   }),
   /** Pass a previously returned authentication object to bypass login. */
-  authentication: PropTypes.shape({
-    user: PropTypes.object.isRequired,
-    token: PropTypes.object.isRequired,
-    config: PropTypes.object.isRequired,
-  }),
+  isAuthenticated: PropTypes.bool,
 };
 
 export default FileCard;
