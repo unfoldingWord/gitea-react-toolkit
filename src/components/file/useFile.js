@@ -84,7 +84,7 @@ function useFile({
       repository,
       onOpenValidation,
     });
-    console.log("useFile._ensureFile():", _file);
+    config.verbose && console.log("useFile._ensureFile():", _file);
     return _file;
   }, [
     authentication,
@@ -107,7 +107,7 @@ function useFile({
         file: _file
       });
     };
-    console.log("useFile._onLoadCache():", cachedFile);
+    config.verbose && console.log("useFile._onLoadCache():", cachedFile);
     return cachedFile;
   }, [
     authentication,
@@ -123,7 +123,7 @@ function useFile({
       filepath,
       config,
     );
-    console.log("useFile._fetchCatalogContent():", publishedContent);
+    config.verbose && console.log("useFile._fetchCatalogContent():", publishedContent);
     return publishedContent;
   }, [
     repository,
@@ -136,8 +136,8 @@ function useFile({
       const _file = await _ensureFile();
 
       const cachedFile = await _onLoadCache({file: _file});
-      // console.log("GRT defaultContent", '|', defaultContent);
-      // console.log("GRT defaultCachedContent", '|', defaultCachedContentFile);
+      // config.verbose && console.log("GRT defaultContent", '|', defaultContent);
+      // config.verbose && console.log("GRT defaultCachedContent", '|', defaultCachedContentFile);
       // Load autosaved content:
       let content = cachedFile?.content;
       let _publishedContent;
@@ -203,7 +203,7 @@ function useFile({
   }, [writeable, authentication, repository, branch, file, onSaveCache]);
 
   const save = useDeepCompareCallback(async (content) => {
-    //console.log("GRT save // will save file");
+    //config.verbose && console.log("GRT save // will save file");
     await saveFile({
       authentication, repository, branch, file, content,
     }).then(
@@ -233,6 +233,7 @@ function useFile({
     const loadNew = (file && filepath && file.filepath !== filepath);
 
     if (notLoaded || loadNew) {
+      config.verbose && console.log("useFile.useDeepCompareEffect(): notLoaded || loadNew", file);
       load();
     }
   }, [deleted, filepath, load, file]);
