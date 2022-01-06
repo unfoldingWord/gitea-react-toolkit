@@ -9,12 +9,12 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 import { useDeepCompareCallback } from 'use-deep-compare';
 
 import {
-  getContentFromFile, saveFile, ensureFile, deleteFile,
+  saveFile, ensureFile, deleteFile,
 } from './helpers';
 import {
   FileCard, FileForm, useBlob, RepositoryContext,
 } from '..';
-import {fetchCatalogContent} from './dcsCatalogNextApis';
+import useFileContent from './useFileContent';
 
 function useFile({
   authentication,
@@ -37,6 +37,13 @@ function useFile({
   const { actions: { updateBranch }, config: repositoryConfig } = useContext(RepositoryContext);
 
   const config = _config || repositoryConfig;
+  const { state: { content, publishedContent } } = useFileContent({
+    authentication,
+    repository,
+    config,
+    file,
+    onLoadCache,
+  });
   const branch = repository && (repository.branch || repository.default_branch);
   const [deleted, setDeleted] = useState();
 
@@ -84,7 +91,7 @@ function useFile({
       repository,
       onOpenValidation,
     });
-    config.verbose && console.log("useFile._ensureFile():", _file);
+    console.log("useFile._ensureFile():", _file);
     return _file;
   }, [
     authentication,
@@ -96,71 +103,19 @@ function useFile({
     onOpenValidation,
   ]);
 
-  const _onLoadCache = useDeepCompareCallback( async (_file) => {
-    let cachedFile;
-    if (onLoadCache && _file && _file.html_url) {
-      cachedFile = await onLoadCache({
-        authentication,
-        repository,
-        branch,
-        html_url: _file.html_url,
-        file: _file
-      });
-    };
-    config.verbose && console.log("useFile._onLoadCache():", cachedFile);
-    return cachedFile;
-  }, [
-    authentication,
-    repository,
-    branch,
-  ]);
-
-  const _fetchCatalogContent = useDeepCompareCallback( async ({prodTag}) => {
-    const publishedContent = await fetchCatalogContent(
-      'unfoldingword',
-      repository.name,
-      prodTag,
-      filepath,
-      config,
-    );
-    config.verbose && console.log("useFile._fetchCatalogContent():", publishedContent);
-    return publishedContent;
-  }, [
-    repository,
-    filepath,
-    config,
-  ]);
-
   const load = useDeepCompareCallback(async () => {
     if (config && repository && filepath) {
       const _file = await _ensureFile();
-
-      const cachedFile = await _onLoadCache({file: _file});
-      // config.verbose && console.log("GRT defaultContent", '|', defaultContent);
-      // config.verbose && console.log("GRT defaultCachedContent", '|', defaultCachedContentFile);
-      // Load autosaved content:
-      let content = cachedFile?.content;
-      let _publishedContent;
-
-      if (!content) {
-        // Get SERVER content: Overwrite cache:
-        content = await getContentFromFile(_file);
-        // Check catalog next:
-        const prodTag = repository.catalog?.prod?.branch_or_tag_name;
-        if ( prodTag ) {
-          _publishedContent = await _fetchCatalogContent({prodTag});
-        }
-      };
-
       update({
-        ..._file, branch, content, filepath: _file.path, publishedContent: _publishedContent,
+        ..._file,
+        branch,
+        filepath: _file.path,
       });
     };
   }, [
     branch,
     config,
     _ensureFile,
-    _onLoadCache,
     filepath,
     repository,
     update,
@@ -196,16 +151,16 @@ function useFile({
     update();
   }, [update, blobActions, onFilepath]);
 
-  const saveCache = useDeepCompareCallback(async (content) => {
+  const saveCache = useDeepCompareCallback(async (_content) => {
     if (onSaveCache) {
-      await onSaveCache({authentication, repository, branch, file, content});
+      await onSaveCache({authentication, repository, branch, file, content: _content});
     }
   }, [writeable, authentication, repository, branch, file, onSaveCache]);
 
-  const save = useDeepCompareCallback(async (content) => {
-    //config.verbose && console.log("GRT save // will save file");
+  const save = useDeepCompareCallback(async (_content) => {
+    //console.log("GRT save // will save file");
     await saveFile({
-      authentication, repository, branch, file, content,
+      authentication, repository, branch, file, content: _content,
     }).then(
       // Empty cache if user has saved this file
       // (save() will not happen for "OFFLINE" system files)
@@ -233,7 +188,7 @@ function useFile({
     const loadNew = (file && filepath && file.filepath !== filepath);
 
     if (notLoaded || loadNew) {
-      config.verbose && console.log("useFile.useDeepCompareEffect(): notLoaded || loadNew", file);
+      console.log("useFile.useDeepCompareEffect(): notLoaded || loadNew", file);
       load();
     }
   }, [deleted, filepath, load, file]);
@@ -299,10 +254,12 @@ function useFile({
     } else {
       component = components.browse;
     }
-  }
+  };
+
+  const state = file && { ...file, content, publishedContent };
 
   return {
-    state: file,
+    state,
     stateValues: {isChanged},
     actions,
     component,
