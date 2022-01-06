@@ -31,7 +31,7 @@ export default function useFileContent ({
         file: file
       });
     };
-    console.log("useFile._onLoadCache():", cachedFile);
+    console.log("useFileContent._onLoadCache():", cachedFile);
     return cachedFile;
   }, [
     authentication,
@@ -47,7 +47,7 @@ export default function useFileContent ({
       file.filepath,
       config,
     );
-    console.log("useFile._fetchCatalogContent():", publishedContent);
+    console.log("useFileContent._fetchCatalogContent():", publishedContent);
     return publishedContent;
   }, [
     repository,
@@ -71,6 +71,7 @@ export default function useFileContent ({
           publishedContent = await _fetchCatalogContent({prodTag});
         }
       };
+      console.log("useFileContent.load():", publishedContent);
       setState({ content, publishedContent });
     };
   }, [file, _onLoadCache, _fetchCatalogContent]);
