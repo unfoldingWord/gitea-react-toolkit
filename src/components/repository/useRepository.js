@@ -18,6 +18,7 @@ import {
   removeRepositoryZip,
   getFileFromRepositoryZip,
 } from './helpers';
+import { useDeepCompareCallback, useDeepCompareEffect } from 'use-deep-compare';
 
 function useRepository({
   repositories,
@@ -63,26 +64,26 @@ function useRepository({
     setBranch(_branch);
   }, []);
 
-  const create = useCallback(async (settings) => {
+  const create = useDeepCompareCallback(async (settings) => {
     const _repository = await createRepository({ settings, config });
     update(_repository);
   }, [config, update]);
 
-  const dangerouslyDelete = useCallback(() => {
+  const dangerouslyDelete = useDeepCompareCallback(() => {
     if (user && user.username === repository.owner.username) {
       deleteRepository({ repository, config });
       window.setTimeout(update, 500);
     };
   }, [user, repository, config, update]);
 
-  const fork = useCallback(async () => {
+  const fork = useDeepCompareCallback(async () => {
     if ((user && user.username) !== repository.owner.username) {
       const _repo = await forkRepository({ repository, config });
       update(_repo);
     };
   }, [config, repository, update, user]);
 
-  const save = useCallback(async (settings) => {
+  const save = useDeepCompareCallback(async (settings) => {
     let _repository;
 
     if (repository.permissions.admin) {
@@ -93,22 +94,22 @@ function useRepository({
     };
   }, [config, repository, update]);
 
-  const storeZip = useCallback(async () => {
+  const storeZip = useDeepCompareCallback(async () => {
     await storeRepositoryZip({ repository, config });
   }, [repository, config]);
 
-  const removeZip = useCallback(async () =>{
+  const removeZip = useDeepCompareCallback(async () =>{
     await removeRepositoryZip({ repository, config });
   }, [repository, config]);
 
-  const fileFromZip = useCallback(async (filepath) => {
+  const fileFromZip = useDeepCompareCallback(async (filepath) => {
     const file = await getFileFromRepositoryZip({
       repository, filepath, config,
     });
     return file;
   }, [repository, config]);
 
-  const forks = useCallback(() => {
+  const forks = useDeepCompareCallback(() => {
     repositoryForks({ repository, config });
   }, [repository, config]);
 
@@ -116,13 +117,13 @@ function useRepository({
     update();
   }, [update]);
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (__branch !== branch) {
       setBranch(__branch);
     }
   }, [__branch, branch]);
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (repository && branch !== repository.branch) {
       update({ ...repository, branch });
     }

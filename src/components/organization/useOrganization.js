@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import { Organization, CurrentUserOrganizations } from '../..';
 import { getCurrentUserOrgs } from '../../core';
+import { useDeepCompareCallback } from 'use-deep-compare';
 
 function useOrganization({
   organization,
@@ -14,7 +15,7 @@ function useOrganization({
     onOrganization(_organization);
   }, [onOrganization]);
 
-  const list = useCallback(async () => {
+  const list = useDeepCompareCallback(async () => {
     const _organizations = await getCurrentUserOrgs({ config });
     return _organizations;
   }, [config]);

@@ -1,9 +1,12 @@
 import React, {
-  useState, useCallback, useContext,
-  useEffect, useMemo
+  useState,
+  useCallback,
+  useContext,
+  useEffect,
 } from 'react';
 import PropTypes from 'prop-types';
 import useDeepCompareEffect from 'use-deep-compare-effect';
+import { useDeepCompareCallback } from 'use-deep-compare';
 
 import {
   getContentFromFile, saveFile, ensureFile, deleteFile,
@@ -37,7 +40,7 @@ function useFile({
   const branch = repository && (repository.branch || repository.default_branch);
   const [deleted, setDeleted] = useState();
 
-  const _setBlob = useCallback(async (_blob) => {
+  const _setBlob = useDeepCompareCallback(async (_blob) => {
     if (blob && _blob && typeof onConfirmClose == 'function') {
       const confirm = await onConfirmClose()
 
@@ -71,7 +74,7 @@ function useFile({
     };
   }, [onFilepath]);
 
-  const load = useCallback(async () => {
+  const load = useDeepCompareCallback(async () => {
     if (config && repository && filepath) {
       const _file = await ensureFile({
         filepath, defaultContent, authentication, config, repository, branch, onOpenValidation,
@@ -80,8 +83,7 @@ function useFile({
       console.log("ensureFile:", _file);
 
       let defaultCachedContentFile;
-      if (onLoadCache && _file && _file.html_url)
-      {
+      if (onLoadCache && _file && _file.html_url) {
         defaultCachedContentFile = await onLoadCache({authentication, repository, branch, html_url: _file.html_url, file: _file});
       }
       
@@ -113,7 +115,7 @@ function useFile({
       defaultContent, authentication, branch, onOpenValidation
   ]);
   
-  const createFile = useCallback(async ({
+  const createFile = useDeepCompareCallback(async ({
     branch: _branch, filepath: _filepath, defaultContent: _defaultContent, onOpenValidation,
   }) => {
     if (config && repository) {
@@ -132,7 +134,7 @@ function useFile({
     }
   }, [authentication, config, repository, updateBranch, onFilepath]);
 
-  const close = useCallback(() => {
+  const close = useDeepCompareCallback(() => {
     if (blobActions && blobActions.close) {
       blobActions.close();
     };
@@ -143,13 +145,13 @@ function useFile({
     update();
   }, [update, blobActions, onFilepath]);
 
-  const saveCache = useCallback(async (content) => {
+  const saveCache = useDeepCompareCallback(async (content) => {
     if (onSaveCache) {
       await onSaveCache({authentication, repository, branch, file, content});
     }
   }, [writeable, authentication, repository, branch, file, onSaveCache]);
 
-  const save = useCallback(async (content) => {
+  const save = useDeepCompareCallback(async (content) => {
     //console.log("GRT save // will save file");
     await saveFile({
       authentication, repository, branch, file, content,
@@ -163,7 +165,7 @@ function useFile({
     );
   }, [writeable, authentication, repository, branch, file, load, saveFile, saveCache]);
 
-  const dangerouslyDelete = useCallback(async () => {
+  const dangerouslyDelete = useDeepCompareCallback(async () => {
     if (writeable) {
       const _deleted = await deleteFile({
         authentication, repository, file, branch,

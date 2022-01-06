@@ -11,6 +11,7 @@ import {
   ERROR_NETWORK_DISCONNECTED,
 } from '../../core';
 import { LoginForm } from '.';
+import { useDeepCompareCallback, useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
 
 function useAuthentication({
   messages,
@@ -58,7 +59,7 @@ function useAuthentication({
     }
   }, [onAuthentication, saveAuthentication]);
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (!authentication && loadAuthentication) {
       loadAuthentication().then(_authentication => {
         if (_authentication) {
@@ -68,7 +69,7 @@ function useAuthentication({
     }
   }, [authentication, loadAuthentication, update]);
 
-  const onSubmitLogin = useCallback(async ({
+  const onSubmitLogin = useDeepCompareCallback(async ({
     username, password, remember,
   }) => {
     try {
@@ -105,7 +106,7 @@ function useAuthentication({
     messages.genericError, messages.networkError, messages.passwordError, messages.serverError, messages.usernameError,
   ]);
 
-  const onSubmit = useCallback(async ({
+  const onSubmit = useDeepCompareCallback(async ({
     username, password, remember,
   }) => {
     if (authentication) {
@@ -116,7 +117,7 @@ function useAuthentication({
     }
   }, [authentication, config, logout, update, onSubmitLogin]);
 
-  const component = useMemo(() => (
+  const component = useDeepCompareMemo(() => (
     config && (
       <LoginForm
         config={config}

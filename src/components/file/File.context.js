@@ -33,8 +33,15 @@ export function FileContextProvider({
     config: _config || contextConfig,
     authentication: _authentication || contextAuthentication,
     repository: _repository || contextRepository,
-    filepath, onFilepath, defaultContent, create, onOpenValidation, onConfirmClose,
-    onLoadCache, onSaveCache, releaseFlag,
+    filepath,
+    onFilepath,
+    defaultContent,
+    create,
+    onOpenValidation,
+    onConfirmClose,
+    onLoadCache,
+    onSaveCache,
+    releaseFlag,
   });
 
   const context = {

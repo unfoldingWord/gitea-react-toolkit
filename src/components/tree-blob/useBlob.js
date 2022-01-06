@@ -5,6 +5,7 @@ import deepFreeze from 'deep-freeze';
 import {manifestFileComparer} from '../file/helpers';
 
 import { Tree } from '.';
+import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
 
 function useBlob({
   config,
@@ -35,11 +36,11 @@ function useBlob({
     update();
   }, [update]);
 
-  const tsvManifestFileComparer = useCallback((item1,item2) => {
+  const tsvManifestFileComparer = useDeepCompareCallback((item1,item2) => {
     return manifestFileComparer({repository, item1, item2});
   }, [repository, repository?.books, manifestFileComparer]);
   
-  const browse = useMemo(() => {
+  const browse = useDeepCompareMemo(() => {
     return (tree || url) ? (
       <Tree
         tree={tree}
