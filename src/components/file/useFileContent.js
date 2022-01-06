@@ -71,7 +71,7 @@ export default function useFileContent ({
           publishedContent = await _fetchCatalogContent({prodTag});
         }
       };
-      console.log("useFileContent.load():", publishedContent);
+      console.log("\nuseFileContent.load()\n");
       setState({ content, publishedContent });
     };
   }, [file, _onLoadCache, _fetchCatalogContent]);

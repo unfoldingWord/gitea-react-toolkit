@@ -81,31 +81,18 @@ function useFile({
     };
   }, [onFilepath]);
 
-  const _ensureFile = useDeepCompareCallback(async () => {
-    const _file = await ensureFile({
-      authentication,
-      branch,
-      config,
-      defaultContent,
-      filepath,
-      repository,
-      onOpenValidation,
-    });
-    console.log("useFile._ensureFile():", _file);
-    return _file;
-  }, [
-    authentication,
-    branch,
-    config,
-    defaultContent,
-    filepath,
-    repository,
-    onOpenValidation,
-  ]);
-
   const load = useDeepCompareCallback(async () => {
     if (config && repository && filepath) {
-      const _file = await _ensureFile();
+      const _file = await ensureFile({
+        authentication,
+        branch,
+        config,
+        defaultContent,
+        filepath,
+        repository,
+        onOpenValidation,
+      });
+      console.log("\nuseFile.load():", _file);
       update({
         ..._file,
         branch,
@@ -113,9 +100,10 @@ function useFile({
       });
     };
   }, [
+    authentication,
     branch,
     config,
-    _ensureFile,
+    defaultContent,
     filepath,
     repository,
     update,
