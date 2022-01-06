@@ -66,7 +66,7 @@ function useFile({
 
   useEffect(() => {
     setIsChanged(false);
-  }, [file, deleted, closed]);
+  }, [file, deleted]);
 
   const read = useCallback(async (_filepath) => {
     if (onFilepath) {
@@ -230,7 +230,7 @@ function useFile({
     browse: repository && blobComponents.browse,
     fileCard: repository && file && (
       <FileCard
-        authentication={authentication}
+        authentication={Object.keys(authentication).length === 0}
         repository={repository}
         file={{ ...file, ...actions }}
       />
