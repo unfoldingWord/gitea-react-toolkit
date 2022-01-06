@@ -84,7 +84,7 @@ function useFile({
       repository,
       onOpenValidation,
     });
-    console.log("useFile.ensureFile():", _file);
+    console.log("useFile._ensureFile():", _file);
     return _file;
   }, [
     authentication,
@@ -107,6 +107,7 @@ function useFile({
         file: _file
       });
     };
+    console.log("useFile._onLoadCache():", cachedFile);
     return cachedFile;
   }, [
     authentication,
@@ -122,6 +123,7 @@ function useFile({
       filepath,
       config,
     );
+    console.log("useFile._fetchCatalogContent():", publishedContent);
     return publishedContent;
   }, [
     repository,
@@ -141,7 +143,6 @@ function useFile({
       let _publishedContent;
 
       if (!content) {
-      } else {
         // Get SERVER content: Overwrite cache:
         content = await getContentFromFile(_file);
         // Check catalog next:
