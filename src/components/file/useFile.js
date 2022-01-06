@@ -75,7 +75,6 @@ function useFile({
   }, [onFilepath]);
 
   const _ensureFile = useDeepCompareCallback(async () => {
-    console.log("ensureFile:", _file);
     const _file = await ensureFile({
       authentication,
       branch,
@@ -85,6 +84,7 @@ function useFile({
       repository,
       onOpenValidation,
     });
+    console.log("useFile.ensureFile():", _file);
     return _file;
   }, [
     authentication,
