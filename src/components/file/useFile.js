@@ -92,7 +92,7 @@ function useFile({
         repository,
         onOpenValidation,
       });
-      console.log("\nuseFile.load():", _file);
+      // console.log("\nuseFile.load():", _file);
       update({
         ..._file,
         branch,
@@ -176,7 +176,7 @@ function useFile({
     const loadNew = (file && filepath && file.filepath !== filepath);
 
     if (notLoaded || loadNew) {
-      console.log("useFile.useDeepCompareEffect(): notLoaded || loadNew", file);
+      // console.log("useFile.useDeepCompareEffect(): notLoaded || loadNew", file);
       load();
     }
   }, [deleted, filepath, load, file]);
