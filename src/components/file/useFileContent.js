@@ -66,7 +66,7 @@ export default function useFileContent ({
 
       if (!publishedContent) {
         // Check catalog next:
-        const prodTag = repository.catalog?.prod?.branch_or_tag_name;
+        const prodTag = repository?.catalog?.prod?.branch_or_tag_name;
         if ( prodTag ) {
           publishedContent = await _fetchCatalogContent({prodTag});
         }
@@ -74,7 +74,7 @@ export default function useFileContent ({
       // console.log("\nuseFileContent.load()\n");
       setState({ content, publishedContent });
     };
-  }, [file, _onLoadCache, _fetchCatalogContent]);
+  }, [file, repository, _onLoadCache, _fetchCatalogContent]);
 
   const reset = useCallback(() => {
     setState(defaultState);
