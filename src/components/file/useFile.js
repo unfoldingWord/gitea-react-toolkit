@@ -12,7 +12,7 @@ import {
   saveFile, ensureFile, deleteFile,
 } from './helpers';
 import {
-  FileCard, FileForm, useBlob, RepositoryContext,
+  FileCard, FileForm, useBlob,
 } from '..';
 import useFileContent from './useFileContent';
 
@@ -29,14 +29,13 @@ function useFile({
   onSaveCache,
   onConfirmClose,
   releaseFlag,
+  updateBranch,
 }) {
   const [file, setFile] = useState();
   const [isChanged, setIsChanged] = useState(false);
   const [blob, setBlob] = useState();
 
-  const { actions: { updateBranch }, config: repositoryConfig } = useContext(RepositoryContext);
-
-  const config = _config || repositoryConfig;
+  const config = _config;
   const { state: { content, publishedContent } } = useFileContent({
     authentication,
     repository,
