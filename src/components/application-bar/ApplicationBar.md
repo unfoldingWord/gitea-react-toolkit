@@ -16,6 +16,8 @@ import {
 } from 'gitea-react-toolkit';
 
 function Component() {
+  const { state: file } = useContext(FileContext);
+
   const buttons = (
     <IconButton color="inherit">
       <Badge badgeContent={17} color="secondary">
@@ -41,6 +43,7 @@ function Component() {
       title='Application Title'
       buttons={buttons}
       drawerMenu={drawerMenu}
+      filepath={file && file.filepath}
     />
   );
 };

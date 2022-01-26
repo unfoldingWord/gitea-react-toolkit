@@ -1,7 +1,6 @@
 import React, {
   useState,
   useCallback,
-  useContext,
   useEffect,
 } from 'react';
 import PropTypes from 'prop-types';

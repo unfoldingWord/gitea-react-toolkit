@@ -10,19 +10,19 @@ import {
 
 import { useStyles } from './useStyles';
 import {
-  UserMenu, DrawerMenu, RepositoryMenu, FileContext,
+  UserMenu, DrawerMenu, RepositoryMenu,
 } from '..';
 
 function ApplicationBar({
   title,
   build,
   buttons,
+  filepath,
   drawerMenu,
   drawerMenuProps,
   hideRepositoryMenu,
 }) {
   const classes = useStyles();
-  const { state: file } = useContext(FileContext)
 
   return (
     <div className={classes.root}>
@@ -40,7 +40,7 @@ function ApplicationBar({
             {build && <Typography variant="caption" color="inherit" > build {build}</Typography>}
           </Typography>
           <Typography variant="subtitle2" color="inherit" className={classes.grow} noWrap>
-            {file ? file.filepath : ''}
+            {filepath || ''}
           </Typography>
           <div className={classes.grow} />
           {buttons}
