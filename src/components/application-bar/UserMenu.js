@@ -10,18 +10,16 @@ import { AccountCircle } from '@material-ui/icons';
 import { useStyles } from './useStyles';
 import { AuthenticationContext } from '..';
 
-function UserMenu() {
+function UserMenu({ auth }) {
   const classes = useStyles();
-  const { state: authentication, component } = useContext(AuthenticationContext) || {};
+  const { state: authentication, component } = auth || useContext(AuthenticationContext) || {};
   const [modal, setModal] = useState(false);
   const closeModal = () => setModal(false);
   const openModal = () => setModal(true);
 
   useEffect(() => {
-    if (authentication && authentication.user) {
-      closeModal();
-    }
-  }, [authentication])
+    authentication?.user && closeModal();
+  }, [authentication]);
 
   const avatar = !(authentication && authentication.user) ? <AccountCircle fontSize="large" /> : (
     <Avatar data-test="user-menu-avatar" className={classes.avatar} src={authentication.user.avatar_url} />

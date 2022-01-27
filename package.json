@@ -86,7 +86,7 @@
     "react-docgen-typescript": "^1.16.2",
     "react-dom": "16.11.0",
     "react-scripts": "^3.4.0",
-    "react-styleguidist": "^10.6.2",
+    "react-styleguidist": "^11.1.7",
     "source-map-support": "0.5.16",
     "start-server-and-test": "1.10.6",
     "style-loader": "^1.0.0",

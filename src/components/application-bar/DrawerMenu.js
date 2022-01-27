@@ -17,10 +17,11 @@ function DrawerMenu({
   children,
   hideRepoContents,
   closeOnListItemsClick,
+  file: _file,
 }) {
   const classes = useStyles();
   const [openDrawer, setOpenDrawer] = useState(false);
-  const { components } = useContext(FileContext) || {};
+  const { components } = _file || useContext(FileContext) || {};
 
   const toggleDrawer = () => {
     setOpenDrawer(!openDrawer);
@@ -29,10 +30,8 @@ function DrawerMenu({
   const drawerClasses = { paper: classes.drawerPaper };
 
   const onDrawerItemClick = () => {
-    if (closeOnListItemsClick) {
-      toggleDrawer()
-    }
-  }
+    closeOnListItemsClick && toggleDrawer();
+  };
 
   return (
     <div>
@@ -44,7 +43,8 @@ function DrawerMenu({
         variant="temporary" anchor="left"
         open={openDrawer}
         onClose={toggleDrawer}
-        classes={drawerClasses}>
+        classes={drawerClasses}
+      >
         <div className={classes.drawerHeader}>
           <IconButton data-test="drawer-menu-close-button" onClick={toggleDrawer}>
             <ChevronLeft />
