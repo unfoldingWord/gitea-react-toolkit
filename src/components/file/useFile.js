@@ -177,7 +177,7 @@ function useFile({
       // console.log("useFile.useDeepCompareEffect(): notLoaded || loadNew", file);
       load();
     }
-  }, [deleted, filepath, load, file]);
+  }, [authentication, repository, deleted, filepath, load, file]);
 
   const blobFilepath = blobState && blobState.filepath;
 
