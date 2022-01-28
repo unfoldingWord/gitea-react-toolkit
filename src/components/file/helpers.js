@@ -1,4 +1,3 @@
-import { decode } from 'base-64';
 import {
   get, updateContent, ensureContent, deleteContent, decodeBase64ToUtf8,
 } from '../..';
@@ -17,15 +16,12 @@ export const ensureFile = async ({
     _message = message || `Created '${filepath}' using '${tokenid}'`;
   }
 
-  const _file = await ensureContent({
+  const file = await ensureContent({
     config: _config, owner, repo, branch, filepath,
     content: defaultContent, message: _message, author,
     onOpenValidation,
   });
   
-  const content = _file.content && decode(_file.content);
-  const file = {..._file, content};
-
   return file;
 };
 

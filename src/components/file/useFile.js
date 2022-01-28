@@ -8,7 +8,7 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 import { useDeepCompareCallback } from 'use-deep-compare';
 
 import {
-  saveFile, ensureFile, deleteFile,
+  saveFile, ensureFile, deleteFile, getContentFromFile,
 } from './helpers';
 import {
   FileCard, FileForm, useBlob,
@@ -91,8 +91,10 @@ function useFile({
         repository,
         onOpenValidation,
       });
+      const content = await getContentFromFile(_file);
       update({
         ..._file,
+        content,
         branch,
         filepath: _file.path,
       });
@@ -209,8 +211,6 @@ function useFile({
     setIsChanged,
     onConfirmClose,
   };
-
-  if (file?.content) debugger;
 
   const components = {
     create: repository && (
