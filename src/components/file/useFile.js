@@ -35,13 +35,14 @@ function useFile({
   const [blob, setBlob] = useState();
 
   const config = _config;
-  const { state: { content, publishedContent } } = useFileContent({
+  const { state: { cacheContent, publishedContent }, actions: contentActions } = useFileContent({
     authentication,
     repository,
     config,
     file,
     onLoadCache,
   });
+  const state = file && { ...file, cacheContent, publishedContent };
   const branch = repository && (repository.branch || repository.default_branch);
   const [deleted, setDeleted] = useState();
 
@@ -90,7 +91,6 @@ function useFile({
         repository,
         onOpenValidation,
       });
-      // console.log("\nuseFile.load():", _file);
       update({
         ..._file,
         branch,
@@ -149,6 +149,7 @@ function useFile({
       // (save() will not happen for "OFFLINE" system files)
       await saveCache(); // Empty cache if user has saved this file
       await load();
+      contentActions.reset();
     } catch (e) {
       console.log(e);
     };
@@ -209,6 +210,8 @@ function useFile({
     onConfirmClose,
   };
 
+  if (file?.content) debugger;
+
   const components = {
     create: repository && (
       <FileForm
@@ -238,8 +241,6 @@ function useFile({
       component = components.browse;
     }
   };
-
-  const state = file && { ...file, content, publishedContent };
 
   return {
     state,
