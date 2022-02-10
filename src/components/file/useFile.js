@@ -146,15 +146,11 @@ function useFile({
   }, [writeable, authentication, repository, branch, file, onSaveCache]);
 
   const save = useDeepCompareCallback(async (_content) => {
-    try {
-      await saveFile({ authentication, repository, branch, file, content: _content });
-      // (save() will not happen for "OFFLINE" system files)
-      await saveCache(); // Empty cache if user has saved this file
-      await load();
-      contentActions.reset();
-    } catch (e) {
-      console.log(e);
-    };
+    await saveFile({ authentication, repository, branch, file, content: _content });
+    // (save() will not happen for "OFFLINE" system files)
+    await saveCache(); // Empty cache if user has saved this file
+    await load();
+    contentActions.reset();
   }, [writeable, authentication, repository, branch, file, load, saveFile, saveCache]);
 
   const dangerouslyDelete = useDeepCompareCallback(async () => {
