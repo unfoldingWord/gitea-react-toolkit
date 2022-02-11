@@ -13,6 +13,7 @@ import { updateContent } from '../..';
  * @param {string} content - Edited/updated content.
  * @param {string} message - Optional commit message.
  * @param {string} filePath - file path, file path for the file being edited.
+ * @return {{error: object, isError: boolean, isEditing: boolean, onSaveEdit: (function(_branch: string)), editResponse: object}}
  */
 export default function useEdit({
   sha,
