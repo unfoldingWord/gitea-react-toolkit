@@ -1,6 +1,19 @@
 import { useState } from 'react';
 import { updateContent } from '../..';
 
+/**
+ * Custom hook for editing content of translation helps resources
+ * @param {string} sha
+ * @param {string} repo
+ * @param {string} owner
+ * @param {string} token
+ * @param {object} config - config settings for fetches (timeout, cache, etc.)
+ * @param {string} branch - branch name.
+ * @param {string} author - author of the edit.
+ * @param {string} content - Edited/updated content.
+ * @param {string} message - Optional commit message.
+ * @param {string} filePath - file path, file path for the file being edited.
+ */
 export default function useEdit({
   sha,
   repo,
@@ -13,18 +26,21 @@ export default function useEdit({
   message,
   filepath,
 }) {
-  const [{ isEditing, isError, error, editResponse }, setState] = useState({
+  const initialState = {
     editResponse: null,
     isEditing: false,
     isError: false,
     error: null,
-  })
+  }
+  const [{ isEditing, isError, error, editResponse }, setState] = useState(initialState)
   const { name: tokenid } = token || {}
   const _message = message || `Edit '${filepath}' using '${tokenid}'`;
 
   async function onSaveEdit(_branch) {
     try {
+      // content is the updated string or dirty content.
       if (content) {
+        // clear state to remove left over state from a previous edit.
         setState((prevState) => ({
           ...prevState,
           editResponse: null,
