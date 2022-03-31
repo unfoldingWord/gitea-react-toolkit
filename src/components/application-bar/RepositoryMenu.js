@@ -16,16 +16,14 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import { useStyles } from './useStyles';
 import { RepositoryContext, FileContext } from '..';
 
-function RepositoryMenu() {
+function RepositoryMenu({
+  repo,
+  file: _file,
+}) {
   const classes = useStyles();
   const [modal, setModal] = useState(false);
-  const {
-    state: repository,
-    actions,
-    component: repositoryComponent,
-  } = useContext(RepositoryContext) || {};
-  
-  const { state: file, stateValues: fileStateValues, actions: fileActions } = useContext(FileContext) || {};
+  const { state: repository, actions, component: repositoryComponent } = repo || useContext(RepositoryContext) || {};
+  const { state: file, stateValues: fileStateValues, actions: fileActions } = _file || useContext(FileContext) || {};
 
   const {
     name,

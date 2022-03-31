@@ -10,6 +10,7 @@ function useOrganization({
   config,
   onOrganization,
   authentication,
+  auth,
 }) {
   const update = useCallback((_organization) => {
     onOrganization(_organization);

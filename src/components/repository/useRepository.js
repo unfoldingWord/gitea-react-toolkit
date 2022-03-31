@@ -167,7 +167,7 @@ function useRepository({
   let component = <></>;
 
   if (hasRepository) {
-    component = components.form;
+    component = components.view;
   } else if (urls || repositories) {
     component = components.browse;
   } else if (config) {

@@ -36,12 +36,15 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function RepositoryForm() {
+function RepositoryForm({
+  auth,
+  repo,
+}) {
   const classes = useStyles();
   const [formData, setFormData] = useState({});
   const [errorText, setErrorText] = useState();
-  const { state: authentication } = useContext(AuthenticationContext);
-  const { state: repository, actions: { create, save } } = useContext(RepositoryContext);
+  const { state: authentication } = auth || useContext(AuthenticationContext) || {};
+  const { state: repository, actions: { create, save } } = repo || useContext(RepositoryContext) || {};
 
   const updateFormData = (event) => {
     const { type, name, value, checked } = event.target;

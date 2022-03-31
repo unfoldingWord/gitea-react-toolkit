@@ -13,7 +13,6 @@ import {
   Tooltip,
 } from '@material-ui/core';
 import path from 'path';
-import { AuthenticationContext } from '..';
 
 import { Code } from '@material-ui/icons';
 import { get, isSelectedOrgWritable} from '../../core';
@@ -37,11 +36,11 @@ function Organization({
     primaryError = 'No organization',
     secondaryError = 'Please provide a valid organization object or url.',
   } = {},
+  authentication,
 }) {
   const classes = useStyles();
   const [org, setOrg] = useState(organization);
   const [loading, setLoading] = useState(true);
-  const { state: contextAuthentication } = useContext(AuthenticationContext) || {};
 
   const getData = useCallback(async ({ config: _config, url: _url }) => {
     const data = await get({ config: _config, url: _url });
@@ -66,7 +65,7 @@ function Organization({
 
     // first get the user (if logged in)
     // if not logged in, go ahead and set the org
-    let user = contextAuthentication.user.login;
+    let user = authentication?.user?.login;
     if ( !user ) {
       onOrganization(org);
       return;
