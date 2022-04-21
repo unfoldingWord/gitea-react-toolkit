@@ -15,6 +15,7 @@ export default function useFileContent ({
 }) {
   const defaultState = {
     file: undefined,
+    cachedFile: undefined,
     content: undefined,
     publishedContent: undefined,
   };
@@ -57,22 +58,20 @@ export default function useFileContent ({
 
   const load = useDeepCompareCallback( async () => {
     if (file) {
-      const cachedFile = await _onLoadCache();
+      const cachedFile = await _onLoadCache();   //should load the persisted
       // Load autosaved content:
-      let content = cachedFile?.content;
+      const content = await getContentFromFile(file);
+      
       let publishedContent;
-  
-      if (!content) content = await getContentFromFile(file);
 
-      if (!publishedContent) {
-        // Check catalog next:
-        const prodTag = repository?.catalog?.prod?.branch_or_tag_name;
-        if ( prodTag ) {
-          publishedContent = await _fetchCatalogContent({prodTag});
-        }
+      // Check catalog next:
+      const prodTag = repository?.catalog?.prod?.branch_or_tag_name;
+      if ( prodTag ) {
+        publishedContent = await _fetchCatalogContent({prodTag});
       };
+
       // console.log("\nuseFileContent.load()\n");
-      setState({ content, publishedContent });
+      setState({ content, publishedContent, file, cachedFile });
     };
   }, [file, repository, _onLoadCache, _fetchCatalogContent]);
 

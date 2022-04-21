@@ -37,7 +37,7 @@ function useFile({
   const { actions: { updateBranch }, config: repositoryConfig } = useContext(RepositoryContext);
 
   const config = _config || repositoryConfig;
-  const { state: { content, publishedContent } } = useFileContent({
+  const { state: { content, publishedContent, cachedFile } } = useFileContent({
     authentication,
     repository,
     config,
@@ -244,7 +244,7 @@ function useFile({
     }
   };
 
-  const state = file && { ...file, content, publishedContent };
+  const state = file && { ...file, content, publishedContent, cachedFile };
 
   return {
     state,
