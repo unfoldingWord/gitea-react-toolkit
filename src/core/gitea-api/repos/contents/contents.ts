@@ -56,6 +56,18 @@ export const payload = ({
   sha,
 });
 
+export const payloadNew = ({
+  branch, new_branch, content, message, author: { email, username }, sha,
+}: PayloadOptions): object => ({
+  new_branch,
+  content: base64.encode(utf8.encode(content || '')),
+  message,
+  author: {
+    email: email,
+    name: username,
+  },
+});
+
 // POST /api/v1/repos/{owner}/{repo}/contents/{filepath}
 export const createContent = async ({
   config, owner, repo, branch, filepath, content, message, author,
@@ -74,16 +86,19 @@ export const createContent = async ({
       });
       contentObject = response.content;
     } catch {
-      const _payload = payload({
+      const _payload = payloadNew({
         new_branch: branch, content, message, author,
       });
+      console.log("Payload will be:", _payload)
+      console.log("url:",url)
+      console.log("config:", config)
       const response = await post({
         url, payload: _payload, config,
       });
       contentObject = response.content;
     }
   } catch (error) {
-    throw new Error('Error creating file.');
+    throw new Error('Error creating file. Error:\n'+error);
   };
   return contentObject;
 };
@@ -225,11 +240,19 @@ export const ensureContent = async ({
         contentObject = _contentObject;
       }
     } catch { // try to create the file if it doesn't exist in default or new branch
-      contentObject = await createContent({
-        config, owner, repo, branch, filepath, content, message, author,
-      });
+      try {
+        console.log("contents.ts/ensureContent() inner catch: config, owner, repo, branch, content:",
+          config, owner, repo, branch, content
+        );
+        contentObject = await createContent({
+          config, owner, repo, branch, filepath, content, message, author,
+        });
+      } catch (e) {
+        console.log("ensureContent()/createContent() failed. Errors:", e);
+      }
     };
   };
 
   return contentObject;
+
 };
