@@ -150,8 +150,8 @@ function useFile({
     await saveFile({ authentication, repository, branch, file, content: _content });
     // (save() will not happen for "OFFLINE" system files)
     await saveCache(); // Empty cache if user has saved this file
-    await load();
     contentActions.reset();
+    await load();
   }, [writeable, authentication, repository, branch, file, load, saveFile, saveCache]);
 
   const dangerouslyDelete = useDeepCompareCallback(async () => {
@@ -171,6 +171,7 @@ function useFile({
     const loadNew = (file && filepath && file.filepath !== filepath);
 
     if (notLoaded || loadNew) {
+      contentActions.reset();
       // console.log("useFile.useDeepCompareEffect(): notLoaded || loadNew", file);
       load();
     }
