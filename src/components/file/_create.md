@@ -17,49 +17,42 @@ If `filepath` is not provided, a form will be provided as the `component` so tha
 import { useContext } from 'react';
 import { Paper } from '@material-ui/core';
 import {
-  AuthenticationContext,
-  AuthenticationContextProvider,
-  RepositoryContext,
-  RepositoryContextProvider,
-  FileContext,
-  FileContextProvider,
+  useAuthentication,
+  useRepository,
+  useFile,
 } from 'gitea-react-toolkit';
 
 function Component() {
-  const { state: auth, component: authComponent } = useContext(AuthenticationContext);
-  const { state: repo, component: repoComponent } = useContext(RepositoryContext);
-  const { state: file, component: fileComponent } = useContext(FileContext);
+  const [authentication, setAuthentication] = React.useState();
+  const [repository, setRepository] = React.useState();
+  const [filepath, setFilepath] = React.useState();
+
+  const { state: auth, component: authComponent } = useAuthentication({
+    config: {
+      server: "https://bg.door43.org",
+      tokenid:"PlaygroundTesting",
+    },
+    authentication,
+    onAuthentication: setAuthentication,
+  });
+  const { state: repo, component: repoComponent } = useRepository({
+    authentication,
+    repository,
+    onRepository: setRepository,
+    defaultOwner: authentication && authentication.user.name,
+    defaultQuery: "",
+    branch: 'testing',
+  });
+  const { state: file, component: fileComponent } = useFile({
+    authentication,
+    repository,
+    filepath,
+    onFilepath: setFilepath,
+    create: true,
+  });
 
   return (!auth && authComponent) || (!repo && repoComponent) || fileComponent;
 };
 
-const [authentication, setAuthentication] = React.useState();
-const [repository, setRepository] = React.useState();
-const [filepath, setFilepath] = React.useState();
-
-<AuthenticationContextProvider
-  config={{
-    server: "https://bg.door43.org",
-    tokenid:"PlaygroundTesting",
-  }}
-  authentication={authentication}
-  onAuthentication={setAuthentication}
->
-  <RepositoryContextProvider
-    repository={repository}
-    onRepository={setRepository}
-    defaultOwner={authentication && authentication.user.name}
-    defaultQuery=""
-    branch='testing'
-  >
-    <FileContextProvider
-      // defaultContent={defaultContent}
-      filepath={filepath}
-      onFilepath={setFilepath}
-      create={true}
-    >
-      <Component />
-    </FileContextProvider>
-  </RepositoryContextProvider>
-</AuthenticationContextProvider>
+<Component />
 ```

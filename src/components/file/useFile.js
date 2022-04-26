@@ -28,13 +28,12 @@ function useFile({
   onSaveCache,
   onConfirmClose,
   releaseFlag,
-  updateBranch,
 }) {
   const [file, setFile] = useState();
   const [isChanged, setIsChanged] = useState(false);
   const [blob, setBlob] = useState();
 
-  const config = _config;
+  const config = _config || repository?.config || authentication?.config || {};
   const { state: { cacheContent, publishedContent }, actions: contentActions } = useFileContent({
     authentication,
     repository,
@@ -87,10 +86,11 @@ function useFile({
         branch,
         config,
         defaultContent,
-        filepath,
         repository,
+        filepath,
         onOpenValidation,
       });
+
       const content = await getContentFromFile(_file);
       update({
         ..._file,
@@ -114,7 +114,9 @@ function useFile({
   }) => {
     if (config && repository) {
       const _file = await ensureFile({
-        authentication, config, repository,
+        authentication,
+        config,
+        repository,
         branch: _branch,
         filepath: _filepath,
         defaultContent: _defaultContent,
@@ -122,11 +124,10 @@ function useFile({
       });
 
       if (_file) {
-        updateBranch(_branch);
         onFilepath(_filepath);
       };
-    }
-  }, [authentication, config, repository, updateBranch, onFilepath]);
+    };
+  }, [authentication, config, repository, onFilepath]);
 
   const close = useDeepCompareCallback(() => {
     if (blobActions && blobActions.close) {

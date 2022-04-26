@@ -55,7 +55,6 @@ function Component() {
     fork,
     save,
     forks,
-    updateBranch,
     read,
   } = repoActions;
 

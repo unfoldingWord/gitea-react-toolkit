@@ -27,11 +27,9 @@ const [filepath, setFilepath] = React.useState();
 const repo = useRepository({ config, urls, repository, onRepository: setRepository });
 const file = useFile({ config, repository, filepath, onFilepath: setFilepath });
 
-const children = repo.component;
-
 <Paper>
   <DrawerMenu file={file}>
-    {children}
+    {repo.component}
   </DrawerMenu>
 </Paper>
 ```
