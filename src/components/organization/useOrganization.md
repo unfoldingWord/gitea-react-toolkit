@@ -1,30 +1,28 @@
 ```js
 import { useContext } from 'react';
 import { Paper } from '@material-ui/core';
-import { useOrganization, AuthenticationContextProvider, AuthenticationContext } from 'gitea-react-toolkit';
-  const config = {
-    server: "https://bg.door43.org",
-    tokenid:"PlaygroundTesting",
-  };
-  const [_authentication, setAuthentication] = React.useState();
+import { useOrganization, useAuthentication } from 'gitea-react-toolkit';
 
-  function Component() {
-    const { state: authentication, actions, component: authComponent } = useContext(AuthenticationContext);
-    const [organization, setOrganization] = React.useState(null);
-    const { state, component } = useOrganization({
-      organization,
-      config,
-      onOrganization: setOrganization,
-      authentication,
-    });
-    return !authentication ? authComponent : component;
-  };
+const config = {
+  server: "https://bg.door43.org",
+  tokenid:"PlaygroundTesting",
+};
+
+function Component() {
+  const [authentication, setAuthentication] = React.useState();
+  const [organization, setOrganization] = React.useState();
+
+  const auth = useAuthentication({ config, authentication, onAuthentication: setAuthentication });
+  const { state, component } = useOrganization({
+    config,
+    authentication,
+    organization,
+    onOrganization: setOrganization,
+    auth,
+  });
+  return !authentication ? auth.component : component;
+};
   
-  <AuthenticationContextProvider
-    authentication={_authentication}
-    onAuthentication={setAuthentication}
-    config={config}>
-    <Component config={config}/>
-  </AuthenticationContextProvider>
 
+<Component />
 ```

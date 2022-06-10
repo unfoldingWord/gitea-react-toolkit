@@ -5,13 +5,12 @@ import {
 } from '@material-ui/core';
 
 function FileForm({
-  branch: _branch,
+  branch,
   filepath: _filepath,
   defaultContent: _defaultContent,
   submitText,
   onSubmit,
 }) {
-  const [branch, setBranch] = useState(_branch);
   const [filepath, setFilepath] = useState(_filepath);
   const [defaultContent, setDefaultContent] = useState(_defaultContent);
   const disabled = !(filepath);
@@ -23,7 +22,7 @@ function FileForm({
         <TextField
           name='branch' label='branch' type='text' autoComplete={null}
           variant="outlined" margin="normal" fullWidth defaultValue={branch}
-          onChange={(e) => setBranch(e.target.value)}
+          disabled
         />
         <TextField
           name='filepath' label='filepath' type='text' autoComplete={null}

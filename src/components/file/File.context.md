@@ -1,22 +1,40 @@
 
-## FileContext
+## usefile
 
 ```js
 import { useContext } from 'react';
 import { Paper } from '@material-ui/core';
 import {
-  AuthenticationContext,
-  AuthenticationContextProvider,
-  RepositoryContext,
-  RepositoryContextProvider,
-  FileContext,
-  FileContextProvider,
+  useAuthentication,
+  useRepository,
+  useFile,
 } from 'gitea-react-toolkit';
 
 function Component() {
-  const { state: auth, component: authComponent } = useContext(AuthenticationContext);
-  const { state: repo, component: repoComponent } = useContext(RepositoryContext);
-  const { state: file, actions: fileActions, component: fileComponent } = useContext(FileContext);
+  const [authentication, setAuthentication] = React.useState();
+  const [repository, setRepository] = React.useState();
+  const [filepath, setFilepath] = React.useState();
+
+  const { state: auth, component: authComponent } = useAuthentication({
+    config: {
+      server: "https://bg.door43.org",
+      tokenid:"PlaygroundTesting",
+    },
+    authentication,
+    onAuthentication: setAuthentication,
+  });
+  const { state: repo, component: repoComponent } = useRepository({
+    repository,
+    onRepository: setRepository,
+    defaultOwner: authentication && authentication.user.name,
+    defaultQuery: "",
+    branch: 'master',
+  });
+  const { state: file, actions: fileActions, component: fileComponent } = useFile({
+    filepath,
+    onFilepath: setFilepath,
+    create: false,
+  });
     // the following are all the actions available for the file context.
   const {
     update,
@@ -30,32 +48,5 @@ function Component() {
   return (!auth && authComponent) || (!repo && repoComponent) || (!file && fileComponent) || <pre>{JSON.stringify(file, null, 2)}</pre>;
 };
 
-const [authentication, setAuthentication] = React.useState();
-const [repository, setRepository] = React.useState();
-const [filepath, setFilepath] = React.useState();
-
-<AuthenticationContextProvider
-  config={{
-    server: "https://bg.door43.org",
-    tokenid:"PlaygroundTesting",
-  }}
-  authentication={authentication}
-  onAuthentication={setAuthentication}
->
-  <RepositoryContextProvider
-    repository={repository}
-    onRepository={setRepository}
-    defaultOwner={authentication && authentication.user.name}
-    defaultQuery=""
-    // branch='master'
-  >
-    <FileContextProvider
-      filepath={filepath}
-      onFilepath={setFilepath}
-      create={false}
-    >
-      <Component />
-    </FileContextProvider>
-  </RepositoryContextProvider>
-</AuthenticationContextProvider>
+<Component />;
 ```

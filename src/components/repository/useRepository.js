@@ -26,16 +26,16 @@ function useRepository({
   urls,
   defaultOwner,
   defaultQuery,
-  config,
+  config: _config,
   authentication,
   repository: __repository,
   onRepository,
-  branch: __branch,
+  branch,
 }) {
-  const [branch, setBranch] = useState(__branch);
   const repository = __repository && deepFreeze(__repository);
   const { full_name } = repository || {};
   const user = authentication && authentication.user;
+  const config = _config || authentication?.config || {};
 
   // Due to objects not memoizing in useCallback, deconstruction is necessary
   // const { owner: { username: owner }, name: repo } = repository;
@@ -59,10 +59,6 @@ function useRepository({
     });
     update(_repository);
   }, [config, update]);
-
-  const updateBranch = useCallback((_branch) => {
-    setBranch(_branch);
-  }, []);
 
   const create = useDeepCompareCallback(async (settings) => {
     const _repository = await createRepository({ settings, config });
@@ -118,12 +114,6 @@ function useRepository({
   }, [update]);
 
   useDeepCompareEffect(() => {
-    if (__branch !== branch) {
-      setBranch(__branch);
-    }
-  }, [__branch, branch]);
-
-  useDeepCompareEffect(() => {
     if (repository && branch !== repository.branch) {
       update({ ...repository, branch });
     }
@@ -167,7 +157,7 @@ function useRepository({
   let component = <></>;
 
   if (hasRepository) {
-    component = components.form;
+    component = components.view;
   } else if (urls || repositories) {
     component = components.browse;
   } else if (config) {
@@ -184,7 +174,6 @@ function useRepository({
       fork,
       save,
       forks,
-      updateBranch,
       read,
       storeZip,
       removeZip,

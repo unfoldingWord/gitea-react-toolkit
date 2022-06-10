@@ -25,7 +25,7 @@ export function FileContextProvider({
   releaseFlag,
 }) {
   const { state: contextAuthentication } = useContext(AuthenticationContext);
-  const { state: contextRepository, config: contextConfig } = useContext(RepositoryContext);
+  const { state: contextRepository,  config: contextConfig } = useContext(RepositoryContext);
 
   const {
     state, stateValues, actions, component, components, config,

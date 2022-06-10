@@ -4,7 +4,6 @@ import useDeepCompareEffect from "use-deep-compare-effect";
 import deepEqual from "deep-equal";
 
 import { fetchCatalogContent } from "./dcsCatalogNextApis";
-import { getContentFromFile } from "./helpers";
 
 export default function useFileContent ({
   authentication,
@@ -15,7 +14,7 @@ export default function useFileContent ({
 }) {
   const defaultState = {
     file: undefined,
-    content: undefined,
+    cachedContent: undefined,
     publishedContent: undefined,
   };
   const [state, setState] = useState(defaultState);
@@ -59,20 +58,18 @@ export default function useFileContent ({
     if (file) {
       const cachedFile = await _onLoadCache();
       // Load autosaved content:
-      let content = cachedFile?.content;
+      let cachedContent = cachedFile?.content;
       let publishedContent;
   
-      if (!content) content = await getContentFromFile(file);
-
       if (!publishedContent) {
         // Check catalog next:
         const prodTag = repository?.catalog?.prod?.branch_or_tag_name;
         if ( prodTag ) {
           publishedContent = await _fetchCatalogContent({prodTag});
-        }
+        };
       };
       // console.log("\nuseFileContent.load()\n");
-      setState({ content, publishedContent });
+      setState({ cachedContent, publishedContent });
     };
   }, [file, repository, _onLoadCache, _fetchCatalogContent]);
 
@@ -88,5 +85,5 @@ export default function useFileContent ({
     };
   }, [file, state.file, reset, load]);
 
-  return { state };
+  return { state, actions: { reset, load }};
 };

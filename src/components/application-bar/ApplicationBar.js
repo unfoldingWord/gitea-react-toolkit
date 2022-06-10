@@ -10,19 +10,22 @@ import {
 
 import { useStyles } from './useStyles';
 import {
-  UserMenu, DrawerMenu, RepositoryMenu, FileContext,
+  UserMenu, DrawerMenu, RepositoryMenu,
 } from '..';
 
 function ApplicationBar({
   title,
   build,
   buttons,
+  filepath,
   drawerMenu,
   drawerMenuProps,
   hideRepositoryMenu,
+  auth,
+  repo,
+  file,
 }) {
   const classes = useStyles();
-  const { state: file } = useContext(FileContext)
 
   return (
     <div className={classes.root}>
@@ -31,7 +34,7 @@ function ApplicationBar({
         className={classes.appBar}>
         <Toolbar data-test="application-bar">
           <div className={classes.menuButton}>
-            <DrawerMenu {...drawerMenuProps}>
+            <DrawerMenu {...drawerMenuProps} file={file}>
               {drawerMenu}
             </DrawerMenu>
           </div>
@@ -44,8 +47,8 @@ function ApplicationBar({
           </Typography>
           <div className={classes.grow} />
           {buttons}
-          {!hideRepositoryMenu ? <RepositoryMenu /> : null}
-          <UserMenu />
+          {!hideRepositoryMenu ? <RepositoryMenu repo={repo} /> : null}
+          <UserMenu auth={auth} />
         </Toolbar>
       </AppBar>
     </div>

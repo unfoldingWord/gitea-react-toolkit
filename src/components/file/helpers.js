@@ -21,6 +21,7 @@ export const ensureFile = async ({
     content: defaultContent, message: _message, author,
     onOpenValidation,
   });
+  
   return file;
 };
 

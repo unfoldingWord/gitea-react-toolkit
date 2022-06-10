@@ -1,7 +1,6 @@
 import React, {
   useState,
   useCallback,
-  useContext,
   useEffect,
 } from 'react';
 import PropTypes from 'prop-types';
@@ -9,10 +8,10 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 import { useDeepCompareCallback } from 'use-deep-compare';
 
 import {
-  saveFile, ensureFile, deleteFile,
+  saveFile, ensureFile, deleteFile, getContentFromFile,
 } from './helpers';
 import {
-  FileCard, FileForm, useBlob, RepositoryContext,
+  FileCard, FileForm, useBlob,
 } from '..';
 import useFileContent from './useFileContent';
 
@@ -34,16 +33,15 @@ function useFile({
   const [isChanged, setIsChanged] = useState(false);
   const [blob, setBlob] = useState();
 
-  const { actions: { updateBranch }, config: repositoryConfig } = useContext(RepositoryContext);
-
-  const config = _config || repositoryConfig;
-  const { state: { content, publishedContent } } = useFileContent({
+  const config = _config || repository?.config || authentication?.config || {};
+  const { state: { cacheContent, publishedContent }, actions: contentActions } = useFileContent({
     authentication,
     repository,
     config,
     file,
     onLoadCache,
   });
+  const state = file && { ...file, cacheContent, publishedContent };
   const branch = repository && (repository.branch || repository.default_branch);
   const [deleted, setDeleted] = useState();
 
@@ -88,13 +86,15 @@ function useFile({
         branch,
         config,
         defaultContent,
-        filepath,
         repository,
+        filepath,
         onOpenValidation,
       });
-      // console.log("\nuseFile.load():", _file);
+
+      const content = await getContentFromFile(_file);
       update({
         ..._file,
+        content,
         branch,
         filepath: _file.path,
       });
@@ -114,7 +114,9 @@ function useFile({
   }) => {
     if (config && repository) {
       const _file = await ensureFile({
-        authentication, config, repository,
+        authentication,
+        config,
+        repository,
         branch: _branch,
         filepath: _filepath,
         defaultContent: _defaultContent,
@@ -122,11 +124,10 @@ function useFile({
       });
 
       if (_file) {
-        updateBranch(_branch);
         onFilepath(_filepath);
       };
-    }
-  }, [authentication, config, repository, updateBranch, onFilepath]);
+    };
+  }, [authentication, config, repository, onFilepath]);
 
   const close = useDeepCompareCallback(() => {
     if (blobActions && blobActions.close) {
@@ -146,17 +147,11 @@ function useFile({
   }, [writeable, authentication, repository, branch, file, onSaveCache]);
 
   const save = useDeepCompareCallback(async (_content) => {
-    //console.log("GRT save // will save file");
-    await saveFile({
-      authentication, repository, branch, file, content: _content,
-    }).then(
-      // Empty cache if user has saved this file
-      // (save() will not happen for "OFFLINE" system files)
-      async() => {
-        await saveCache(null); 
-        await load();
-      }
-    );
+    await saveFile({ authentication, repository, branch, file, content: _content });
+    // (save() will not happen for "OFFLINE" system files)
+    await saveCache(); // Empty cache if user has saved this file
+    contentActions.reset();
+    await load();
   }, [writeable, authentication, repository, branch, file, load, saveFile, saveCache]);
 
   const dangerouslyDelete = useDeepCompareCallback(async () => {
@@ -176,10 +171,11 @@ function useFile({
     const loadNew = (file && filepath && file.filepath !== filepath);
 
     if (notLoaded || loadNew) {
+      contentActions.reset();
       // console.log("useFile.useDeepCompareEffect(): notLoaded || loadNew", file);
       load();
     }
-  }, [deleted, filepath, load, file]);
+  }, [authentication, repository, deleted, filepath, load, file]);
 
   const blobFilepath = blobState && blobState.filepath;
 
@@ -243,8 +239,6 @@ function useFile({
       component = components.browse;
     }
   };
-
-  const state = file && { ...file, content, publishedContent };
 
   return {
     state,
