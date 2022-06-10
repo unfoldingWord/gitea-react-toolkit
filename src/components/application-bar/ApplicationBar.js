@@ -35,11 +35,11 @@ function ApplicationBar({
               {drawerMenu}
             </DrawerMenu>
           </div>
-          <Typography variant="h6" color="inherit" className={classes.grow} noWrap>
+          <Typography variant="h6" color="inherit" data-test={title} className={classes.grow} noWrap>
             {title}
-            {build && <Typography variant="caption" color="inherit" > build {build}</Typography>}
+            {build && <Typography variant="caption" color="inherit" data-test={build} > build {build}</Typography>}
           </Typography>
-          <Typography variant="subtitle2" color="inherit" className={classes.grow} noWrap>
+          <Typography variant="subtitle2" color="inherit" data-test={file} className={classes.grow} noWrap>
             {file ? file.filepath : ''}
           </Typography>
           <div className={classes.grow} />
