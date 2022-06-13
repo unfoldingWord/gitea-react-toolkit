@@ -10,10 +10,7 @@ env:
   COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
 jobs:
   test:
-    runs-on: macos-latest
-    strategy:
-      matrix:
-        node-version: [lts/*]
+    runs-on: ubuntu-latest
     steps:
       - name: Extract Branch Name
         run: echo "::set-env name=BRANCH::${GITHUB_REF##*/}"
@@ -22,7 +19,7 @@ jobs:
           ref: ${{ env.BRANCH }}
       - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: lts/*
       - name: Get yarn cache
         id: yarn-cache
         run: echo "::set-output name=dir::$(yarn cache dir)"
