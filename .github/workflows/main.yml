@@ -51,14 +51,8 @@ jobs:
       - name: Create Badge For Coverage Results
         run: yarn create-coverage-badge;
       - name: Commit Coverage Results
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add ./coverage/shields.json -f
-          git checkout .
-          git diff-index --quiet HEAD || git commit -m "Add Coverage Results"
-      - name: Push changes
-        uses: ad-m/github-push-action@master
+        uses: EndBug/add-and-commit@v9
         with:
-          github_token: ${{ secrets.ACTIONS_TOKEN }}
-          branch: ${{ env.BRANCH }}
+          add: 'coverage/shields.json'
+          message: 'Add Coverage Results'
+          push: true
