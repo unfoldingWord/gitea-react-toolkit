@@ -13,7 +13,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        node-version: [10.15.1]
+        node-version: [lts/*]
     steps:
       - name: Extract Branch Name
         run: echo "::set-env name=BRANCH::${GITHUB_REF##*/}"
