@@ -18,7 +18,7 @@ describe('Application Bar', function () {
     cy.wait(500);
     cy.get('[data-test=drawer-menu-button]', { timeout: 10000 }).eq(0).click();
     cy.wait(500);
-    cy.get('[data-test=file-tree]', { timeout: 10000 }).children().should('have.length', 8);
+    cy.get('[data-test=file-tree]', { timeout: 10000 }).children().should('have.length', 9);
     cy.get('[data-test=drawer-menu-close-button]').scrollIntoView();
     cy.wait(500);
     cy.get('[data-test=drawer-menu-close-button]').click();
