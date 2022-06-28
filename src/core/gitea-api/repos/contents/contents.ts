@@ -190,46 +190,29 @@ export const ensureContent = async ({
     // add on open validation checks here for source side or existing branch content
     //
     const _content:string = await getContentFromFile(contentObject);
-    let notices: string[] = [];
     if ( onOpenValidation ) {
-      notices = onOpenValidation(filepath, _content,contentObject.html_url);
+      onOpenValidation(filepath, _content,contentObject.html_url);
     }
   } catch {
     try { // try to update the file in case it is in the default branch
       // NOTE: if the file is in the master branch of the target
-      // the following readConcent will succeed
+      // the following readContent will succeed
       // Otherwise it returns null; if null then the getContentFromFile
       // will throw an error (probably from trying to decode null or
       // if by url, a 404 is returned and get throws an error)
       // In this case, the catch() will create the content from the source
-      // the "updateContent" will cause the existing target content in master
-      // to be used. createContent will be called at some point during the update
-      const _contentObject = await readContent({
+      // createContent will be called at some point during the update
+
+      contentObject = await readContent({
         owner, repo, filepath, config,
       });
-      //
-      // add on open validation checks here for when target repo has data, but there is no user branch
-      //
-      // the below can throw an error, so it will go to the catch for create to be done
-      const _content = await getContentFromFile(_contentObject);
-      let notices: string[] = [];
-      if ( onOpenValidation ) {
-        notices = onOpenValidation(filepath, _content,_contentObject.html_url);
-      }
-      if ( notices.length === 0 ) {
-        // only update if no notices
-        contentObject = await updateContent({
-          config, owner, repo, branch, filepath, content: _content, message, author, sha: _contentObject.sha,
-        });
-      } else {
-        contentObject = _contentObject;
-      }
+
     } catch { // try to create the file if it doesn't exist in default or new branch
       contentObject = await createContent({
         config, owner, repo, branch, filepath, content, message, author,
       });
-    };
-  };
+    }
+  }
 
   return contentObject;
 };

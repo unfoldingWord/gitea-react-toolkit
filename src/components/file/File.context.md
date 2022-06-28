@@ -24,13 +24,16 @@ function Component() {
     onAuthentication: setAuthentication,
   });
   const { state: repo, component: repoComponent } = useRepository({
+    authentication,
     repository,
     onRepository: setRepository,
     defaultOwner: authentication && authentication.user.name,
     defaultQuery: "",
-    branch: 'master',
+    branch: 'dimmy',
   });
   const { state: file, actions: fileActions, component: fileComponent } = useFile({
+    authentication,
+    repository,
     filepath,
     onFilepath: setFilepath,
     create: false,
