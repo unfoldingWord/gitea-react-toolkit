@@ -29,7 +29,7 @@ function Component() {
     onRepository: setRepository,
     defaultOwner: authentication && authentication.user.name,
     defaultQuery: "",
-    branch: 'dimmy',
+    branch: 'testing',
   });
   const { state: file, actions: fileActions, component: fileComponent } = useFile({
     authentication,

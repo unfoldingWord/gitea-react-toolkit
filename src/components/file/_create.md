@@ -41,7 +41,7 @@ function Component() {
     onRepository: setRepository,
     defaultOwner: authentication && authentication.user.name,
     defaultQuery: "",
-    branch: 'dummy3',
+    branch: 'testing',
   });
   const { state: file, component: fileComponent } = useFile({
     authentication,
@@ -49,7 +49,6 @@ function Component() {
     filepath,
     onFilepath: setFilepath,
     create: true,
-    delay: true,
   });
 
   return (!auth && authComponent) || (!repo && repoComponent) || fileComponent;
