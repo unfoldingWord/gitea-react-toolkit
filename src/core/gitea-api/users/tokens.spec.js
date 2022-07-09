@@ -1,6 +1,7 @@
 /// <reference types="jest" />
 import * as helpers from './tokens';
-jest.mock('../core');
+// jest.mock('../core');
+// import * as core from '../http/http';
 
 const headers = {
   'Authorization': 'basic 123456789',
