@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /// <reference types="jest" />
 import * as helpers from './users';
-jest.mock('../core', () => ({ get: () => Promise.resolve({ id: 'test-user' }), apiPath: 'api/v1' }));
+import * as core from '../http/http';
 
 const TEST_TOKEN = 'encrypted123456789';
 const authToken = {
@@ -16,14 +16,14 @@ const config = {
 };
 
 describe('Users', () => {
-  const core = require('../core');
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
   describe('getUser', () => {
     it('should get a user', async () => {
-      const getSpy = jest.spyOn(core, 'get');
+      const getSpy = jest.spyOn(core, 'get')
+          .mockImplementation(() => Promise.resolve({ id: 'test-user' }));
       const params = { username: 'a_user', config };
       const expected = expect.objectContaining({
         config,
@@ -38,7 +38,8 @@ describe('Users', () => {
 
   describe('getUID', () => {
     it('should get a user', async () => {
-      const getSpy = jest.spyOn(core, 'get');
+      const getSpy = jest.spyOn(core, 'get')
+          .mockImplementation(() => Promise.resolve({ id: 'test-user' }));
       const params = { username: 'a_user', config };
       const expected = expect.objectContaining({
         config,

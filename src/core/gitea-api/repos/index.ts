@@ -3,3 +3,4 @@ export * from './git/trees';
 export * from './contents';
 export * from './forks';
 export * from './search';
+export * from './branches';

@@ -1,5 +1,5 @@
 /// <reference types="jest" />
-import * as core from '../core';
+import * as core from '../http/http';
 import * as helpers from './repos';
 const TEST_TOKEN = 'encrypted123456789';
 const authToken = {

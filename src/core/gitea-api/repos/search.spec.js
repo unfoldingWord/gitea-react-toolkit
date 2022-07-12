@@ -1,6 +1,6 @@
 /// <reference types="jest" />
 import * as helpers from './search';
-jest.mock('../core', () => ({ get: () => Promise.resolve([{ name: 'a_repo' }]), apiPath: '' }));
+jest.mock('../http/http', () => ({ get: () => Promise.resolve([{ name: 'a_repo' }]), apiPath: '' }));
 
 const TEST_TOKEN = 'encrypted123456789';
 const authToken = {
