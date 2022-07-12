@@ -142,7 +142,7 @@ export const updateContent = async ({
       contentObject = response.content;
     };
   } catch (error) {
-    // Allow original error to propogate.
+    // Allow original error to propagate.
     // This allows switching based on error messages above.
     throw error;
   };
@@ -175,12 +175,12 @@ export const ensureContent = async ({
 }: ModifyContentOptions): Promise<ContentObject> => {
   let contentObject: ContentObject;
 
-  try { // try to read the file
+  try {// try to read the file
     // NOTE: when a source file is fetched for translation, the following readConent
     // should always succeed since the file was selected from a UI which
     // is showing files that exist.
     //
-    // OTOH, if the file is the target this will return null (the first time), 
+    // OTOH, if the file is the target this will return null (the first time),
     // throwing the error. When the error is thrown, the catch will fire.
     contentObject = await readContent({
       owner, repo, ref: branch, filepath, config,
@@ -190,46 +190,28 @@ export const ensureContent = async ({
     // add on open validation checks here for source side or existing branch content
     //
     const _content:string = await getContentFromFile(contentObject);
-    let notices: string[] = [];
     if ( onOpenValidation ) {
-      notices = onOpenValidation(filepath, _content,contentObject.html_url);
+      onOpenValidation(filepath, _content,contentObject.html_url);
     }
   } catch {
-    try { // try to update the file in case it is in the default branch
-      // NOTE: if the file is in the master branch of the target
-      // the following readConcent will succeed
-      // Otherwise it returns null; if null then the getContentFromFile
-      // will throw an error (probably from trying to decode null or
-      // if by url, a 404 is returned and get throws an error)
-      // In this case, the catch() will create the content from the source
-      // the "updateContent" will cause the existing target content in master
-      // to be used. createContent will be called at some point during the update
-      const _contentObject = await readContent({
+    try {
+      // try to read file from the default branch
+      // if it exists content will be returned without creating a new branch
+      contentObject = await readContent({
         owner, repo, filepath, config,
       });
-      //
-      // add on open validation checks here for when target repo has data, but there is no user branch
-      //
-      // the below can throw an error, so it will go to the catch for create to be done
-      const _content = await getContentFromFile(_contentObject);
-      let notices: string[] = [];
-      if ( onOpenValidation ) {
-        notices = onOpenValidation(filepath, _content,_contentObject.html_url);
+
+      if (!contentObject) {
+        throw new Error('File does not exist in default branch');
       }
-      if ( notices.length === 0 ) {
-        // only update if no notices
-        contentObject = await updateContent({
-          config, owner, repo, branch, filepath, content: _content, message, author, sha: _contentObject.sha,
-        });
-      } else {
-        contentObject = _contentObject;
-      }
+
     } catch { // try to create the file if it doesn't exist in default or new branch
+      // if branch does not exist yet, it will be created here.
       contentObject = await createContent({
         config, owner, repo, branch, filepath, content, message, author,
       });
-    };
-  };
+    }
+  }
 
   return contentObject;
 };

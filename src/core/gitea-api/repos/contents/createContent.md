@@ -6,18 +6,18 @@ import { Core, createContent } from 'gitea-react-toolkit';
 
 const props = {
   config: {
-    server: 'https://bg.door43.org',
+    server: 'https://qa.door43.org',
     tokenid: 'PlaygroundTesting',
   },
-  owner: 'klappy',
-  repo: 'blank',
-  branch: 'testing',
+  owner: 'unfoldingWord',
+  repo: 'en_obs',
+  branch: 'cecils-branch',
   filepath: 'README.md',
   content: 'Testing createContent',
   message: 'Testing createContent via Gitea-React-Toolkit',
   author: {
-    email: "user@example.com",
-    username: "user",
+    email: "cecil.new@gmail.com",
+    username: "cecil.new",
   },
 };
 

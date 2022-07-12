@@ -1,5 +1,5 @@
 import {
-  get, updateContent, ensureContent, deleteContent, decodeBase64ToUtf8,
+  get, updateContent, ensureContent, deleteContent, decodeBase64ToUtf8, createContent,
 } from '../..';
 
 export const ensureFile = async ({
@@ -71,11 +71,17 @@ export const saveFile = async ({
   const { owner: { username: owner }, name: repo } = repository;
   const { path: filepath, sha } = file;
   const _message = message || `Edit '${filepath}' using '${tokenid}'`;
-
-  const response = await updateContent({
-    config, owner, repo, branch, filepath,
-    content, message: _message, author, sha,
-  });
+  let response;
+  try {
+    response = await updateContent({
+      config, owner, repo, branch, filepath,
+      content, message: _message, author, sha,
+    });
+  } catch {
+    response = await createContent({
+      config, owner, repo, branch, filepath, content, message: _message, author, sha
+    });
+  }
   return response;
 };
 
