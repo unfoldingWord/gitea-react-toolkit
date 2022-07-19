@@ -40,6 +40,7 @@ interface ContentObject {
   sha: string;
   content: string;
   html_url: string;
+  name?: string;
 }
 
 export const payload = ({
@@ -208,6 +209,7 @@ export const ensureContent = async ({
     } catch {
       // use content object unconnected to branch or repo.
       contentObject = {
+        name: filepath.slice(filepath.lastIndexOf('/')+1),
         content: content || '',
         path: filepath,
         sha: 'new',
