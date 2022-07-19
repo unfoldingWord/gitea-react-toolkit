@@ -207,13 +207,13 @@ export const ensureContent = async ({
       }
 
     } catch {
-      // use content object unconnected to branch or repo.
+      // create contentObject directly when unconnected to branch or repo.
       contentObject = {
         name: filepath.slice(filepath.lastIndexOf('/')+1),
         content: content || '',
         path: filepath,
         sha: 'new',
-        html_url:'',
+        html_url: '',
       }
     }
   }
