@@ -40,7 +40,7 @@ interface ContentObject {
   sha: string;
   content: string;
   html_url: string;
-  name?: string;
+  name: string;
 }
 
 export const payload = ({
