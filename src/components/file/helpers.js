@@ -48,8 +48,12 @@ export const getContentFromFile = async (file) => {
   } = file;
   let _content;
 
-  if (content && encoding === 'base64') {
-    _content = decodeBase64ToUtf8(content);
+  if (content) {
+    if ('base64' === encoding) {
+      _content = decodeBase64ToUtf8(content);
+    } else {
+      _content = content;
+    }
   } else if (!content && download_url) {
     _content = await get({ url: download_url, noCache: true });
   } else if (!content && git_url) {

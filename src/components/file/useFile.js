@@ -20,7 +20,7 @@ function useFile({
   repository,
   filepath,
   onFilepath,
-  defaultContent,
+  defaultContent: _defaultContent,
   config: _config,
   create=false,
   onOpenValidation,
@@ -29,6 +29,7 @@ function useFile({
   onConfirmClose,
   releaseFlag,
 }) {
+  const [defaultContent, setDefaultContent] = useState(_defaultContent)
   const [file, setFile] = useState();
   const [isChanged, setIsChanged] = useState(false);
   const [blob, setBlob] = useState();
@@ -113,6 +114,7 @@ function useFile({
     branch: _branch, filepath: _filepath, defaultContent: _defaultContent, onOpenValidation,
   }) => {
     if (config && repository) {
+      setDefaultContent(_defaultContent);
       const _file = await ensureFile({
         authentication,
         config,

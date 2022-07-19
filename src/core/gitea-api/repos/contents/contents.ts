@@ -205,11 +205,14 @@ export const ensureContent = async ({
         throw new Error('File does not exist in default branch');
       }
 
-    } catch { // try to create the file if it doesn't exist in default or new branch
-      // if branch does not exist yet, it will be created here.
-      contentObject = await createContent({
-        config, owner, repo, branch, filepath, content, message, author,
-      });
+    } catch {
+      // use content object unconnected to branch or repo.
+      contentObject = {
+        content: content || '',
+        path: filepath,
+        sha: 'new',
+        html_url:'',
+      }
     }
   }
 
