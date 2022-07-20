@@ -40,6 +40,7 @@ interface ContentObject {
   sha: string;
   content: string;
   html_url: string;
+  name: string;
 }
 
 export const payload = ({
@@ -205,11 +206,15 @@ export const ensureContent = async ({
         throw new Error('File does not exist in default branch');
       }
 
-    } catch { // try to create the file if it doesn't exist in default or new branch
-      // if branch does not exist yet, it will be created here.
-      contentObject = await createContent({
-        config, owner, repo, branch, filepath, content, message, author,
-      });
+    } catch {
+      // create contentObject directly when unconnected to branch or repo.
+      contentObject = {
+        name: filepath.slice(filepath.lastIndexOf('/')+1),
+        content: content || '',
+        path: filepath,
+        sha: 'new',
+        html_url: '',
+      }
     }
   }
 
