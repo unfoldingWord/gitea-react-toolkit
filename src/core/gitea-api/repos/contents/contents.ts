@@ -187,13 +187,6 @@ export const ensureContent = async ({
       owner, repo, ref: branch, filepath, config,
     });
     if (!contentObject) throw new Error('File does not exist in branch');
-    //
-    // add on open validation checks here for source side or existing branch content
-    //
-    const _content:string = await getContentFromFile(contentObject);
-    if ( onOpenValidation ) {
-      onOpenValidation(filepath, _content,contentObject.html_url);
-    }
   } catch {
     try {
       // try to read file from the default branch
@@ -217,6 +210,12 @@ export const ensureContent = async ({
       }
     }
   }
-
+  //
+  // add on open validation checks here for source side or existing branch content
+  //
+  const _content:string = await getContentFromFile(contentObject);
+  if ( onOpenValidation ) {
+    onOpenValidation(filepath, _content,contentObject.html_url);
+  }
   return contentObject;
 };
