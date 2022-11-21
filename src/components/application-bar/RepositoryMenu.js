@@ -32,10 +32,10 @@ function RepositoryMenu({
     full_name,
   } = repository || {};
 
-  const _onDelete = useCallback(() => {
+  const _onDelete = useCallback(async () => {
     if (actions?.close) {
       if (fileActions?.onConfirmClose) {
-        if (fileActions.onConfirmClose())
+        if (await fileActions.onConfirmClose())
         {
           actions.close();
         }

@@ -44,3 +44,42 @@ const [repository, setRepository] = React.useState();
   </AuthenticationContextProvider>
 </Paper>
 ```
+
+Warning to close.
+
+```js
+import { Paper } from '@material-ui/core';
+import { RepositoryMenu, AuthenticationContextProvider, RepositoryContextProvider, FileContextProvider } from 'gitea-react-toolkit';
+
+const repository = {
+  server: 'it',
+  name: 'test_repo',
+  avatar_url: 'about:blank',
+  owner: 'me',
+  full_name: 'The Test Repo',
+};
+
+<Paper>
+  <AuthenticationContextProvider>
+    <RepositoryContextProvider
+      repository={repository}
+      urls={[
+        "https://qa.door43.org/unfoldingWord/en_ta",
+        "https://qa.door43.org/unfoldingWord/en_tw",
+      ]}
+    >
+      <FileContextProvider
+          onConfirmClose={() => {
+            return new Promise(function (resolve, reject) {
+                let confirmed = window.confirm('Es Verdad?');
+                return confirmed ? resolve(true) : reject(false);
+            })
+          } }
+          filepath="it.tsv"
+        >
+        <RepositoryMenu />
+      </FileContextProvider>
+    </RepositoryContextProvider>
+  </AuthenticationContextProvider>
+</Paper>
+```
