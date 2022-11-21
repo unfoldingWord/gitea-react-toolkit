@@ -47,7 +47,7 @@ function ApplicationBar({
           </Typography>
           <div className={classes.grow} />
           {buttons}
-          {!hideRepositoryMenu ? <RepositoryMenu repo={repo} /> : null}
+          {!hideRepositoryMenu ? <RepositoryMenu repo={repo} file={file} /> : null}
           <UserMenu auth={auth} />
         </Toolbar>
       </AppBar>
