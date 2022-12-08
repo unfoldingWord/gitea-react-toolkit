@@ -29,6 +29,8 @@ function useFile({
   onConfirmClose,
   releaseFlag,
 }) {
+  // debugging
+  console.log("useFile() releaseFlag, repository:",releaseFlag, repository)
   const [file, setFile] = useState();
   const [isChanged, setIsChanged] = useState(false);
   const [blob, setBlob] = useState();

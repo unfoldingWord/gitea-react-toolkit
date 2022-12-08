@@ -175,7 +175,10 @@ export const ensureContent = async ({
   config, owner, repo, branch, filepath, content, message, author, onOpenValidation,
 }: ModifyContentOptions): Promise<ContentObject> => {
   let contentObject: ContentObject;
-
+  // this is a very tricky function, so the debug var will help trace what is happening
+  const debugEnsureContent = true;
+  const funcname = 'ensureContent()';
+  debugEnsureContent && console.log(`${funcname} owner, repo, branch, filepath:`,owner, repo, branch, filepath)
   try {// try to read the file
     // NOTE: when a source file is fetched for translation, the following readConent
     // should always succeed since the file was selected from a UI which
@@ -183,24 +186,37 @@ export const ensureContent = async ({
     //
     // OTOH, if the file is the target this will return null (the first time),
     // throwing the error. When the error is thrown, the catch will fire.
+    debugEnsureContent && console.log(`${funcname} before readContent()`)
     contentObject = await readContent({
       owner, repo, ref: branch, filepath, config,
     });
-    if (!contentObject) throw new Error('File does not exist in branch');
+
+    if (!contentObject) {
+      debugEnsureContent && console.log(`${funcname} readContent() throws error file does not exist in branch`)
+      throw new Error('File does not exist in branch');
+    } else {
+      debugEnsureContent && console.log(`${funcname} file exists in default branch`)
+    }
+
   } catch {
     try {
       // try to read file from the default branch
       // if it exists content will be returned without creating a new branch
+      debugEnsureContent && console.log(`${funcname} in catch() before readContent`)
       contentObject = await readContent({
         owner, repo, filepath, config,
       });
 
       if (!contentObject) {
+        debugEnsureContent && console.log(`${funcname} readContent() throws error file does not exist in default branch`)
         throw new Error('File does not exist in default branch');
+      } else {
+        debugEnsureContent && console.log(`${funcname} file exists in default branch`)
       }
 
     } catch {
       // create contentObject directly when unconnected to branch or repo.
+      debugEnsureContent && console.log(`${funcname} in inner catch() using default content`)
       contentObject = {
         name: filepath.slice(filepath.lastIndexOf('/')+1),
         content: content || '',
@@ -215,6 +231,7 @@ export const ensureContent = async ({
   //
   const _content:string = await getContentFromFile(contentObject);
   if ( onOpenValidation ) {
+    debugEnsureContent && console.log(`${funcname} running onOpenValidation() on content`)
     onOpenValidation(filepath, _content,contentObject.html_url);
   }
   return contentObject;

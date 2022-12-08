@@ -24,7 +24,7 @@ export async function fetchCatalogContent(username, repository, tag, filepath, c
       _data = data;
     } 
   } catch (geterror) {
-    console.log("Error:",geterror,"on uri:",uri);
+    console.log("fetchCatalogContent() Error:",geterror,"on uri:",uri);
     _data = "";
   }
   return _data;
