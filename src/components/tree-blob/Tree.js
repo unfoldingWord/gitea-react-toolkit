@@ -16,6 +16,76 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const bookIds = [
+  "gen",
+  "exo",
+  "lev",
+  "num",
+  "deu",
+  "jos",
+  "jdg",
+  "rut",
+  "1sa",
+  "2sa",
+  "1ki",
+  "2ki",
+  "1ch",
+  "2ch",
+  "ezr",
+  "neh",
+  "est",
+  "job",
+  "psa",
+  "pro",
+  "ecc",
+  "sng",
+  "isa",
+  "jer",
+  "lam",
+  "ezk",
+  "dan",
+  "hos",
+  "jol",
+  "amo",
+  "oba",
+  "jon",
+  "mic",
+  "old",
+  "nam",
+  "hab",
+  "zep",
+  "hag",
+  "zec",
+  "mal",
+  "mat",
+  "mrk",
+  "luk",
+  "jhn",
+  "act",
+  "rom",
+  "1co",
+  "2co",
+  "gal",
+  "eph",
+  "php",
+  "col",
+  "1th",
+  "2th",
+  "1ti",
+  "2ti",
+  "tit",
+  "phm",
+  "heb",
+  "jas",
+  "1pe",
+  "2pe",
+  "1jn",
+  "2jn",
+  "3jn",
+  "jud",
+  "rev",
+]
+
 /**
  * A Listing Component to render an array of Git Tree objects.
  */
@@ -42,6 +112,8 @@ function Tree({
 
   const updateTree = async () => {
     const __tree = await fetchTree({ url, config, comparer });
+    console.log("Tree() updateTree() typeOf comparer:", typeof comparer, comparer)
+    console.log("Tree() updateTree() __tree:", __tree)
     setTree(__tree);
   };
 
@@ -52,8 +124,53 @@ function Tree({
   }
 
   let components = [];
+  const REGEX_TSV_BOOK_ABBREVIATION = /^\w*_(\w*)\.tsv$/i;
 
   if (_tree) {
+    let tsvSortedTree = _tree.sort(
+      (f1, f2) => {
+        const f1Path = f1.path;
+        const f2Path = f2.path;
+        const book1Matches = f1Path.match(REGEX_TSV_BOOK_ABBREVIATION);
+        const book2Matches = f2Path.match(REGEX_TSV_BOOK_ABBREVIATION);
+    
+        const isTsvFiles = (book1Matches && book2Matches)?true:false;
+        if ( !isTsvFiles ) return 0;
+
+        // they are tsv files, now extract the book id from each
+        const book1 = book1Matches[1];
+        const book2 = book2Matches[1];
+        // make them lowercase
+        const b1 = book1.toLowerCase()
+        const b2 = book2.toLowerCase()
+
+        let pos1, pos2 = 0;
+        // locate position of book1
+        for (let i=0; i<bookIds.length; i++) {
+          if ( bookIds[i] === b1 ) {
+            pos1 = i;
+            break
+          }
+        }
+        // locate position of book2
+        for (let i=0; i<bookIds.length; i++) {
+          if ( bookIds[i] === b2 ) {
+            pos2 = i;
+            break
+          }
+        }
+        
+        // find the order
+        let retVal = 0
+        if ( pos1 < pos2 ) {
+          retVal = -1
+        } else if ( pos1 > pos2 ) {
+          retVal = 1
+        }
+        return retVal
+      }
+    );
+  
     components = _tree.map((object, index) => {
       const _selected = (object.path === selectedPath);
       let component;
