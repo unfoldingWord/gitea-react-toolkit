@@ -132,15 +132,19 @@ export const updateContent = async ({
       });
       contentObject = response.content;
     } catch (e) {
-      console.warn('Branch doesnt exists. Thus, creating new branch', e);
-
-      const _payload = payload({
-        new_branch: branch, content, message, author, sha,
-      });
-      const response = await put({
-        url, payload: _payload, config,
-      });
-      contentObject = response.content;
+      if(config.dontCreateBranch){
+        console.warn('Upload Failed',e)
+        throw e;
+      }else{
+        console.warn('Upload Failed. Trying to create new branch', e);
+        const _payload = payload({
+          new_branch: branch, content, message, author, sha,
+        });
+        const response = await put({
+          url, payload: _payload, config,
+        });
+        contentObject = response.content;
+      }
     };
   } catch (error) {
     // Allow original error to propagate.

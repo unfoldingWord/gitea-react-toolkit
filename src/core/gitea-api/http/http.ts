@@ -42,6 +42,7 @@ export interface ExtendConfig {
   headers?: object;
   server?: string;
   data?: object;
+  dontCreateBranch?: boolean;
 }
 
 export const extendConfig = (config: ExtendConfig): APIConfig => {
