@@ -65,6 +65,7 @@ export default function useEdit({
         setState((prevState) => ({
           ...prevState,
           editResponse: response,
+          isEditing: false,
         }))
         return true
       } else {
@@ -75,13 +76,9 @@ export default function useEdit({
         ...prevState,
         isError: true,
         error,
-      }))
-      return false
-    } finally {
-      setState((prevState) => ({
-        ...prevState,
         isEditing: false,
       }))
+      return false
     }
   }
 

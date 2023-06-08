@@ -132,11 +132,11 @@ export const updateContent = async ({
       });
       contentObject = response.content;
     } catch (e) {
-      if(config.dontCreateBranch){
-        console.warn('Upload Failed',e)
+      if (config.dontCreateBranch) {
+        console.warn('Failed to upload to user branch', e);
         throw e;
-      }else{
-        console.warn('Upload Failed. Trying to create new branch', e);
+      } else {
+        console.warn('Failed to upload to user branch. Trying to create new branch', e);
         const _payload = payload({
           new_branch: branch, content, message, author, sha,
         });
@@ -145,7 +145,7 @@ export const updateContent = async ({
         });
         contentObject = response.content;
       }
-    };
+    }
   } catch (error) {
     // Allow original error to propagate.
     // This allows switching based on error messages above.
