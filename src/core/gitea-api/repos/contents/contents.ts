@@ -132,16 +132,20 @@ export const updateContent = async ({
       });
       contentObject = response.content;
     } catch (e) {
-      console.warn('Branch doesnt exists. Thus, creating new branch', e);
-
-      const _payload = payload({
-        new_branch: branch, content, message, author, sha,
-      });
-      const response = await put({
-        url, payload: _payload, config,
-      });
-      contentObject = response.content;
-    };
+      if (config.dontCreateBranch) {
+        console.warn('Failed to upload to user branch', e);
+        throw e;
+      } else {
+        console.warn('Failed to upload to user branch. Trying to create new branch', e);
+        const _payload = payload({
+          new_branch: branch, content, message, author, sha,
+        });
+        const response = await put({
+          url, payload: _payload, config,
+        });
+        contentObject = response.content;
+      }
+    }
   } catch (error) {
     // Allow original error to propagate.
     // This allows switching based on error messages above.
