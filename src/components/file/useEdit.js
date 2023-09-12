@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { updateContent } from '../..';
+import { patchContent, updateContent } from '../..';
 
 /**
  * Custom hook for editing content of translation helps resources
@@ -82,11 +82,57 @@ export default function useEdit({
     }
   }
 
+  async function onSaveEditPatch(_branch) {
+    try {
+      // content is the updated string or dirty content.
+      if (content) {
+        // clear state to remove left over state from a previous edit.
+        setState((prevState) => ({
+          ...prevState,
+          editResponse: null,
+          isEditing: true,
+          isError: false,
+        }))
+
+        const response = await patchContent({
+          sha,
+          repo,
+          owner,
+          config,
+          author,
+          content,
+          filepath,
+          message: _message,
+          // Use branch passed to function or branch passed to custom hook. 
+          branch: _branch || branch,
+        });
+
+        setState((prevState) => ({
+          ...prevState,
+          editResponse: response,
+          isEditing: false,
+        }))
+        return true
+      } else {
+        console.warn('Content value is empty')
+      }
+    } catch (error) {
+      setState((prevState) => ({
+        ...prevState,
+        isError: true,
+        error,
+        isEditing: false,
+      }))
+      return false
+    }
+  }
+
   return {
     error,
     isError,
     isEditing,
     onSaveEdit,
     editResponse,
+    onSaveEditPatch,
   }
 }

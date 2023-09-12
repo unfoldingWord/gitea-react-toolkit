@@ -114,6 +114,38 @@ export const readContent = async ({
   return contentObject;
 };
 
+// POST /api/v1/repos/{owner}/{repo}/diffpatch
+export const patchContent = async ({
+  config, owner, repo, branch, filepath, content, message, author, sha,
+}: ModifyContentOptions): Promise<ContentObject> => {
+  const url = Path.join(apiPath, 'repos', owner, repo, 'diffpatch');
+  let contentObject: ContentObject;
+  
+  try {
+    const _payload =
+    {
+      author,
+      branch,
+      committer: author,
+      content: utf8.encode(content || ''),
+      from_path: ".",
+      message,
+      new_branch: branch,
+      sha,
+      signoff: true,
+    }
+    const response = await post({
+      url, payload: _payload, config,
+    });
+    contentObject = response.content;
+  } catch (e) {
+    console.warn('Failed to upload to user branch', e);
+    throw e;
+  }
+
+  return contentObject;
+};
+
 // PUT /api/v1/repos/{owner}/{repo}/contents/{filepath}
 export const updateContent = async ({
   config, owner, repo, branch, filepath, content, message, author, sha,
