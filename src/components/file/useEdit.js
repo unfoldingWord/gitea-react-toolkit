@@ -10,6 +10,7 @@ import { patchContent, updateContent } from '../..';
  * @param {object} config - config settings for fetches (timeout, cache, etc.)
  * @param {string} branch - branch name.
  * @param {string} author - author of the edit.
+ * @param {string} email - email of the author.
  * @param {string} content - Edited/updated content.
  * @param {string} message - Optional commit message.
  * @param {string} filePath - file path, file path for the file being edited.
@@ -23,6 +24,7 @@ export default function useEdit({
   config,
   branch,
   author,
+  email,
   content,
   message,
   filepath,
@@ -100,6 +102,7 @@ export default function useEdit({
           owner,
           config,
           author,
+          email,
           content,
           filepath,
           message: _message,

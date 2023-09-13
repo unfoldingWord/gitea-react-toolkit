@@ -17,6 +17,7 @@ interface ModifyContentOptions {
   content?: string;
   message: string;
   author: Author;
+  email?: string;
   sha?: string;
   onOpenValidation?: (filename: string, content: string, url: string) => never;
 };
@@ -116,21 +117,30 @@ export const readContent = async ({
 
 // POST /api/v1/repos/{owner}/{repo}/diffpatch
 export const patchContent = async ({
-  config, owner, repo, branch, filepath, content, message, author, sha,
+  config, owner, repo, branch, filepath, content, message, author, email, sha,
 }: ModifyContentOptions): Promise<ContentObject> => {
   const url = Path.join(apiPath, 'repos', owner, repo, 'diffpatch');
   let contentObject: ContentObject;
+  const author_ = {
+    email: email || '',
+    name: author,
+  }
+  var date = new Date();
+  var isoDate = date.toISOString();
   
   try {
     const _payload =
     {
-      author,
+      author: author_,
       branch,
-      committer: author,
-      content: utf8.encode(content || ''),
+      committer: author_,
+      content: content || '',
       from_path: ".",
+      dates: {
+        author: isoDate,
+        committer: isoDate
+      },
       message,
-      new_branch: branch,
       sha,
       signoff: true,
     }
