@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { updateContent } from '../..';
+import { patchContent, updateContent } from '../..';
 
 /**
  * Custom hook for editing content of translation helps resources
@@ -10,6 +10,7 @@ import { updateContent } from '../..';
  * @param {object} config - config settings for fetches (timeout, cache, etc.)
  * @param {string} branch - branch name.
  * @param {string} author - author of the edit.
+ * @param {string} email - email of the author.
  * @param {string} content - Edited/updated content.
  * @param {string} message - Optional commit message.
  * @param {string} filePath - file path, file path for the file being edited.
@@ -23,6 +24,7 @@ export default function useEdit({
   config,
   branch,
   author,
+  email,
   content,
   message,
   filepath,
@@ -82,11 +84,58 @@ export default function useEdit({
     }
   }
 
+  async function onSaveEditPatch(_branch) {
+    try {
+      // content is the updated string or dirty content.
+      if (content) {
+        // clear state to remove left over state from a previous edit.
+        setState((prevState) => ({
+          ...prevState,
+          editResponse: null,
+          isEditing: true,
+          isError: false,
+        }))
+
+        const response = await patchContent({
+          sha,
+          repo,
+          owner,
+          config,
+          author,
+          email,
+          content,
+          filepath,
+          message: _message,
+          // Use branch passed to function or branch passed to custom hook. 
+          branch: _branch || branch,
+        });
+
+        setState((prevState) => ({
+          ...prevState,
+          editResponse: response,
+          isEditing: false,
+        }))
+        return true
+      } else {
+        console.warn('Content value is empty')
+      }
+    } catch (error) {
+      setState((prevState) => ({
+        ...prevState,
+        isError: true,
+        error,
+        isEditing: false,
+      }))
+      return false
+    }
+  }
+
   return {
     error,
     isError,
     isEditing,
     onSaveEdit,
     editResponse,
+    onSaveEditPatch,
   }
 }
