@@ -39,40 +39,65 @@ export default function useEdit({
   const { name: tokenid } = token || {}
   const _message = message || `Edit '${filepath}' using '${tokenid}'`;
 
-  async function onSaveEdit(_branch) {
+  /**
+   * Upload new content to given branch in DCS.
+   * Sets state necessary to indicate that content is saving and then that
+   * we have finished editing. 
+   * @async
+   * @param {string} _branch - branch name to save content to 
+   * @param {string} newContent - Stringified content to be saved to DCS
+   * @returns {Promise<Object>} - Response after saving the content.
+   */
+  async function saveContent(_branch, newContent) {
+    setState((prevState) => ({
+      ...prevState,
+      editResponse: null,
+      isEditing: true,
+      isError: false,
+    }))
+    
+    const response = await updateContent({
+      sha,
+      repo,
+      owner,
+      config,
+      author,
+      content: newContent,
+      filepath,
+      message: _message,
+      // Use branch passed to function or branch passed to custom hook. 
+      branch: _branch || branch,
+    });
+
+    setState((prevState) => ({
+      ...prevState,
+      editResponse: response,
+      isEditing: false,
+    }))
+    return response
+  }
+
+  /**
+   * Saves edited content to given branch and catches any errors that happen 
+   * during the save.
+   * @async
+   * @param {string} _branch - branch name to save content to 
+   * @param {string} newContent - Stringified content to be saved to DCS
+   * @returns {Promise<boolean>} - Returns true if successful, otherwise false.
+   */
+  async function onSaveEdit(_branch, newContent='') {
     try {
-      // content is the updated string or dirty content.
-      if (content) {
-        // clear state to remove left over state from a previous edit.
-        setState((prevState) => ({
-          ...prevState,
-          editResponse: null,
-          isEditing: true,
-          isError: false,
-        }))
-  
-        const response = await updateContent({
-          sha,
-          repo,
-          owner,
-          config,
-          author,
-          content,
-          filepath,
-          message: _message,
-          // Use branch passed to function or branch passed to custom hook. 
-          branch: _branch || branch,
-        });
-  
-        setState((prevState) => ({
-          ...prevState,
-          editResponse: response,
-          isEditing: false,
-        }))
-        return true
+      if (newContent) {
+        if (content && content === newContent) {
+          return true
+        }
+        await saveContent(_branch, newContent)
+      } else if (content) {
+        await saveContent(_branch, content)
       } else {
-        console.warn('Content value is empty')
+        console.warn('Content and newContent values are empty')
       }
+      return true
     } catch (error) {
       setState((prevState) => ({
         ...prevState,
