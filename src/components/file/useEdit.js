@@ -46,18 +46,20 @@ export default function useEdit({
    * @async
    * @param {string} _branch - branch name to save content to 
    * @param {string} newContent - Stringified content to be saved to DCS
+   * @param {string|null} fileSha - optional file sha to be used, if not passed then sha will be used
    * @returns {Promise<Object>} - Response after saving the content.
    */
-  async function saveContent(_branch, newContent) {
+  async function saveContent(_branch, newContent, fileSha = null) {
     setState((prevState) => ({
       ...prevState,
       editResponse: null,
       isEditing: true,
       isError: false,
     }))
-    
+
+    const _sha = fileSha || sha
     const response = await updateContent({
-      sha,
+      sha: _sha,
       repo,
       owner,
       config,
@@ -83,17 +85,18 @@ export default function useEdit({
    * @async
    * @param {string} _branch - branch name to save content to 
    * @param {string} newContent - optional Stringified content to be saved to DCS, if not passed then value in content will be used
+   * @param {string|null} fileSha - optional file sha to be used, if not passed then sha will be used
    * @returns {Promise<boolean>} - Returns true if successful, otherwise false.
    */
-  async function onSaveEdit(_branch, newContent='') {
+  async function onSaveEdit(_branch, newContent='', fileSha = null) {
     try {
       if (newContent) {
         if (content && content === newContent) {
           return true
         }
-        await saveContent(_branch, newContent)
+        await saveContent(_branch, newContent, fileSha)
       } else if (content) {
-        await saveContent(_branch, content)
+        await saveContent(_branch, content, fileSha)
       } else {
         console.warn('Content and newContent values are empty')
       }
