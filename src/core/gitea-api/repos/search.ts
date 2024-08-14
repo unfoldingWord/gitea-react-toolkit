@@ -1,5 +1,4 @@
-import path from 'path';
-
+import {joinPaths} from '../fetch/files.js'
 import {
   apiPath, get, getUID,
 } from '../';
@@ -16,7 +15,7 @@ export const repositoryExists = async ({
 }: RepositoryExistsOptions): Promise<boolean> => {
   const uid = await getUID({ username: owner, config });
   const params = { q: repository, uid };
-  const url = path.join(apiPath, 'repos', 'search');
+  const url = joinPaths(apiPath, 'repos', 'search');
   const repos = await get({
     url, params, config,
   });
@@ -48,8 +47,8 @@ export const repositorySearch = async ({
 
   let url: string;
 
-  if (owner) url = path.join(apiPath, 'users', owner, 'repos');
-  else url = path.join(apiPath, 'repos', 'search');
+  if (owner) url = joinPaths(apiPath, 'users', owner, 'repos');
+  else url = joinPaths(apiPath, 'repos', 'search');
 
   try {
     const response = await get({

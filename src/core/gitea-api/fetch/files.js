@@ -1,5 +1,3 @@
-import Path from 'path';
-
 import { apiPath, get } from '../';
 
 import {
@@ -10,7 +8,7 @@ import {
 export const fetchFileFromServer = async ({username, repository, path, branch='master', config}) => {
   const repoExists = await repositoryExists({username, repository});
   if (repoExists) {
-    const url = Path.join(username, repository, 'raw/branch', branch, path);
+    const url = joinPaths(username, repository, 'raw/branch', branch, path);
     try {
       const data = await get({url, config});
       return data;
@@ -34,15 +32,22 @@ export const getFile = async ({username, repository, path, branch, config}) => {
 export async function repositoryExists({username, repository, config}) {
   const uid = await getUID({username});
   const params = { q: repository, uid };
-  const url = Path.join(apiPath, 'repos', `search`);
+  const url = joinPaths(apiPath, 'repos', `search`);
   const {data: repos} = await get({url, params, config});
   const repo = repos.filter(repo => repo.name === repository)[0];
   return !!repo;
 };
 
 export async function getUID({username, config}) {
-  const url = Path.join(apiPath, 'users', username);
+  const url = joinPaths(apiPath, 'users', username);
   const user = await get({url, config});
   const {id: uid} = user;
   return uid;
+}
+
+export function joinPaths(...paths) {
+  return paths
+    .map(path => path.replace(/\/+$/, '')) // Remove trailing slashes
+    .join('/')
+    .replace(/\/{2,}/g, '/'); // Replace multiple slashes with a single slash
 }

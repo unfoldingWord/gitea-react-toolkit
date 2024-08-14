@@ -1,6 +1,6 @@
 // this code copied from:
 // github > unfoldingword-box3 > admin-app > src/utils/dcsApis.js
-import Path from 'path';
+import {joinPaths} from '../../core/gitea-api/fetch/files.js'
 import localforage from 'localforage';
 import { setup } from 'axios-cache-adapter';
 import { extendConfig } from '../../core/gitea-api/http/http'
@@ -13,7 +13,7 @@ export async function fetchCatalogContent(username, repository, tag, filepath, c
   // might need this instead:
   // https://qa.door43.org/api/v1/repos/unfoldingword/en_tn/contents/en_tn_65-3JN.tsv?ref=v47
   // in which case, the content will be in a JSON object and will be base64 encoded.
-  const uri = Path.join(username,repository,'raw','tag', tag, filepath);
+  const uri = joinPaths(username,repository,'raw','tag', tag, filepath);
   let _data;
   try {
     const { data } = await Door43Api.get(uri, { ..._config });

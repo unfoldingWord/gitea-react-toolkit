@@ -1,4 +1,4 @@
-import Path from 'path';
+import {joinPaths} from '../fetch/files.js'
 import { APIConfig } from '../http/http.d';
 import {
   apiPath, get, ERROR_SERVER_UNREACHABLE, ERROR_NETWORK_DISCONNECTED,
@@ -9,7 +9,7 @@ export const getUser = async ({ username, config }: {
   config: APIConfig;
 }): Promise<{ id: object } | null> => {
   let user = null;
-  const url = Path.join(apiPath, 'users', username);
+  const url = joinPaths(apiPath, 'users', username);
 
   try {
     user = await get({ url, config });

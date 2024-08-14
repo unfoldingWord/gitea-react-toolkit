@@ -1,4 +1,4 @@
-import path from 'path';
+import {joinPaths} from '../../fetch/files.js'
 import base64 from 'base-64';
 import utf8 from 'utf8';
 
@@ -60,7 +60,7 @@ export const fetchTree = async ({
   const params = {
     recursive, per_page, page,
   };
-  const url = path.join(apiPath, 'repos', owner, repository, 'git', 'trees', sha);
+  const url = joinPaths(apiPath, 'repos', owner, repository, 'git', 'trees', sha);
   const data = await get({
     url, params: params, config,
   });
@@ -71,6 +71,6 @@ export const fetchTree = async ({
 export const repoTreeUrl = ({
   full_name, branch = '', default_branch = '',
 }) => {
-  const url = path.join(apiPath, 'repos', (full_name || ''), 'git', 'trees', branch || default_branch || '');
+  const url = joinPaths(apiPath, 'repos', (full_name || ''), 'git', 'trees', branch || default_branch || '');
   return url;
 };

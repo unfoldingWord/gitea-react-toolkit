@@ -1,5 +1,5 @@
 // Refactor and move to core/gitea-api/repos/zip.ts
-import Path from 'path';
+import {joinPaths} from '../../core/gitea-api/fetch/files.js'
 import JSZip from 'jszip';
 import localforage from 'localforage';
 import { get } from '../..';
@@ -13,12 +13,12 @@ const zipStore = localforage.createInstance({
 export const zipUri = ({
   owner, repo, branch='master', server,
 }) => {
-  const zipUri = Path.join(server, owner, repo, 'archive', `${branch}.zip`);
+  const zipUri = joinPaths(server, owner, repo, 'archive', `${branch}.zip`);
   return zipUri;
 };
 
 function zipUriSubPath(owner, repo, branch) {
-  const url = Path.join(owner, repo, 'archive', `${branch}.zip`);
+  const url = joinPaths(owner, repo, 'archive', `${branch}.zip`);
   return url;
 }
 
@@ -110,7 +110,7 @@ export const getFileFromRepoZip = async ({
   });
 
   if (zip) {
-    const zipPath = Path.join(repo.toLowerCase(), filepath);
+    const zipPath = joinPaths(repo.toLowerCase(), filepath);
     const fileObject = zip.files[zipPath];
 
     if (fileObject) {

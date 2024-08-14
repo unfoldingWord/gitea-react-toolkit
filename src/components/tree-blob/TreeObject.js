@@ -1,4 +1,4 @@
-import Path from 'path';
+import {joinPaths} from '../../core/gitea-api/fetch/files.js'
 import React from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
@@ -38,7 +38,7 @@ function TreeObject({
   comparer,
 }) {
   const classes = useStyles();
-  const _filepath = Path.join(filepath || '', path);
+  const _filepath = joinPaths(filepath || '', path);
 
   const icon = selected ?
     <Folder /> :

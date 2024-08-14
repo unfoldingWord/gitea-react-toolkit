@@ -1,4 +1,4 @@
-import Path from 'path';
+import {joinPaths} from '../../fetch/files.js'
 import base64 from 'base-64';
 import utf8 from 'utf8';
 
@@ -62,7 +62,7 @@ export const payload = ({
 export const createContent = async ({
   config, owner, repo, branch, filepath, content, message, author,
 }: ModifyContentOptions): Promise<ContentObject> => {
-  const url = Path.join(apiPath, 'repos', owner, repo, 'contents', filepath);
+  const url = joinPaths(apiPath, 'repos', owner, repo, 'contents', filepath);
   let contentObject: ContentObject;
 
   try {
@@ -102,7 +102,7 @@ interface GetContentOptions {
 export const readContent = async ({
   owner, repo, ref, filepath, config,
 }: GetContentOptions): Promise<ContentObject> => {
-  const url = Path.join(apiPath, 'repos', owner, repo, 'contents', filepath);
+  const url = joinPaths(apiPath, 'repos', owner, repo, 'contents', filepath);
   let contentObject: ContentObject;
 
   try {
@@ -119,7 +119,7 @@ export const readContent = async ({
 export const patchContent = async ({
   config, owner, repo, branch, filepath, content, message, author, email, sha,
 }: ModifyContentOptions): Promise<ContentObject> => {
-  const url = Path.join(apiPath, 'repos', owner, repo, 'diffpatch');
+  const url = joinPaths(apiPath, 'repos', owner, repo, 'diffpatch');
   let contentObject: ContentObject;
   const author_ = {
     email: email || '',
@@ -160,7 +160,7 @@ export const patchContent = async ({
 export const updateContent = async ({
   config, owner, repo, branch, filepath, content, message, author, sha,
 }: ModifyContentOptions): Promise<ContentObject> => {
-  const url = Path.join(apiPath, 'repos', owner, repo, 'contents', filepath);
+  const url = joinPaths(apiPath, 'repos', owner, repo, 'contents', filepath);
   let contentObject: ContentObject;
 
   try {
@@ -201,7 +201,7 @@ export const deleteContent = async ({
   config, owner, repo, branch, filepath, message, author, sha,
 }: ModifyContentOptions): Promise<object> => {
   let response: object;
-  const url = Path.join(apiPath, 'repos', owner, repo, 'contents', filepath);
+  const url = joinPaths(apiPath, 'repos', owner, repo, 'contents', filepath);
 
   const _payload = payload({
     branch, message, author, sha,

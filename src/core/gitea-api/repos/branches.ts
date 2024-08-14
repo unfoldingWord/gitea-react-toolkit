@@ -1,4 +1,4 @@
-import Path from 'path';
+import {joinPaths} from '../fetch/files.js'
 import {
     apiPath, get, post, patch, del, ExtendConfig,
 } from '..';
@@ -14,7 +14,7 @@ interface ReadBranchOptions {
 export const readBranch = async ({
                                    owner, repo, branch, config,
                                }: ReadBranchOptions): Promise<object> => {
-    const url = Path.join(apiPath, 'repos', owner, repo, 'branches', branch);
+    const url = joinPaths(apiPath, 'repos', owner, repo, 'branches', branch);
     let response;
 
     try {
