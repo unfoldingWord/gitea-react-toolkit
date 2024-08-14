@@ -1,8 +1,8 @@
+import Path from 'path';
 import { APIConfig } from '../http/http.d';
 import {
   apiPath, get, ERROR_SERVER_UNREACHABLE, ERROR_NETWORK_DISCONNECTED,
 } from '../http/http';
-const Path = require('path');
 
 export const getUser = async ({ username, config }: {
   username: string;

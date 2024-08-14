@@ -1,3 +1,4 @@
+import Path from 'path';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
@@ -12,7 +13,6 @@ import {
 } from '@material-ui/icons';
 
 import { humanFileSize } from './helpers';
-const Path = require('path');
 
 const useStyles = makeStyles(theme => ({
   root: {

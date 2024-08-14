@@ -1,8 +1,8 @@
 // Refactor and move to core/gitea-api/repos/zip.ts
+import Path from 'path';
 import JSZip from 'jszip';
 import localforage from 'localforage';
 import { get } from '../..';
-const Path = require('path');
 
 const zipStore = localforage.createInstance({
   driver: [localforage.INDEXEDDB],

@@ -12,7 +12,7 @@ import {
   colors,
   Tooltip,
 } from '@material-ui/core';
-const path = require('path');
+import path from 'path';
 
 import { Code } from '@material-ui/icons';
 import { get, isSelectedOrgWritable} from '../../core';

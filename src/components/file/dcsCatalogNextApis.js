@@ -1,9 +1,9 @@
 // this code copied from:
 // github > unfoldingword-box3 > admin-app > src/utils/dcsApis.js
+import Path from 'path';
 import localforage from 'localforage';
 import { setup } from 'axios-cache-adapter';
 import { extendConfig } from '../../core/gitea-api/http/http'
-const Path = require('path');
 
 
 export async function fetchCatalogContent(username, repository, tag, filepath, config) {

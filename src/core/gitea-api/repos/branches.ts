@@ -1,7 +1,7 @@
+import Path from 'path';
 import {
     apiPath, get, post, patch, del, ExtendConfig,
 } from '..';
-const Path = require('path');
 
 interface ReadBranchOptions {
     owner: string;

@@ -1,6 +1,6 @@
+import path from 'path';
 import base64 from 'base-64';
 import utf8 from 'utf8';
-const path = require('path');
 
 import { apiPath, get } from '../../';
 

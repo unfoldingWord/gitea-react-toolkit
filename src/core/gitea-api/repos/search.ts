@@ -1,3 +1,5 @@
+import path from 'path';
+
 import {
   apiPath, get, getUID,
 } from '../';
@@ -8,7 +10,6 @@ interface RepositoryExistsOptions {
   config: APIConfig;
   repository: object;
 }
-const path = require('path');
 
 export const repositoryExists = async ({
   owner, repository, config,

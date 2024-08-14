@@ -1,8 +1,8 @@
+import Path from 'path';
 import { AuthToken } from '../index.d';
 import {
   apiPath, get, post, del,
 } from '..';
-const Path = require('path');
 
 export interface TokenConfig {
   headers?: object;
