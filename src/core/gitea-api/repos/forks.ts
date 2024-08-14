@@ -1,4 +1,4 @@
-import Path from 'path';
+const Path = require('path');
 
 import { APIConfig } from '../http/http.d';
 import {

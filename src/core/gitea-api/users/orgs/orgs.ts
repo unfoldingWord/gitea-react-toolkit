@@ -1,6 +1,6 @@
-import path from 'path';
 import { apiPath, get } from '../../http';
 import { APIConfig } from '../../http/http.d';
+const path = require('path');
 
 export interface Organization {
   avatar_url: string;

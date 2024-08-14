@@ -1,10 +1,10 @@
-import Path from 'path';
 import JSZip from 'jszip';
 import localforage from 'localforage';
 
 import {
   repositoryExists,
 } from '../repos';
+const Path = require('path');
 
 const zipStore = localforage.createInstance({
   driver: [localforage.INDEXEDDB],

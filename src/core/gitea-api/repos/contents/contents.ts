@@ -1,4 +1,3 @@
-import Path from 'path';
 import base64 from 'base-64';
 import utf8 from 'utf8';
 
@@ -7,6 +6,7 @@ import { ExtendConfig } from '../../http/http';
 import {
   apiPath, get, post, put, del,
 } from '../..';
+const Path = require('path');
 
 interface ModifyContentOptions {
   config: ExtendConfig;

@@ -1,10 +1,8 @@
-import Path from 'path';
-
 import { apiPath, get } from '../';
-
 import {
   getFileFromZip,
 } from './zip';
+const Path = require('path');
 
 // https://bg.door43.org/unfoldingword/en_ult/raw/branch/master/manifest.yaml
 export const fetchFileFromServer = async ({username, repository, path, branch='master', config}) => {

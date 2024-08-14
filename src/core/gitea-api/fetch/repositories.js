@@ -1,5 +1,5 @@
-import Path from 'path';
 import YAML from 'js-yaml-parser';
+const Path = require('path');
 
 import {
   get,
