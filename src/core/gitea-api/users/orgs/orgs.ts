@@ -1,4 +1,4 @@
-import path from 'path';
+import {joinPaths} from '../../fetch/files.js'
 import { apiPath, get } from '../../http';
 import { APIConfig } from '../../http/http.d';
 
@@ -14,13 +14,13 @@ export interface Organization {
 }
 
 export function getCurrentUserOrgs({ config }: { config: APIConfig }): Promise<Organization[]> {
-  const url = path.join(apiPath, 'user/orgs');
+  const url = joinPaths(apiPath, 'user/orgs');
   return get({ url, config });
 }
 
 export async function isSelectedOrgWritable({ org, user, config}: { org: Organization, user:string, config:APIConfig }): Promise<boolean> {
 
-  const teamsUrl = path.join(apiPath, 'orgs/'+org.username+'/teams');
+  const teamsUrl = joinPaths(apiPath, 'orgs/'+org.username+'/teams');
   let teamsResults = await get({ url: teamsUrl, config });
   // if there are no teams, then skip other checks
   if ( !teamsResults ) {
@@ -31,7 +31,7 @@ export async function isSelectedOrgWritable({ org, user, config}: { org: Organiz
   // test for membership, looking for something other than "read"
   let permission = false;
   for ( let j=0; j < teamsResults.length; j++ ) {
-    let isTeamMemberUrl = path.join(apiPath, 'teams/'+teamsResults[j].id+'/members/'+user);
+    let isTeamMemberUrl = joinPaths(apiPath, 'teams/'+teamsResults[j].id+'/members/'+user);
     let teamMemberResult = await get({url: isTeamMemberUrl, config});
     if ( teamMemberResult === null ) {
       // not a team member

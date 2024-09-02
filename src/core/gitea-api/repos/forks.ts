@@ -1,5 +1,4 @@
-import Path from 'path';
-
+import {joinPaths} from '../fetch/files.js'
 import { APIConfig } from '../http/http.d';
 import {
   apiPath, get, post, ExtendConfig,
@@ -15,7 +14,7 @@ interface ReadForksOptions {
 export const readForks = async ({
   owner, repo, config,
 }: ReadForksOptions): Promise<object> => {
-  const url = Path.join(apiPath, 'repos', owner, repo, 'forks');
+  const url = joinPaths(apiPath, 'repos', owner, repo, 'forks');
   const response = await get({ url, config });
   return response;
 };
@@ -31,7 +30,7 @@ interface CreateForkOptions {
 export const createFork = async ({
   owner, repo, organization, config,
 }: CreateForkOptions): Promise<object> => {
-  const url = Path.join(apiPath, 'repos', owner, repo, 'forks');
+  const url = joinPaths(apiPath, 'repos', owner, repo, 'forks');
   const payload = (organization) ? { organization } : {};
   const response = await post({
     url, payload, config,

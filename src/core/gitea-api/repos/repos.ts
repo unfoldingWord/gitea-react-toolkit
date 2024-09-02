@@ -1,4 +1,4 @@
-import Path from 'path';
+import {joinPaths} from '../fetch/files.js'
 import {
   apiPath, get, post, patch, del, ExtendConfig,
 } from '..';
@@ -12,7 +12,7 @@ interface CreateRepoOptions {
 export const createRepo = async ({
   repo, settings, config,
 }: CreateRepoOptions): Promise<object> => {
-  const url = Path.join(apiPath, 'user', 'repos');
+  const url = joinPaths(apiPath, 'user', 'repos');
   const payload = {
     name: repo,
     auto_init: true,
@@ -38,7 +38,7 @@ interface ReadRepoOptions {
 export const readRepo = async ({
   owner, repo, config,
 }: ReadRepoOptions): Promise<object> => {
-  const url = Path.join(apiPath, 'repos', owner, repo);
+  const url = joinPaths(apiPath, 'repos', owner, repo);
   let response;
 
   try {
@@ -77,7 +77,7 @@ export const ensureRepo = async ({
 export const updateRepo = async ({
   owner, repo, settings, config,
 }: EnsureRepoOptions): Promise<object> => {
-  const url = Path.join(apiPath, 'repos', owner, repo);
+  const url = joinPaths(apiPath, 'repos', owner, repo);
   const payload = {
     // allow_merge_commits: true,
     // allow_rebase: true,
@@ -111,7 +111,7 @@ export const updateRepo = async ({
 export const deleteRepo = async ({
   owner, repo, config,
 }: ReadRepoOptions): Promise<object> => {
-  const url = Path.join(apiPath, 'repos', owner, repo);
+  const url = joinPaths(apiPath, 'repos', owner, repo);
   let response;
 
   try {

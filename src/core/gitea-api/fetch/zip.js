@@ -1,6 +1,6 @@
-import Path from 'path';
 import JSZip from 'jszip';
 import localforage from 'localforage';
+import {joinPaths} from './files.js'
 
 import {
   repositoryExists,
@@ -35,7 +35,7 @@ export const getFileFromZip = async ({username, repository, path, branch}) => {
   try {
     if (zipBlob) {
       const zip = await JSZip.loadAsync(zipBlob);
-      const zipPath = Path.join(repository.toLowerCase(), path);
+      const zipPath = joinPaths(repository.toLowerCase(), path);
       file = await zip.file(zipPath).async("string");
     }
   } catch(error) {
@@ -45,7 +45,7 @@ export const getFileFromZip = async ({username, repository, path, branch}) => {
 };
 
 const zipUri = ({username, repository, branch='master'}) => {
-  const zipPath = Path.join(username, repository, 'archive', `${branch}.zip`);
+  const zipPath = joinPaths(username, repository, 'archive', `${branch}.zip`);
   const zipUri = baseURL + zipPath;
   return zipUri;
 };

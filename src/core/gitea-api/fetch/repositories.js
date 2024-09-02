@@ -1,4 +1,4 @@
-import Path from 'path';
+import {joinPaths} from './files.js'
 import YAML from 'js-yaml-parser';
 
 import {
@@ -77,7 +77,7 @@ export async function getLanguageIdsByResource({username, resourceId}) {
   let languageIds = [];
   const uid = await getUID({username});
   const params = {q: resourceId, uid, limit: 50, exclusive: true};
-  const url = Path.join(apiPath, `repos/search`);
+  const url = joinPaths(apiPath, `repos/search`);
   const repos = await get({url, params});
   if (repos && repos.data) {
     languageIds = repos.data.map(repo => repo.name.split('_')[0]);

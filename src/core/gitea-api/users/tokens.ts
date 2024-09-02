@@ -1,4 +1,4 @@
-import Path from 'path';
+import {joinPaths} from '../fetch/files.js'
 import { AuthToken } from '../index.d';
 import {
   apiPath, get, post, del,
@@ -25,7 +25,7 @@ interface GetTokens {
 // requires config.headers with authorization
 export const getTokens: GetTokens = async ({ username, config }) => {
   let tokens;
-  const url = Path.join(apiPath, 'users', username, 'tokens');
+  const url = joinPaths(apiPath, 'users', username, 'tokens');
 
   try {
     tokens = await get({ url, config });
@@ -42,7 +42,7 @@ interface CreateToken {
 // requires config.headers with authorization
 export const createToken: CreateToken = async ({ username, config }) => {
   let token;
-  const url = Path.join(apiPath, 'users', username, 'tokens');
+  const url = joinPaths(apiPath, 'users', username, 'tokens');
   const payload = { 'name': config.tokenid };
 
   try {
@@ -65,7 +65,7 @@ export const deleteToken: DeleteToken = async ({
 }) => {
   let success;
   const id = token.id.toString();
-  const url = Path.join(apiPath, 'users', username, 'tokens', id);
+  const url = joinPaths(apiPath, 'users', username, 'tokens', id);
 
   try {
     await del({

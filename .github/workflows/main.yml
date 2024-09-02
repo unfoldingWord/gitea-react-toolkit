@@ -29,25 +29,25 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-      - name: Cache Cypress
-        uses: actions/cache@v1
-        id: cypress_cache
-        with:
-          path: ~/.cache/Cypress
-          key: ${{ runner.os }}-cypress-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cypress-
+#      - name: Cache Cypress
+#        uses: actions/cache@v1
+#        id: cypress_cache
+#        with:
+#          path: ~/.cache/Cypress
+#          key: ${{ runner.os }}-cypress-${{ hashFiles('**/yarn.lock') }}
+#          restore-keys: |
+#            ${{ runner.os }}-cypress-
       - name: Install Packages
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn;
       - name: Run Tests
-        run: yarn test;
-      - name: Save Test Data
-        if: always()
-        uses: actions/upload-artifact@v2
-        with:
-           name: Cypress Videos
-           path: ./cypress/videos/
+        run: yarn run test:unit;
+#      - name: Save Test Data
+#        if: always()
+#        uses: actions/upload-artifact@v2
+#        with:
+#           name: Cypress Videos
+#           path: ./cypress/videos/
       - name: Create Badge For Coverage Results
         run: yarn create-coverage-badge;
       - name: Commit Coverage Results

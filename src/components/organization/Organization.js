@@ -12,7 +12,6 @@ import {
   colors,
   Tooltip,
 } from '@material-ui/core';
-import path from 'path';
 
 import { Code } from '@material-ui/icons';
 import { get, isSelectedOrgWritable} from '../../core';
