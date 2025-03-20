@@ -15,3 +15,12 @@ The basic concept is to expose Gitea API functionality using React Components an
 
 ## Documentation
 https://gitea-react-toolkit.netlify.com/
+
+
+## Building
+- use nvm v16
+- then do `yarn && yarn build`
+
+## Publishing
+- use nvm v16
+- then do `yarn && yarn publish`

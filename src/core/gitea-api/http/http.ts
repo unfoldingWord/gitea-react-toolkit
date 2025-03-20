@@ -202,6 +202,7 @@ export const defaultErrorMessages = {
   genericError: 'Something went wrong, please try again.',
   usernameError: 'Username does not exist.',
   passwordError: 'Password is invalid.',
+  authenticationError: 'Authentication failed.',
   networkError: 'There is an issue with your network connection. Please try again.',
   serverError: 'There is an issue with the server please try again.',
 };

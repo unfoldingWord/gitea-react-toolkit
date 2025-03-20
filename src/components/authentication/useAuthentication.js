@@ -69,6 +69,11 @@ function useAuthentication({
     }
   }, [authentication, loadAuthentication, update]);
 
+  function _setError(errorMessage) {
+    setError(errorMessage);
+    onError && onError(errorMessage)
+  }
+
   const onSubmitLogin = useDeepCompareCallback(async ({
     username, password, remember,
   }) => {
@@ -86,20 +91,19 @@ function useAuthentication({
           update(authentication);
         } else {
           if (!user) {
-            setError(messages.usernameError);
+            _setError(messages.usernameError);
           } else if (!token) {
-            setError(messages.passwordError);
+            _setError(messages.passwordError);
           }
         }
       } else {
         console.log('authentication failed?', authentication);
+        _setError(messages.authentication);
       }
     } catch (e) {
       console.log('Authentication error:', e);
       const friendlyError = parseError(e);
-
-      setError(friendlyError.errorMessage);
-      onError && onError(friendlyError)
+      _setError(friendlyError.errorMessage);
     }
   }, [
     config, logout, update,
