@@ -75,18 +75,30 @@ export const saveFile = async ({
   const { owner: { username: owner }, name: repo } = repository;
   const { path: filepath, sha } = file;
   const _message = message || `Edit '${filepath}' using '${tokenid}'`;
-  let response;
+
   try {
-    response = await updateContent({
+    // updateContent now handles stale SHA (409/422) internally by re-fetching and retrying.
+    const response = await updateContent({
       config, owner, repo, branch, filepath,
       content, message: _message, author, sha,
     });
-  } catch {
-    response = await createContent({
-      config, owner, repo, branch, filepath, content, message: _message, author, sha
-    });
+    return response;
+  } catch (error) {
+    const status = error?.response?.status || error?.status || 0;
+    console.warn('saveFile: updateContent failed', { status, filepath, error: error?.message });
+
+    // Only fall through to createContent if the file genuinely doesn't exist (404).
+    // Don't try createContent for conflicts (409/422) — updateContent already retried with fresh SHA.
+    if (status === 404) {
+      console.log('saveFile: file not found, trying createContent...');
+      const response = await createContent({
+        config, owner, repo, branch, filepath, content, message: _message, author,
+      });
+      return response;
+    }
+
+    throw error;
   }
-  return response;
 };
 
 const REGEX_TSV_BOOK_ABBREVIATION = /^\w*_(\w*)\.tsv$/i;

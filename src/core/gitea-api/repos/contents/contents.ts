@@ -161,39 +161,50 @@ export const updateContent = async ({
   config, owner, repo, branch, filepath, content, message, author, sha,
 }: ModifyContentOptions): Promise<ContentObject> => {
   const url = joinPaths(apiPath, 'repos', owner, repo, 'contents', filepath);
-  let contentObject: ContentObject;
 
   try {
-    // TODO: Check to see if branch exists to set branch or new_branch in payload
-    try {
+    const _payload = payload({
+      branch, content, message, author, sha,
+    });
+    const response = await put({
+      url, payload: _payload, config,
+    });
+    return response.content;
+  } catch (e: any) {
+    const status = e?.response?.status || e?.status || 0;
+    console.warn('updateContent: PUT failed', { status, filepath, sha, error: e?.message });
+
+    // 409/422 = stale SHA conflict. Re-fetch latest file to get current SHA and retry once.
+    if (status === 409 || status === 422) {
+      console.log('updateContent: stale SHA detected, re-fetching latest file for current SHA...');
+      const latestFile = await readContent({ owner, repo, ref: branch, filepath, config });
+      if (!latestFile?.sha) {
+        throw new Error(`Could not fetch latest SHA for ${filepath}`);
+      }
+      console.log('updateContent: retrying PUT with fresh SHA', { oldSha: sha, newSha: latestFile.sha });
+      const retryPayload = payload({
+        branch, content, message, author, sha: latestFile.sha,
+      });
+      const retryResponse = await put({
+        url, payload: retryPayload, config,
+      });
+      return retryResponse.content;
+    }
+
+    // 404 = branch doesn't exist. Try creating it (unless dontCreateBranch is set).
+    if (status === 404 && !config.dontCreateBranch) {
+      console.log('updateContent: branch not found, creating new branch...');
       const _payload = payload({
-        branch, content, message, author, sha,
+        new_branch: branch, content, message, author, sha,
       });
       const response = await put({
         url, payload: _payload, config,
       });
-      contentObject = response.content;
-    } catch (e) {
-      if (config.dontCreateBranch) {
-        console.warn('Failed to upload to user branch', e);
-        throw e;
-      } else {
-        console.warn('Failed to upload to user branch. Trying to create new branch', e);
-        const _payload = payload({
-          new_branch: branch, content, message, author, sha,
-        });
-        const response = await put({
-          url, payload: _payload, config,
-        });
-        contentObject = response.content;
-      }
+      return response.content;
     }
-  } catch (error) {
-    // Allow original error to propagate.
-    // This allows switching based on error messages above.
-    throw error;
-  };
-  return contentObject;
+
+    throw e;
+  }
 };
 
 // DELETE /api/v1/repos/{owner}/{repo}/contents/{filepath}?ref={branch}
