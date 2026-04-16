@@ -1,6 +1,6 @@
 {
   "name": "gitea-react-toolkit",
-  "version": "2.4.1-rc",
+  "version": "2.4.2",
   "license": "MIT",
   "description": "A Gitea API React Toolkit Component Library",
   "homepage": "https://gitea-react-toolkit.netlify.com/",
@@ -15,6 +15,7 @@
     "axios-cache-adapter": "2.4.1",
     "base-64": "0.1.0",
     "deep-equal": "^2.0.5",
+    "diff": "8.0.3",
     "js-base64": "^3.7.2",
     "jszip": "^3.5.0",
     "localforage": "1.7.3",
