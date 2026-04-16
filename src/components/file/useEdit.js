@@ -92,7 +92,7 @@ export default function useEdit({
     try {
       if (newContent) {
         if (content && content === newContent) {
-          return true
+          return true // nothing to do
         }
         await saveContent(_branch, newContent, fileSha)
       } else if (content) {
@@ -169,11 +169,11 @@ export default function useEdit({
   }
 
   return {
+    editResponse,
     error,
     isError,
     isEditing,
     onSaveEdit,
-    editResponse,
     onSaveEditPatch,
   }
 }
