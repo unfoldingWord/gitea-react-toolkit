@@ -196,8 +196,9 @@ export function getPatch(fileName, originalFileContents, editedFileContents, jso
 }
 
 /**
- *
- * @param {string} originalFileContents - original file contents
+ * Apply a patch to a string and return the modified content
+ * @param {string} originalText - original file contents
+ * @param {string} diff - patch/diff to apply to the original text
  * @return {string} - updated file contents
  */
 export function applyPatchToString(originalText, diff) {
