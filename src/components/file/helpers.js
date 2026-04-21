@@ -1,6 +1,6 @@
 import { applyPatch, createPatch } from 'diff'
 import {
-  get, updateContent, ensureContent, deleteContent, decodeBase64ToUtf8, createContent,
+  get, updateContent, ensureContent, deleteContent, decodeBase64ToUtf8, createContent, patchContent,
 } from '../..';
 
 export const ensureFile = async ({
@@ -79,6 +79,29 @@ export const saveFile = async ({
   let response;
   try {
     response = await updateContent({
+      config, owner, repo, branch, filepath,
+      content, message: _message, author, sha,
+    });
+  } catch {
+    response = await createContent({
+      config, owner, repo, branch, filepath, content, message: _message, author, sha
+    });
+  }
+  return response;
+};
+
+export const saveFilePatch = async ({
+   authentication, repository, branch, file, content, initialContent, message,
+ }) => {
+const {
+  user: author, config, token: { name: tokenid },
+} = authentication;
+  const { owner: { username: owner }, name: repo } = repository;
+  const { path: filepath, sha } = file;
+  const _message = message || `Edit '${filepath}' using '${tokenid}'`;
+  let response;
+  try {
+    response = await patchContent({
       config, owner, repo, branch, filepath,
       content, message: _message, author, sha,
     });
