@@ -91,7 +91,7 @@ export const saveFile = async ({
 };
 
 export const saveFilePatch = async ({
-   authentication, repository, branch, file, content, initialContent, message,
+   authentication, repository, branch, file, content, message,
  }) => {
 const {
   user: author, config, token: { name: tokenid },
