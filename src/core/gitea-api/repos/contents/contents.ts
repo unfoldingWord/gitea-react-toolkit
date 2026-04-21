@@ -121,9 +121,16 @@ export const patchContent = async ({
 }: ModifyContentOptions): Promise<ContentObject> => {
   const url = joinPaths(apiPath, 'repos', owner, repo, 'diffpatch');
   let contentObject: ContentObject;
+  let _email = email || '';
+  let name = author;
+  if (typeof author !== "string") { // in some apps this is passed as an object
+    // @ts-ignore
+    name = author?.username || author?.login;
+    _email = _email || author?.email;
+  }
   const author_ = {
-    email: email || '',
-    name: author,
+    email: _email || '',
+    name,
   }
   var date = new Date();
   var isoDate = date.toISOString();

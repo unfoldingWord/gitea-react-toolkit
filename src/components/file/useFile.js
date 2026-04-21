@@ -200,9 +200,9 @@ function useFile({
         console.log(`useFile.savePatch() content unchanged, skipping diff`)
         doDiffPatch = false
       } else { // content differs from initial
-        diffPatch = getPatch(editFilePath, _content, _savedContent, false)
-        if (diffPatch && (diffPatch.length > savedContent.length * 3 / 4)) { // if patch is too large
-          console.log(`useFile.savePatch() diff too large ${diffPatch.length}, original ${savedContent.length}`)
+        diffPatch = getPatch(filepath, _content, _savedContent, false)
+        if (diffPatch && (diffPatch.length > _savedContent.length * 3 / 4)) { // if patch is too large
+          console.log(`useFile.savePatch() diff too large ${diffPatch.length}, original ${_savedContent.length}`)
           doDiffPatch = false
         }
       }
