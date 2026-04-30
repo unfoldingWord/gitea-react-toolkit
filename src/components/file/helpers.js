@@ -1,6 +1,6 @@
 import { applyPatch, createPatch } from 'diff'
 import {
-  get, updateContent, ensureContent, deleteContent, decodeBase64ToUtf8, createContent, patchContent,
+  get, updateContent, ensureContent, deleteContent, decodeBase64ToUtf8, createContent, patchContent, createBranch,
 } from '../..';
 
 export const ensureFile = async ({
@@ -106,10 +106,20 @@ const {
       config, owner, repo, branch, filepath,
       content, message: _message, author, sha: _sha,
     });
-  } catch {
-    response = await createContent({
-      config, owner, repo, branch, filepath, content, message: _message, author, sha
-    });
+  } catch (e) {
+    if (e.message?.includes( "branch does not exist")) {
+      if (!config.dontCreateBranch) { // if branch doesn't exist, create it first
+        response = await createBranch({
+          config, owner, repo, newBranchName: branch, oldBranchName: 'master'
+        });
+  
+        // try again to patch the content
+        response = await patchContent({
+          config, owner, repo, branch, filepath,
+          content, message: _message, author, sha: _sha,
+        });
+      }
+    }
   }
   return response;
 };

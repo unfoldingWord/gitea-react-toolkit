@@ -44,6 +44,46 @@ interface ContentObject {
   name: string;
 }
 
+interface CreateBranchOptions {
+  config: ExtendConfig;
+  owner: string;
+  repo: string;
+  newBranchName: string;
+  oldBranchName: string;
+}
+
+interface BranchObject {
+  name: string;
+  commit: {
+    id: string;
+    message: string;
+    url: string;
+  };
+}
+
+// POST /api/v1/repos/{owner}/{repo}/branches
+export const createBranch = async ({
+  config, owner, repo, newBranchName, oldBranchName,
+}: CreateBranchOptions): Promise<BranchObject> => {
+  const url = joinPaths(apiPath, 'repos', owner, repo, 'branches');
+  let branchObject: BranchObject;
+
+  try {
+    const _payload = {
+      new_branch_name: newBranchName,
+      old_branch_name: oldBranchName,
+    };
+    branchObject = await post({
+      url, payload: _payload, config,
+    });
+  } catch (error) {
+    throw new Error('Error creating branch.');
+  }
+
+  return branchObject;
+};
+
+
 export const payload = ({
   branch, new_branch, content, message, author: { email, username }, sha,
 }: PayloadOptions): object => ({
