@@ -107,7 +107,8 @@ const {
       content, message: _message, author, sha: _sha,
     });
   } catch (e) {
-    if (e.message?.includes( "branch does not exist")) {
+    const error_response = e?.response?.data?.message;
+    if (error_response?.includes( "branch does not exist")) {
       if (!config.dontCreateBranch) { // if branch doesn't exist, create it first
         response = await createBranch({
           config, owner, repo, newBranchName: branch, oldBranchName: 'master'
