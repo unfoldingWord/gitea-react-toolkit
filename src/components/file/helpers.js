@@ -97,13 +97,14 @@ const {
   user: author, config, token: { name: tokenid },
 } = authentication;
   const { owner: { username: owner }, name: repo } = repository;
-  const { path: filepath, sha } = file;
+  const { path: filepath, sha, last_commit_sha } = file;
+  const _sha = last_commit_sha || sha;
   const _message = message || `Edit '${filepath}' using '${tokenid}'`;
   let response;
   try {
     response = await patchContent({
       config, owner, repo, branch, filepath,
-      content, message: _message, author, sha,
+      content, message: _message, author, sha: _sha,
     });
   } catch {
     response = await createContent({
