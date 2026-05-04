@@ -166,7 +166,6 @@ export const patchContent = async ({
   if (typeof author !== "string") { // in some apps this is passed as an object
     // @ts-ignore
     name = author?.username || author?.login;
-    _email = _email || author?.email;
   }
   const author_ = {
     email: _email || '',

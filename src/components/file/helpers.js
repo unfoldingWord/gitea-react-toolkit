@@ -98,7 +98,7 @@ const {
 } = authentication;
   const { owner: { username: owner }, name: repo } = repository;
   const { path: filepath, sha, last_commit_sha } = file;
-  const _sha = last_commit_sha || sha;
+  const _sha = sha || last_commit_sha;
   const _message = message || `Edit '${filepath}' using '${tokenid}'`;
   let response;
   try {
