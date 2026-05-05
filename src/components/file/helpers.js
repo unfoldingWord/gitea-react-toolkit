@@ -90,6 +90,29 @@ export const saveFile = async ({
   return response;
 };
 
+/**
+ * Modifies a file in a repository using patch/diff format
+ * @async
+ * @param {Object} params - The parameters object
+ * @param {Object} params.authentication - Authentication object containing user, config, and token
+ * @param {Object} params.authentication.user - The author/user object
+ * @param {Object} params.authentication.config - The configuration object
+ * @param {Object} params.authentication.token - The token object
+ * @param {string} params.authentication.token.name - The token identifier
+ * @param {Object} params.repository - Repository object containing owner and name
+ * @param {Object} params.repository.owner - The repository owner object
+ * @param {string} params.repository.owner.username - The owner's username
+ * @param {string} params.repository.name - The repository name
+ * @param {string} params.branch - The branch name to patch the file on
+ * @param {Object} params.file - File object containing path and SHA information
+ * @param {string} params.file.path - The file path in the repository
+ * @param {string} [params.file.sha] - The file's SHA hash
+ * @param {string} [params.file.last_commit_sha] - The last commit SHA for the file
+ * @param {string} params.content - The patch/diff content to apply
+ * @param {string} [params.message] - Optional commit message (defaults to "Edit '{filepath}' using '{tokenid}'")
+ * @returns {Promise<Object>} The response from the patch operation
+ * @throws {Error} If the patch operation fails and the branch cannot be created
+ */
 export const saveFilePatch = async ({
    authentication, repository, branch, file, content, message,
  }) => {
@@ -108,12 +131,12 @@ const {
     });
   } catch (e) {
     const error_response = e?.response?.data?.message;
-    if (error_response?.includes( "branch does not exist")) {
+    if (error_response?.includes("branch does not exist")) {
       if (!config.dontCreateBranch) { // if branch doesn't exist, create it first
         response = await createBranch({
           config, owner, repo, newBranchName: branch, oldBranchName: 'master'
         });
-  
+
         // try again to patch the content
         response = await patchContent({
           config, owner, repo, branch, filepath,
