@@ -15,3 +15,6 @@ The basic concept is to expose Gitea API functionality using React Components an
 
 ## Documentation
 https://gitea-react-toolkit.netlify.com/
+
+### Building
+- requires node v16 (newer versions of node give warning that digital envelope routines are not supported)

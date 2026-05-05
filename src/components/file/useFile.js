@@ -8,12 +8,14 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 import { useDeepCompareCallback } from 'use-deep-compare';
 
 import {
-  saveFile, ensureFile, deleteFile, getContentFromFile,
+  saveFile, ensureFile, deleteFile, getContentFromFile, getPatch, saveFilePatch,
 } from './helpers';
 import {
   FileCard, FileForm, useBlob,
 } from '..';
 import useFileContent from './useFileContent';
+
+const SMALL_FILE_SIZE = 1024;
 
 function useFile({
   authentication,
@@ -140,14 +142,84 @@ function useFile({
     update();
   }, [update, blobActions, onFilepath]);
 
+  /**
+   * Saves the file content to cache storage.
+   * Calls the onSaveCache callback if provided, passing authentication, repository, branch, file, and content data.
+   *
+   * @param {string} _content - The content to be saved to cache
+   * @returns {Promise<void>}
+   */
   const saveCache = useDeepCompareCallback(async (_content) => {
     if (onSaveCache) {
       await onSaveCache({authentication, repository, branch, file, content: _content});
     }
   }, [writeable, authentication, repository, branch, file, onSaveCache]);
 
+  /**
+   * Saves the file content to the repository.
+   * Performs the following steps:
+   * 1. Saves the file to the repository
+   * 2. Clears the cache for this file
+   * 3. Resets the content actions state
+   * 4. Reloads the file to get the updated version
+   *
+   * Note: This will not execute for "OFFLINE" system files
+   *
+   * @param {string} _content - The content to be saved
+   * @returns {Promise<void>}
+   */
   const save = useDeepCompareCallback(async (_content) => {
-    await saveFile({ authentication, repository, branch, file, content: _content });
+    await saveFile({authentication, repository, branch, file, content: _content});
+    // (save() will not happen for "OFFLINE" system files)
+    await saveCache(); // Empty cache if user has saved this file
+    contentActions.reset();
+    await load();
+  }, [writeable, authentication, repository, branch, file, load, saveFile, saveCache]);
+  /**
+   * Saves file content using diff patch if applicable, otherwise saves full content.
+   * For large files (> smallFileSize), attempts to create and save a diff patch instead of the full content.
+   * Falls back to saving full content if:
+   * - Content is unchanged
+   * - Patch size exceeds 75% of original content size
+   * - File size is below threshold
+   *
+   * After saving, clears the cache, resets content actions, and reloads the file.
+   *
+   * @param {string} _content - The new content to be saved
+   * @param {string} _savedContent - The previously saved content to compare against
+   * @returns {Promise<void>}
+   */
+  const savePatch = useDeepCompareCallback(async (_content, _savedContent) => {
+    let doDiffPatch = _savedContent && _content?.length > SMALL_FILE_SIZE // check if file is large enough to bother with and there is initial content
+    let diffPatch = ''
+
+    if (doDiffPatch) { // generate path and see if it's worth doing patch
+      console.log(`useFile.savePatch() calculating diff`)
+      const same = (_content === _savedContent)
+      if (same) {
+        console.log(`useFile.savePatch() content unchanged, skipping diff`)
+        doDiffPatch = false
+      } else { // content differs from initial
+        diffPatch = getPatch(filepath, _savedContent, _content, false, 3)
+        if (diffPatch && (diffPatch.length > _savedContent.length * 3 / 4)) { // if patch is too large
+          console.log(`useFile.savePatch() diff too large ${diffPatch.length}, original ${_savedContent.length}`)
+          doDiffPatch = false
+        }
+      }
+    }
+
+    if (doDiffPatch && diffPatch) {
+      await saveFilePatch({
+        authentication,
+        repository,
+        branch,
+        file,
+        content: diffPatch
+      });
+    } else {
+      await saveFile({authentication, repository, branch, file, content: _content});
+    }
+
     // (save() will not happen for "OFFLINE" system files)
     await saveCache(); // Empty cache if user has saved this file
     contentActions.reset();
@@ -202,6 +274,7 @@ function useFile({
     read,
     save,
     saveCache,
+    savePatch,
     onSaveCache,
     onLoadCache,
     close,
