@@ -143,6 +143,8 @@ const {
           content, message: _message, author, sha: _sha,
         });
       }
+    } else {
+      throw e; // pass unhandled error down
     }
   }
   return response;
